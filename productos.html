@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mariño | Catálogo de Productos</title>
+    <!-- Awesome Font Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="mariño.ico" type="image/x-icon">
+    <style>
+        .catalog-container {
+            padding: 4rem 5%;
+            min-height: 80vh;
+        }
+
+        /* Catalog Layout */
+        .catalog-container {
+            padding: 4rem 5%;
+            min-height: 80vh;
+        }
+
+        .catalog-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        /* Sidebar Filters */
+        .filters-sidebar {
+            padding: 1.5rem;
+            border-radius: 15px;
+            position: sticky;
+            top: 100px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .filters-sidebar h3 {
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-group {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1.5rem;
+        }
+
+        .filter-group:last-of-type {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 1rem;
+        }
+
+        .filter-group h4 {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
+        }
+
+        .filter-checkbox:hover {
+            color: var(--accent-color);
+        }
+
+        /* Main Catalog */
+        .catalog-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .search-box {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .product-info {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-color);
+        }
+
+        .product-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            flex: 1;
+        }
+
+        .admin-controls {
+            margin-top: 1rem;
+            display: none;
+            /* Hidden by default */
+        }
+
+        /* Pagination */
+        .pagination {
+            margin-top: 4rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pagination button {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: var(--accent-color);
+            color: #0f172a;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Modal for adding product */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--bg-color);
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--accent-color);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-modal {
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-family: inherit;
+        }
+
+        .stats-info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar glass" id="navbar">
+        <a href="index.html" class="logo">
+            <img src="mariño.png" alt="Mariño Logo" class="nav-logo">
+            <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.1;">
+                <div>Mariño</div>
+                <div
+                    style="font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); font-family: 'Inter', sans-serif; letter-spacing: 0;">
+                    construcción en seco & decoraciones</div>
+            </div>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html#inicio">Inicio</a></li>
+            <li><a href="index.html#nosotros">Nosotros</a></li>
+            <li><a href="productos.html" style="color: var(--accent-color);">Catálogo</a></li>
+            <li><a href="index.html#contacto">Contacto</a></li>
+            <li><a href="login.html" id="nav-login"><i class="fas fa-lock"></i></a></li>
+        </ul>
+    </nav>
+
+    <div class="page-header">
+        <h1>Nuestro Catálogo</h1>
+        <p>Explora nuestra amplia colección de placas, perfiles y revestimientos. Calidad y diseño para tus espacios.
+        </p>
+    </div>
+
+    <div class="catalog-container">
+        <div class="catalog-layout">
+            <!-- Sidebar for Filters -->
+            <aside class="filters-sidebar glass">
+                <h3><i class="fas fa-filter"></i> Filtros</h3>
+
+                <div class="filter-group">
+                    <h4>Categorías</h4>
+                    <div id="filter-categories" class="filter-options">
+                        <!-- Checkboxes injected via JS -->
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h4>Marcas / Proveedores</h4>
+                    <div id="filter-providers" class="filter-options">
+                        <!-- Checkboxes injected via JS -->
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h4>Color</h4>
+                    <div id="filter-colors" class="filter-options">
+                        <!-- Checkboxes injected via JS -->
+                    </div>
+                </div>
+
+                <button id="btn-clear-filters" class="btn btn-secondary"
+                    style="width: 100%; margin-top: 1rem; margin-left: 0; padding: 0.5rem;">Limpiar Filtros</button>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="catalog-main">
+                <div class="catalog-controls">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-input"
+                            placeholder="Buscar por nombre, categoría o descripción...">
+                    </div>
+                    <button id="btn-add-product" class="btn btn-primary" style="display: none;"><i
+                            class="fas fa-plus"></i> Añadir Producto</button>
+                </div>
+
+                <div id="products-grid" class="products-grid">
+                    <!-- Products will be injected here via JS -->
+                </div>
+
+                <div class="stats-info" id="stats-info">
+                    <!-- Showing x of y -->
+                </div>
+
+                <div class="pagination" id="pagination-controls">
+                    <!-- Pagination injected via JS -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Añadir Nuevo Producto</h2>
+                <span class="close-modal" id="close-modal">&times;</span>
+            </div>
+            <form id="add-product-form">
+                <div class="form-group">
+                    <label>Nombre del Producto</label>
+                    <input type="text" id="p-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="p-desc" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>URL de Imagen (Opcional)</label>
+                    <input type="url" id="p-img" placeholder="https://...">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Guardar
+                    Producto</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Mariño Construcción en seco y decoraciones. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script src="products.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

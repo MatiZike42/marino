@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mariño | Acceso Administrativo</title>
+    <!-- Awesome Font Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="mariño.ico" type="image/x-icon">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(rgba(75, 75, 75, 0.9), rgba(75, 75, 75, 0.95)), url('https://images.unsplash.com/photo-1541123437800-1c5c16b14d2e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .login-box h2 {
+            margin-bottom: 2rem;
+            color: var(--accent-color);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(75, 75, 75, 0.6);
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .error-msg {
+            color: var(--danger-color);
+            margin-bottom: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar glass" id="navbar">
+        <a href="index.html" class="logo">
+            <img src="mariño.png" alt="Mariño Logo" class="nav-logo">
+            <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.1;">
+                <div>Mariño</div>
+                <div
+                    style="font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); font-family: 'Inter', sans-serif; letter-spacing: 0;">
+                    construcción en seco & decoraciones</div>
+            </div>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Volver al Inicio</a></li>
+        </ul>
+    </nav>
+
+    <div class="login-container">
+        <div class="login-box glass">
+            <h2>Acceso Administrativo</h2>
+            <p class="error-msg" id="login-error">Usuario o contraseña incorrectos.</p>
+            <form id="login-form">
+                <div class="input-group">
+                    <label>Usuario (Prueba: admin)</label>
+                    <input type="text" id="username" required placeholder="admin">
+                </div>
+                <div class="input-group">
+                    <label>Contraseña (Prueba: admin)</label>
+                    <input type="password" id="password" required placeholder="admin">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Ingresar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            if (u === 'admin' && p === 'admin') {
+                localStorage.setItem('isAdmin', 'true');
+                window.location.href = 'productos.html';
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+
+</html>

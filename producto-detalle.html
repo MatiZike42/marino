@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mariño | Detalle del Producto</title>
+    <!-- Awesome Font Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="mariño.ico" type="image/x-icon">
+    <style>
+        .detail-container {
+            padding: 8rem 5% 4rem;
+            /* Top padding to offset navbar */
+            min-height: 80vh;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+
+        .back-link:hover {
+            color: var(--accent-color);
+        }
+
+        .product-detail-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .product-image-container {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+        }
+
+        .product-image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+            background: rgba(255, 255, 255, 0.02);
+            aspect-ratio: 4/3;
+        }
+
+        .product-info-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .pd-brand {
+            color: var(--accent-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .pd-title {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            color: var(--text-primary);
+        }
+
+        .pd-desc {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .specs-table tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .specs-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .specs-table th {
+            text-align: left;
+            padding: 1rem 0;
+            color: var(--text-secondary);
+            font-weight: 500;
+            width: 40%;
+        }
+
+        .specs-table td {
+            text-align: right;
+            padding: 1rem 0;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .buy-action {
+            margin-top: 2rem;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .buy-action h4 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .loading-state,
+        .error-state {
+            text-align: center;
+            padding: 4rem;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .product-detail-layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .pd-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar glass" id="navbar">
+        <a href="index.html" class="logo">
+            <img src="mariño.png" alt="Mariño Logo" class="nav-logo">
+            <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.1;">
+                <div>Mariño</div>
+                <div
+                    style="font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); font-family: 'Inter', sans-serif; letter-spacing: 0;">
+                    construcción en seco & decoraciones</div>
+            </div>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html#inicio">Inicio</a></li>
+            <li><a href="index.html#nosotros">Nosotros</a></li>
+            <li><a href="productos.html" style="color: var(--accent-color);">Catálogo</a></li>
+            <li><a href="index.html#contacto">Contacto</a></li>
+            <li><a href="login.html" id="nav-login"><i class="fas fa-lock"></i></a></li>
+        </ul>
+    </nav>
+
+    <div class="detail-container" id="detail-container">
+        <div class="loading-state">
+            <i class="fas fa-spinner fa-spin"
+                style="font-size: 2rem; margin-bottom: 1rem; color: var(--accent-color);"></i>
+            <p>Cargando detalles del producto...</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Mariño Construcción en seco y decoraciones. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('detail-container');
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (!productId) {
+                showError('Producto no especificado.');
+                return;
+            }
+
+            const storedProducts = localStorage.getItem('marino_products');
+            if (!storedProducts) {
+                showError('No se encontró la base de datos de productos.');
+                return;
+            }
+
+            const productsData = JSON.parse(storedProducts);
+            const product = productsData.find(p => p.id == productId);
+
+            if (!product) {
+                showError('El producto no existe o fue eliminado.');
+                return;
+            }
+
+            renderProductDetails(product);
+        });
+
+        function showError(msg) {
+            const container = document.getElementById('detail-container');
+            container.innerHTML = `
+                <a href="productos.html" class="back-link"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
+                <div class="error-state glass" style="border-radius: 20px;">
+                    <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 1rem; color: var(--danger-color);"></i>
+                    <p style="color: var(--text-primary); margin-bottom: 2rem;">${msg}</p>
+                    <a href="productos.html" class="btn btn-primary">Ver Catalogo</a>
+                </div>
+            `;
+        }
+
+        function renderProductDetails(p) {
+            const container = document.getElementById('detail-container');
+
+            // Set Page Title dynamically
+            document.title = `Mariño | ${p.name}`;
+
+            container.innerHTML = `
+                <a href="productos.html" class="back-link"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
+                <div class="product-detail-layout">
+                    <div class="product-image-container">
+                        <img src="${p.img}" alt="${p.name}">
+                    </div>
+                    
+                    <div class="product-info-container">
+                        <div>
+                            <div class="pd-brand">${p.provider || 'Distribuidor Local'}</div>
+                            <h1 class="pd-title">${p.name}</h1>
+                        </div>
+                        
+                        <p class="pd-desc">${p.desc}</p>
+
+                        <div>
+                            <h3 style="margin-bottom: 1rem; font-family: 'Outfit', sans-serif;">Especificaciones</h3>
+                            <table class="specs-table">
+                                <tbody>
+                                    <tr>
+                                        <th>Categoría</th>
+                                        <td>${p.category || 'General'}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Marca / Proveedor</th>
+                                        <td>${p.provider || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Color / Tonalidad</th>
+                                        <td>${p.color || 'Vario'}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Medidas / Formato</th>
+                                        <td>${p.size || 'Standard'}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="buy-action glass">
+                            <h4>¿Te interesa este producto?</h4>
+                            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">Contactanos por WhatsApp para consultar disponibilidad, precios y opciones de envío.</p>
+                            <a href="https://wa.me/3404491056?text=Hola!%20Estoy%20interesado%20en%20el%20producto:%20${encodeURIComponent(p.name)}" target="_blank" class="btn btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background-color: #25D366; color: white;">
+                                <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Consultar por WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+    <script src="app.js"></script>
+</body>
+
+</html>
