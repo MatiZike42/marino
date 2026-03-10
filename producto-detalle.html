@@ -160,6 +160,9 @@
             <li><a href="index.html#inicio">Inicio</a></li>
             <li><a href="index.html#nosotros">Nosotros</a></li>
             <li><a href="productos.html" style="color: var(--accent-color);">Catálogo</a></li>
+            <li><a href="obras.html">Obras</a></li>
+            <li><a href="rrhh.html">RRHH</a></li>
+            <li><a href="consultas.html">Consultas</a></li>
             <li><a href="index.html#contacto">Contacto</a></li>
             <li><a href="login.html" id="nav-login"><i class="fas fa-lock"></i></a></li>
         </ul>
@@ -177,6 +180,7 @@
         <p>&copy; 2026 Mariño Construcción en seco y decoraciones. Todos los derechos reservados.</p>
     </footer>
 
+    <script src="cart.js"></script>
     <script src="auth.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -225,13 +229,13 @@
             document.title = `Mariño | ${p.name}`;
 
             container.innerHTML = `
-                <a href="productos.html" class="back-link"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
+                <a href="productos.html" class="back-link reveal"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
                 <div class="product-detail-layout">
-                    <div class="product-image-container">
+                    <div class="product-image-container reveal delay-1">
                         <img src="${p.img}" alt="${p.name}">
                     </div>
                     
-                    <div class="product-info-container">
+                    <div class="product-info-container reveal delay-2">
                         <div>
                             <div class="pd-brand">${p.provider || 'Distribuidor Local'}</div>
                             <h1 class="pd-title">${p.name}</h1>
@@ -261,18 +265,26 @@
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
 
-                        <div class="buy-action glass">
-                            <h4>¿Te interesa este producto?</h4>
-                            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">Contactanos por WhatsApp para consultar disponibilidad, precios y opciones de envío.</p>
-                            <a href="https://wa.me/3404491056?text=Hola!%20Estoy%20interesado%20en%20el%20producto:%20${encodeURIComponent(p.name)}" target="_blank" class="btn btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background-color: #25D366; color: white;">
-                                <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Consultar por WhatsApp
-                            </a>
+                            <div class="buy-action glass">
+                                <h4>¿Te interesa este producto?</h4>
+                                <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                                    Agregalo a tu presupuesto y solicitá cotización junto con otros artículos.
+                                </p>
+                                <button class="btn btn-primary" onclick="window.addToCart(${p.id}, '${p.name.replace(/'/g, "\\'")}', '${p.img}', '${p.category}')" style="width: 100%; margin: 0 0 1rem 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                    <i class="fas fa-cart-plus" style="transform: translateY(1px);"></i> Sumar al Presupuesto
+                                </button>
+                                <a href="https://wa.me/5493404505350?text=Hola,%20quisiera%20consultar%20por%20el%20producto:%20${encodeURIComponent(p.name)}" target="_blank" class="btn btn-secondary" style="width: 100%; margin: 0; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                    <i class="fab fa-whatsapp" style="transform: translateY(1px);"></i> Consultar Directo
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
+            if (typeof window.initAnimations === 'function') {
+                setTimeout(window.initAnimations, 50);
+            }
         }
     </script>
     <script src="app.js"></script>

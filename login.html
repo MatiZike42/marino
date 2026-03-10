@@ -78,42 +78,40 @@
             </div>
         </a>
         <ul class="nav-links">
-            <li><a href="index.html">Volver al Inicio</a></li>
+            <li><a href="productos.html">Catálogo</a></li>
+            <li><a href="obras.html">Obras</a></li>
+            <li><a href="rrhh.html">RRHH</a></li>
+            <li><a href="consultas.html">Consultas</a></li>
+            <li><a href="index.html#contacto">Contacto</a></li>
+            <li><a href="login.html" id="nav-login" style="color: var(--accent-color);"><i class="fas fa-lock"></i></a></li>
         </ul>
     </nav>
 
     <div class="login-container">
         <div class="login-box glass">
-            <h2>Acceso Administrativo</h2>
-            <p class="error-msg" id="login-error">Usuario o contraseña incorrectos.</p>
-            <form id="login-form">
-                <div class="input-group">
-                    <label>Usuario (Prueba: admin)</label>
-                    <input type="text" id="username" required placeholder="admin">
-                </div>
-                <div class="input-group">
-                    <label>Contraseña (Prueba: admin)</label>
-                    <input type="password" id="password" required placeholder="admin">
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Ingresar</button>
-            </form>
+            <h2>Acceso al Sistema</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Iniciá sesión para acceder a las funciones administrativas o para autocompletar tus datos en futuras consultas.</p>
+            
+            <div id="g_id_onload"
+                 data-client_id="1057095210405-svt45t2boe1ebpf17dmoi6uae64ev42a.apps.googleusercontent.com"
+                 data-callback="handleGoogleLogin"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-size="large"
+                 data-theme="outline"
+                 data-text="sign_in_with"
+                 data-shape="rectangular"
+                 data-logo_alignment="left">
+            </div>
+            
+            <p class="error-msg" id="login-error" style="margin-top: 1rem; color: var(--accent-color);">Hubo un error al iniciar sesión. Intentá nuevamente.</p>
         </div>
     </div>
 
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="auth.js"></script>
-    <script>
-        document.getElementById('login-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
-            if (u === 'admin' && p === 'admin') {
-                localStorage.setItem('isAdmin', 'true');
-                window.location.href = 'productos.html';
-            } else {
-                document.getElementById('login-error').style.display = 'block';
-            }
-        });
-    </script>
 </body>
 
 </html>

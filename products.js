@@ -11,41 +11,76 @@ let selectedProviders = new Set();
 let selectedColors = new Set();
 
 // Ensure advanced mock data is loaded by clearing old simple structure once
-if (!localStorage.getItem('marino_v2_migrated')) {
+if (!localStorage.getItem('marino_v4_real_products_atenneas')) {
     localStorage.removeItem(PRODUCTS_KEY);
-    localStorage.setItem('marino_v2_migrated', 'true');
+    localStorage.setItem('marino_v4_real_products_atenneas', 'true');
+}
+if (!localStorage.getItem('marino_v5_casermeiro_maropor')) {
+    localStorage.removeItem(PRODUCTS_KEY);
+    localStorage.setItem('marino_v5_casermeiro_maropor', 'true');
 }
 
 // Check if admin to show controls
 const isAdminUser = localStorage.getItem('isAdmin') === 'true';
 
-// Initial Seeding to handle 1000+ products
+// Initial Seeding to handle real supplier products
 function initializeProducts() {
     const stored = localStorage.getItem(PRODUCTS_KEY);
     if (!stored) {
-        productsData = [];
-        const categories = ["Placa de Yeso", "Perfil de Acero", "Revestimiento PVC", "Pintura Interior", "Masilla", "Cinta", "Tornillos", "Aislante Térmico", "Cielo Raso Desmontable"];
-        const providers = ["Durlock", "Barbieri", "Isover", "Placo", "Knauf", "Alba", "Sika", "Brevant"];
-        const colors = ["Blanco", "Gris", "Negro", "Natural", "Madera Claro", "Madera Oscuro", "Metálico"];
-        const sizes = ["1.20x2.40m", "1.22x2.44m", "3m", "2.60m", "5kg", "10kg", "30kg", "Standard"];
+        productsData = [
+            // DURLOCK
+            { id: 1, name: "Placa Durlock Estándar 12.5mm", desc: "Placa de yeso para cielorrasos y revestimientos interiores en ambientes secos.", category: "Placa de Yeso", provider: "Durlock", color: "Gris", size: "1.20x2.40m", img: "proveedores/durlock.png" },
+            { id: 2, name: "Placa Durlock Resistente a la Humedad", desc: "Placa verde ideal para baños, cocinas y ambientes con grado de humedad.", category: "Placa de Yeso", provider: "Durlock", color: "Verde", size: "1.20x2.40m", img: "proveedores/durlock.png" },
+            { id: 3, name: "Placa Durlock Resistente al Fuego", desc: "Placa roja con aditivos especiales para mayor resistencia al fuego.", category: "Placa de Yeso", provider: "Durlock", color: "Rojo", size: "1.20x2.40m", img: "proveedores/durlock.png" },
+            { id: 4, name: "Masilla Durlock Lista Para Usar", desc: "Masilla de secado rápido especial para tomado de juntas y recubrimiento de fijaciones.", category: "Masilla", provider: "Durlock", color: "Blanco", size: "32kg", img: "proveedores/durlock.png" },
 
-        for (let i = 1; i <= 1050; i++) {
-            const cat = categories[Math.floor(Math.random() * categories.length)];
-            const prov = providers[Math.floor(Math.random() * providers.length)];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            const size = sizes[Math.floor(Math.random() * sizes.length)];
+            // JMA
+            { id: 5, name: "Montante 69mm JMA", desc: "Perfil de acero galvanizado estructural para tabiques y cielorrasos.", category: "Perfil de Acero", provider: "JMA", color: "Metálico", size: "2.60m", img: "proveedores/JMA.png" },
+            { id: 6, name: "Solera 70mm JMA", desc: "Perfil guía inferior y superior de acero galvanizado para construcción en seco.", category: "Perfil de Acero", provider: "JMA", color: "Metálico", size: "2.60m", img: "proveedores/JMA.png" },
+            { id: 7, name: "Perfil Omega JMA", desc: "Perfil clavadera para cielorrasos aplicados y revestimientos.", category: "Perfil de Acero", provider: "JMA", color: "Metálico", size: "2.60m", img: "proveedores/JMA.png" },
+            { id: 8, name: "Cantonera JMA", desc: "Perfil para la protección de esquinas en tabiques de placas de yeso.", category: "Perfil de Acero", provider: "JMA", color: "Metálico", size: "2.60m", img: "proveedores/JMA.png" },
 
-            productsData.push({
-                id: i,
-                name: `${cat} ${prov} Modelo ${i}`,
-                desc: `Material de alta calidad para construcción en seco. Ideal para acabados profesionales. Resistencia y durabilidad garantizada instalando con accesorios originales.`,
-                category: cat,
-                provider: prov,
-                color: color,
-                size: size,
-                img: `https://picsum.photos/seed/${i + 1000}/400/300`
-            });
-        }
+            // SUPERBOARD
+            { id: 9, name: "Placa Superboard Estándar 6mm", desc: "Placa de fibrocemento resistente a la intemperie y la humedad. Ideal para exteriores.", category: "Placa de Fibrocemento", provider: "Superboard", color: "Gris", size: "1.22x2.44m", img: "proveedores/superboard.png" },
+            { id: 10, name: "Placa Superboard Madera Siding", desc: "Placa de fibrocemento texturada símil madera para fachadas y revestimientos decorativos exteriores.", category: "Placa de Fibrocemento", provider: "Superboard", color: "Madera Claro", size: "0.20x3.60m", img: "proveedores/superboard.png" },
+            { id: 11, name: "Placa Superboard Entrepiso 15mm", desc: "Placa de alta densidad para bases de pisos y entrepisos secos estructurales.", category: "Placa de Fibrocemento", provider: "Superboard", color: "Gris", size: "1.22x2.44m", img: "proveedores/superboard.png" },
+
+            // AISPLAC
+            { id: 12, name: "Panel PVC Cielorraso Blanco", desc: "Revestimiento de PVC para cielorrasos. Libre de mantenimiento, lavable e ignífugo.", category: "Revestimiento PVC", provider: "Aisplac", color: "Blanco", size: "Contamos con todos los largos en 20cm", img: "proveedores/aisplac.png" },
+            { id: 13, name: "Panel PVC Cielorraso Símil Madera", desc: "Revestimiento de PVC con textura y visual de madera. Aporta calidez y no requiere pintura.", category: "Revestimiento PVC", provider: "Aisplac", color: "Madera Oscuro", size: "Contamos con todos los largos en 20cm", img: "proveedores/aisplac.png" },
+            { id: 14, name: "Zócalo Sanitario PVC", desc: "Zócalo sanitario de PVC ideal para industrias, comercios gastronómicos y hospitales.", category: "Revestimiento PVC", provider: "Aisplac", color: "Blanco", size: "Contamos con todos los largos", img: "proveedores/aisplac.png" },
+
+            // POXIMIX
+            { id: 15, name: "Poximix 15 Minutos Interior", desc: "Material base yeso ideal para rellenar, remendar y fijar en interiores.", category: "Masilla", provider: "Poximix", color: "Blanco", size: "5kg", img: "proveedores/poximix.png" },
+            { id: 16, name: "Poximix 15 Minutos Exterior", desc: "Enduido resistente para reparar grietas, agujeros y desniveles en frentes y muros exteriores.", category: "Masilla", provider: "Poximix", color: "Blanco", size: "5kg", img: "proveedores/poximix.png" },
+
+            // TELPLAST
+            { id: 17, name: "Sellador Acrílico Pintable Telplast", desc: "Sellador elástico y pintable ideal para relleno de juntas de placas de yeso.", category: "Selladores", provider: "Telplast", color: "Blanco", size: "Cartucho 300ml", img: "proveedores/telplast.png" },
+            { id: 18, name: "Adhesivo para Revestimientos Telplast", desc: "Pegamento extra fuerte para aplicaciones decorativas, zócalos de EPS y perfiles.", category: "Pegamentos", provider: "Telplast", color: "Transparente", size: "Cartucho", img: "proveedores/telplast.png" },
+
+            // ATENNEAS
+            { id: 19, name: "Zócalo EPS Blanco Atenneas", desc: "Zócalos de poliestireno expandido, resistentes a la humedad, listos para colocar.", category: "Terminaciones", provider: "Atenneas", color: "Blanco", size: "2.50m (Tiras)", img: "proveedores/atenneas.png" },
+            { id: 20, name: "Moldura de Transición Atenneas", desc: "Perfil revestido de terminación de piso o cambio de nivel de primera calidad.", category: "Terminaciones", provider: "Atenneas", color: "Madera Claro", size: "2.40m", img: "proveedores/atenneas.png" },
+            { id: 24, name: "Moldura Interior Línea AT Atenneas", desc: "Molduras elaboradas para ambientes interiores de gran terminación estética.", category: "Molduras Interiores", provider: "Atenneas", color: "Blanco", size: "2.40m", img: "proveedores/atenneas.png" },
+            { id: 25, name: "Moldura Exterior Wing Decó Atenneas", desc: "Perfiles revestidos especialmente aplicados a fachadas exteriores de alta resistencia.", category: "Molduras Exteriores", provider: "Atenneas", color: "Natural", size: "2.40m", img: "proveedores/atenneas.png" },
+            { id: 26, name: "Zócalo Foliado Atenneas", desc: "Zócalo foliado con símil madera para perfecta transición piso-pared.", category: "Zócalo", provider: "Atenneas", color: "Madera Oscuro", size: "2.40m", img: "proveedores/atenneas.png" },
+            { id: 27, name: "Moldura Prepintada Atenneas", desc: "Moldura lista para pintura final, optimizando tiempos de colocación.", category: "Terminaciones", provider: "Atenneas", color: "Blanco", size: "2.40m", img: "proveedores/atenneas.png" },
+
+            // IPROA (Cortinas a Medida)
+            { id: 21, name: "Cortinas Roller IPROA", desc: "Cortina tipo Roller moderna de alta durabilidad.\n\nIMPORTANTE: A medida. Comuníquese por WhatsApp para medidas de ventana y recibir presupuesto al instante.", category: "Cortinas a Medida", provider: "Iproa", color: "A elección", size: "A medida", img: "proveedores/iproa.png" },
+            { id: 22, name: "Cortinas Verticales IPROA", desc: "Cortinado en bandas verticales que permite un control visual y térmico excepcional.\n\nIMPORTANTE: A medida. Consulte con nuestro equipo por opciones de color y tamaño.", category: "Cortinas a Medida", provider: "Iproa", color: "A elección", size: "A medida", img: "proveedores/iproa.png" },
+            { id: 23, name: "Cortinas Venecianas IPROA", desc: "Sistema clásico de láminas de aluminio resistente. Control preciso de la luz exterior.\n\nIMPORTANTE: Fabricadas a medida según requerimiento.", category: "Cortinas a Medida", provider: "Iproa", color: "A elección", size: "A medida", img: "proveedores/iproa.png" },
+
+            // CASERMEIRO
+            { id: 28, name: "Tornillo T2 Punta Aguja Casermeiro", desc: "Tornillo autoperforante punta aguja para fijación de placas de yeso a perfiles de acero.", category: "Fijaciones", provider: "Casermeiro", color: "Negro", size: "6x1 1/4", img: "proveedores/casemiro.png" },
+            { id: 29, name: "Tornillo T1 Punta Mecha Casermeiro", desc: "Tornillo punta mecha cabeza tanque para unión de perfilería metálica.", category: "Fijaciones", provider: "Casermeiro", color: "Zincado", size: "8x1/2", img: "proveedores/casemiro.png" },
+
+            // MAROPOR
+            { id: 30, name: "Zócalo EPS Maropor", desc: "Zócalo de poliestireno expandido, alta resistencia a la humedad y de fácil instalación.", category: "Zócalo", provider: "Maropor", color: "Blanco", size: "2.50m", img: "proveedores/maropor.png" },
+            { id: 31, name: "Placa Cielorraso Desmontable EPS Maropor", desc: "Placas para cielorrasos desmontables, excelente aislación térmica y acústica.", category: "Cielorrasos", provider: "Maropor", color: "Blanco", size: "0.60x0.60m", img: "proveedores/maropor.png" },
+            { id: 32, name: "Panel PVC Maropor", desc: "Revestimiento de PVC resistente al agua, ignífugo, ideal para techos y paredes.", category: "Revestimiento PVC", provider: "Maropor", color: "Blanco", size: "A medida", img: "proveedores/maropor.png" },
+            { id: 33, name: "Moldura EPS Maropor", desc: "Moldura decorativa de fácil colocación para terminaciones de techos.", category: "Molduras Interiores", provider: "Maropor", color: "Blanco", size: "2.00m", img: "proveedores/maropor.png" }
+        ];
         saveProducts();
     } else {
         productsData = JSON.parse(stored);
@@ -105,7 +140,7 @@ function renderProducts() {
     } else {
         paginated.forEach(p => {
             const card = document.createElement('div');
-            card.className = 'product-card glass';
+            card.className = 'product-card glass reveal delay-2';
             card.innerHTML = `
                 <a href="producto-detalle.html?id=${p.id}" class="product-link" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; flex: 1;">
                     <img src="${p.img}" alt="${p.name}" class="product-img" loading="lazy">
@@ -118,10 +153,22 @@ function renderProducts() {
                         </div>
                     </div>
                 </a>
+                
+                ${!isAdminUser ? `
+                <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
+                    <button class="btn btn-secondary" style="width: 100%; border-radius: 8px; padding: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 0;" onclick="event.preventDefault(); window.addToCart(${p.id}, '${p.name.replace(/'/g, "\\'")}', '${p.img}', '${p.category}')">
+                        <i class="fas fa-cart-plus" style="transform: translateY(1px);"></i> Sumar al Carrito
+                    </button>
+                </div>
+                ` : ''}
+
                 ${isAdminUser ? `
-                <div class="admin-controls" style="display: block; padding: 0 1.5rem 1.5rem 1.5rem;">
-                    <button class="btn btn-danger" onclick="deleteProduct(${p.id})" style="width: 100%;">
-                       <i class="fas fa-trash"></i> Eliminar
+                <div class="admin-controls" style="display: flex; gap: 0.5rem; padding: 0 1.5rem 1.5rem 1.5rem;">
+                    <button class="btn btn-secondary" onclick="event.preventDefault(); editProduct(${p.id})" style="flex: 1; padding: 0.5rem;">
+                       <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button class="btn btn-danger" onclick="event.preventDefault(); deleteProduct(${p.id})" style="flex: 1; padding: 0.5rem;">
+                       <i class="fas fa-trash"></i>
                     </button>
                 </div>` : ''}
             `;
@@ -131,6 +178,11 @@ function renderProducts() {
 
     stats.innerText = `Mostrando ${paginated.length} de ${filtered.length} productos (Página ${currentPage} de ${totalPages || 1})`;
     renderPagination(totalPages);
+
+    // Re-initialize animations for new elements
+    if (typeof window.initAnimations === 'function') {
+        setTimeout(window.initAnimations, 50);
+    }
 }
 
 function renderPagination(totalPages) {
@@ -161,6 +213,23 @@ function renderPagination(totalPages) {
 }
 
 // Admin Functions
+window.editProduct = function (id) {
+    const p = productsData.find(x => x.id === id);
+    if (!p) return;
+
+    document.getElementById('p-id').value = p.id;
+    document.getElementById('p-name').value = p.name;
+    document.getElementById('p-category').value = p.category || '';
+    document.getElementById('p-provider').value = p.provider || '';
+    document.getElementById('p-color').value = p.color || '';
+    document.getElementById('p-size').value = p.size || '';
+    document.getElementById('p-desc').value = p.desc;
+    document.getElementById('p-img').value = p.img || '';
+
+    document.getElementById('modal-product-title').innerText = 'Editar Producto';
+    document.getElementById('addModal').style.display = 'flex';
+}
+
 window.deleteProduct = function (id) {
     if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
         productsData = productsData.filter(p => p.id !== id);
@@ -265,7 +334,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Modal behavior
     if (btnAdd) {
-        btnAdd.addEventListener('click', () => modal.style.display = 'flex');
+        btnAdd.addEventListener('click', () => {
+            document.getElementById('p-id').value = '';
+            document.getElementById('modal-product-title').innerText = 'Añadir Nuevo Producto';
+            if (addForm) addForm.reset();
+            modal.style.display = 'flex';
+        });
         btnCloseModal.addEventListener('click', () => modal.style.display = 'none');
         window.addEventListener('click', (e) => {
             if (e.target === modal) modal.style.display = 'none';
@@ -278,11 +352,16 @@ document.addEventListener('DOMContentLoaded', () => {
         btnClearFilters.addEventListener('click', clearFilters);
     }
 
-    // Add Product
+    // Add/Edit Product
     if (addForm) {
         addForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            const editId = document.getElementById('p-id').value;
             const name = document.getElementById('p-name').value;
+            const category = document.getElementById('p-category').value;
+            const provider = document.getElementById('p-provider').value;
+            const color = document.getElementById('p-color').value;
+            const size = document.getElementById('p-size').value;
             const desc = document.getElementById('p-desc').value;
             let img = document.getElementById('p-img').value;
 
@@ -290,23 +369,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 img = `https://picsum.photos/seed/${Date.now()}/400/300`;
             }
 
-            const newId = productsData.length > 0 ? Math.max(...productsData.map(p => p.id)) + 1 : 1;
-
-            productsData.unshift({
-                id: newId,
-                name,
-                desc,
-                category: 'General',
-                provider: 'Desconocido',
-                color: 'Vario',
-                size: 'Standard',
-                img
-            });
+            if (editId) {
+                // Edit existing
+                const idx = productsData.findIndex(p => p.id == editId);
+                if (idx !== -1) {
+                    productsData[idx].name = name;
+                    productsData[idx].category = category;
+                    productsData[idx].provider = provider;
+                    productsData[idx].color = color;
+                    productsData[idx].size = size;
+                    productsData[idx].desc = desc;
+                    productsData[idx].img = img;
+                }
+            } else {
+                // Add new
+                const newId = productsData.length > 0 ? Math.max(...productsData.map(p => p.id)) + 1 : 1;
+                productsData.unshift({
+                    id: newId,
+                    name,
+                    desc,
+                    category: category,
+                    provider: provider,
+                    color: color,
+                    size: size,
+                    img
+                });
+                currentPage = 1;
+            }
 
             saveProducts();
             modal.style.display = 'none';
             addForm.reset();
-            currentPage = 1;
             renderFilters();
             renderProducts();
         });

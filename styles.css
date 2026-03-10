@@ -12,6 +12,10 @@
   --glass-bg: rgba(75, 75, 75, 0.7);
   --glass-border: rgba(255, 255, 255, 0.15);
   --transition: all 0.3s ease;
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: all 0.6s var(--ease-out-expo);
+  --transition-spring: all 0.5s var(--ease-spring);
 }
 
 * {
@@ -152,7 +156,7 @@ h4 {
   border-radius: 50px;
   text-decoration: none;
   font-weight: 600;
-  transition: var(--transition);
+  transition: var(--transition-spring);
   font-family: 'Outfit', sans-serif;
   cursor: pointer;
   border: none;
@@ -167,8 +171,8 @@ h4 {
 
 .btn-primary:hover {
   background-color: var(--accent-hover);
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(251, 211, 65, 0.6);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(251, 211, 65, 0.6);
 }
 
 .btn-secondary {
@@ -181,7 +185,8 @@ h4 {
 .btn-secondary:hover {
   background: var(--text-primary);
   color: var(--bg-color);
-  transform: translateY(-3px);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
 }
 
 .btn-danger {
@@ -297,12 +302,13 @@ section {
 .post-card {
   border-radius: 15px;
   padding: 1.5rem;
-  transition: var(--transition);
+  transition: var(--transition-spring);
 }
 
 .post-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-10px) scale(1.02);
   border-color: var(--accent-color);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
 .post-header {
@@ -357,7 +363,7 @@ section {
   padding: 2rem;
   border-radius: 20px;
   text-align: center;
-  transition: var(--transition);
+  transition: var(--transition-spring);
   text-decoration: none;
   color: var(--text-primary);
   display: flex;
@@ -367,8 +373,10 @@ section {
 }
 
 .contact-card:hover {
-  transform: translateY(-10px);
+  transform: translateY(-10px) scale(1.03);
   border-color: var(--accent-color);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  background: rgba(75, 75, 75, 0.85);
 }
 
 .contact-card i {
@@ -385,6 +393,77 @@ section {
 .contact-card p {
   color: var(--text-secondary);
   font-size: 0.9rem;
+}
+
+/* Contact Form */
+.contact-form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2.5rem;
+  border-radius: 20px;
+}
+
+.contact-form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.form-group input:not([type="file"]),
+.form-group textarea {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--text-primary);
+  font-family: inherit;
+  transition: var(--transition);
+}
+
+.form-group input:not([type="file"]):focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(251, 211, 65, 0.2);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.file-input {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.file-input::file-selector-button {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  border: none;
+  background: var(--accent-color);
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-right: 1rem;
+}
+
+.file-input::file-selector-button:hover {
+  background: var(--accent-hover);
 }
 
 /* Footer */
@@ -421,7 +500,7 @@ footer {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(40px);
   }
 
   to {
@@ -430,11 +509,135 @@ footer {
   }
 }
 
+/* Scroll Reveal Classes */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+  will-change: opacity, transform;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.delay-1 {
+  transition-delay: 0.1s;
+}
+
+.delay-2 {
+  transition-delay: 0.2s;
+}
+
+.delay-3 {
+  transition-delay: 0.3s;
+}
+
+.delay-4 {
+  transition-delay: 0.4s;
+}
+
+/* Brands Carousel */
+.brands-carousel-container {
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  width: 100%;
+  padding: 2rem 0;
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.brands-carousel {
+  display: inline-flex;
+  gap: 4rem;
+  align-items: center;
+  animation: scrollCarousel 30s linear infinite;
+  padding-left: 4rem;
+}
+
+.brands-carousel:hover {
+  animation-play-state: paused;
+}
+
+.brands-carousel img {
+  height: 60px;
+  width: auto;
+  max-width: 150px;
+  object-fit: contain;
+  /* Aplica escala de grises y un toque sepia para unificar colores y adaptarse al dark theme/dorado */
+  filter: grayscale(100%) brightness(200%) contrast(80%) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  opacity: 0.7;
+  transition: var(--transition-smooth);
+}
+
+.brands-carousel img:hover {
+  /* Al hacer hover, se quita el filtro para ver el color original y se resalta */
+  filter: grayscale(0%) drop-shadow(0 8px 15px rgba(251, 211, 65, 0.4));
+  opacity: 1;
+  transform: scale(1.15) translateY(-5px);
+}
+
+@keyframes scrollCarousel {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(calc(-50% - 2rem));
+  }
+}
+
+/* WhatsApp Float Button */
+.whatsapp-float {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 40px;
+  right: 40px;
+  background-color: #25d366;
+  color: #FFF;
+  border-radius: 50px;
+  text-align: center;
+  font-size: 30px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-spring);
+  text-decoration: none;
+}
+
+.whatsapp-float:hover {
+  transform: translateY(-5px) scale(1.1);
+  box-shadow: 0px 8px 25px rgba(37, 211, 102, 0.5);
+  background-color: #20b858;
+}
+
 @media (max-width: 768px) {
 
   .about-grid,
-  .social-feed {
-    grid-template-columns: 1fr;
+  .social-feed,
+  .contact-split {
+    grid-template-columns: 1fr !important;
+  }
+
+  .map-container {
+    min-height: 300px !important;
+  }
+
+  .brands-carousel {
+    padding-left: 2rem;
+    gap: 2rem;
+  }
+
+  .brands-carousel img {
+    height: 45px;
   }
 
   .hero h1 {

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultas | Mariño</title>
+    <!-- Awesome Font Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="mariño.ico" type="image/x-icon">
+</head>
+
+<body>
+
+    <nav class="navbar glass" id="navbar">
+        <a href="index.html" class="logo">
+            <img src="mariño.png" alt="Mariño Logo" class="nav-logo">
+            <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.1;">
+                <div>Mariño</div>
+                <div
+                    style="font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); font-family: 'Inter', sans-serif; letter-spacing: 0;">
+                    construcción en seco & decoraciones</div>
+            </div>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html#inicio">Inicio</a></li>
+            <li><a href="index.html#nosotros">Nosotros</a></li>
+            <li><a href="productos.html">Catálogo</a></li>
+            <li><a href="obras.html">Obras</a></li>
+            <li><a href="rrhh.html">RRHH</a></li>
+            <li><a href="consultas.html" style="color: var(--accent-color);">Consultas</a></li>
+            <li><a href="index.html#contacto">Contacto</a></li>
+            <li><a href="login.html" id="nav-login"><i class="fas fa-lock"></i></a></li>
+        </ul>
+    </nav>
+
+    <header class="page-header" style="background: linear-gradient(rgba(75, 75, 75, 0.9), rgba(75, 75, 75, 1)), url('MariñoFrente.jpg') center/cover no-repeat;">
+        <h1 class="reveal">Consultas Particulares</h1>
+        <p class="reveal delay-1">Estamos acá para asesorarte en lo que necesites</p>
+    </header>
+
+    <section id="consultas-particulares" style="background-color: var(--bg-color); padding-top: 4rem;">
+        <p class="reveal delay-1" style="text-align: center; max-width: 800px; margin: 0 auto 3rem auto; color: var(--text-secondary);">
+            ¿Tenés alguna pregunta o inquietud? Dejanos tu consulta, y un asesor de Mariño se pondrá en contacto con vos en breve para brindarte la mejor asistencia personalizada.
+        </p>
+        <div class="contact-form-container glass reveal delay-2">
+            <form id="consulta-form">
+                <div class="form-group">
+                    <label for="nombre">Apellido y Nombre</label>
+                    <input type="text" id="nombre" name="nombre" required placeholder="Tu nombre completo">
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Teléfono/Celular</label>
+                    <input type="tel" id="telefono" name="telefono" required placeholder="Tu número de contacto">
+                </div>
+                <div class="form-group">
+                    <label for="localidad">Localidad</label>
+                    <input type="text" id="localidad" name="localidad" required placeholder="Tu ciudad">
+                </div>
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" required placeholder="tuemail@ejemplo.com">
+                </div>
+                <div class="form-group">
+                    <label for="mensaje">Mensaje</label>
+                    <textarea id="mensaje" name="mensaje" rows="4" required placeholder="¿En qué te podemos ayudar?"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="adjunto">Adjunto (opcional)</label>
+                    <input type="file" id="adjunto" name="adjunto" class="file-input" accept="image/*,.pdf,.doc,.docx">
+                    <small style="color: var(--accent-color); font-size: 0.8rem; display: block; margin-top: 5px;">
+                        <i class="fas fa-info-circle"></i> Al ser redirigido a Gmail, deberás adjuntar tu archivo manualmente en el correo.
+                    </small>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;"><i class="fas fa-paper-plane" style="margin-right: 8px;"></i> ENVIAR</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Mariño Construcción en seco y decoraciones. Todos los derechos reservados.</p>
+        <p style="margin-top: 5px; font-size: 0.85rem; color: var(--text-secondary);">
+            Desarrollado por <a href="https://matiasschvabauer.github.io/portafolio/" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500;">Schvabauer Matias</a>
+        </p>
+    </footer>
+
+    <!-- Botón Whatsapp Flotante -->
+    <a href="https://wa.me/3404491056?text=Hola!%20Me%20gustaría%20solicitar%20asesoramiento/presupuesto"
+        target="_blank" class="whatsapp-float">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

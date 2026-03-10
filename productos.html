@@ -279,12 +279,15 @@
             <li><a href="index.html#inicio">Inicio</a></li>
             <li><a href="index.html#nosotros">Nosotros</a></li>
             <li><a href="productos.html" style="color: var(--accent-color);">Catálogo</a></li>
+            <li><a href="obras.html">Obras</a></li>
+            <li><a href="rrhh.html">RRHH</a></li>
+            <li><a href="consultas.html">Consultas</a></li>
             <li><a href="index.html#contacto">Contacto</a></li>
             <li><a href="login.html" id="nav-login"><i class="fas fa-lock"></i></a></li>
         </ul>
     </nav>
 
-    <div class="page-header">
+    <div class="page-header reveal">
         <h1>Nuestro Catálogo</h1>
         <p>Explora nuestra amplia colección de placas, perfiles y revestimientos. Calidad y diseño para tus espacios.
         </p>
@@ -293,7 +296,7 @@
     <div class="catalog-container">
         <div class="catalog-layout">
             <!-- Sidebar for Filters -->
-            <aside class="filters-sidebar glass">
+            <aside class="filters-sidebar glass reveal delay-1">
                 <h3><i class="fas fa-filter"></i> Filtros</h3>
 
                 <div class="filter-group">
@@ -352,13 +355,35 @@
     <div id="addModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Añadir Nuevo Producto</h2>
+                <h2 id="modal-product-title">Añadir Nuevo Producto</h2>
                 <span class="close-modal" id="close-modal">&times;</span>
             </div>
             <form id="add-product-form">
+                <input type="hidden" id="p-id" value="">
                 <div class="form-group">
                     <label>Nombre del Producto</label>
                     <input type="text" id="p-name" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Categoría</label>
+                        <input type="text" id="p-category" required placeholder="Ej: Placa de Yeso">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Marca / Proveedor</label>
+                        <input type="text" id="p-provider" required placeholder="Ej: Durlock">
+                    </div>
+                </div>
+                <div
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Color / Tonalidad</label>
+                        <input type="text" id="p-color" required placeholder="Ej: Blanco">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Medidas / Formato</label>
+                        <input type="text" id="p-size" required placeholder="Ej: 1.20x2.40m">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Descripción</label>
@@ -376,8 +401,12 @@
 
     <footer>
         <p>&copy; 2026 Mariño Construcción en seco y decoraciones. Todos los derechos reservados.</p>
+        <p style="margin-top: 5px; font-size: 0.85rem; color: var(--text-secondary);">
+            Desarrollado por <a href="https://matiasschvabauer.github.io/portafolio/" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500;">Schvabauer Matias</a>
+        </p>
     </footer>
 
+    <script src="cart.js"></script>
     <script src="auth.js"></script>
     <script src="products.js"></script>
     <script src="app.js"></script>
