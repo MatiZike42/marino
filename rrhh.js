@@ -269,11 +269,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 sendData(requestData);
             };
             reader.onerror = function() {
-                alert('Error al leer el archivo CV. Intente de nuevo.');
+                showToast('Error al leer el archivo CV. Intente de nuevo.', 'error');
                 resetBtn(submitBtn, originalText);
             };
         } else {
-             alert('El CV adjunto es obligatorio para Recursos Humanos.');
+             showToast('El CV adjunto es obligatorio para Recursos Humanos.', 'error');
              resetBtn(submitBtn, originalText);
         }
 
@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
                 
                 if(result.status === "success") {
-                    alert(successMsg);
+                    showToast(successMsg, 'success');
                     formElement.reset();
                     if(applyModal) applyModal.style.display = 'none';
                 } else {
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert("Ocurrió un error al enviar tu CV. Por favor, intentá más tarde.");
+                showToast("Ocurrió un error al enviar tu CV. Por favor, intentá más tarde.", 'error');
             } finally {
                 resetBtn(submitBtn, originalText);
             }

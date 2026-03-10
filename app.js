@@ -1,3 +1,43 @@
+// Toast Notification System
+window.showToast = function(message, type = 'success') {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    
+    const icon = type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>';
+    toast.innerHTML = `${icon} <span>${message}</span>`;
+    
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add('toast-closing');
+        toast.addEventListener('animationend', () => toast.remove());
+    }, 4000);
+};
+
+// Copy to Clipboard Utility
+window.copyToClipboard = function(text, element = null) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('Copiado: ' + text, 'success');
+        if (element) {
+            const originalHTML = element.innerHTML;
+            element.innerHTML = '<i class="fas fa-check" style="font-size: 2rem;"></i><h4>Copiado!</h4><p>' + text + '</p>';
+            setTimeout(() => {
+                element.innerHTML = originalHTML;
+            }, 2000);
+        }
+    }).catch(err => {
+        console.error('Error al copiar:', err);
+        showToast('Error al copiar al portapapeles', 'error');
+    });
+};
+
 // Handle Navbar transparent-to-solid effect on scroll
 window.addEventListener('scroll', () => {
     const navbar = document.getElementById('navbar');
@@ -91,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     sendToScript(requestData);
                 };
                 reader.onerror = function() {
-                    alert('Error al leer el archivo. Intente enviar su consulta sin adjunto o intente de nuevo.');
+                    showToast('Error al leer el archivo. Intente enviar su consulta sin adjunto o intente de nuevo.', 'error');
                     resetFormUI();
                 };
             } else {
@@ -122,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                 } catch (error) {
                     console.error('Error al enviar:', error);
-                    alert("Ocurrió un error al enviar la consulta. Por favor, intente más tarde.");
+                    showToast("Ocurrió un error al enviar la consulta. Por favor, intente más tarde.", 'error');
                     resetFormUI();
                 }
             }
