@@ -7,7 +7,7 @@
     <title>Mariño | Acceso Administrativo</title>
     <!-- Awesome Font Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="m_styles.css">
     <link rel="icon" href="mariño.ico" type="image/x-icon">
     <style>
         .login-container {
@@ -64,18 +64,11 @@
             display: none;
         }
     </style>
-
-    <script>
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768) {
-            var currentParams = window.location.hash + window.location.search;
-            window.location.href = "m_login.html" + currentParams;
-        }
-    </script>
 </head>
 
 <body>
     <nav class="navbar glass" id="navbar">
-        <a href="index.html" class="logo">
+        <a href="m_index.html" class="logo">
             <img src="mariño.png" alt="Mariño Logo" class="nav-logo">
             <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.1;">
                 <div>Mariño</div>
@@ -84,13 +77,16 @@
                     construcción en seco & decoraciones</div>
             </div>
         </a>
+        <div class="menu-toggle" id="mobile-menu">
+            <i class="fas fa-bars"></i>
+        </div>
         <ul class="nav-links">
-            <li><a href="productos.html">Catálogo</a></li>
-            <li><a href="obras.html">Obras</a></li>
-            <li><a href="rrhh.html">RRHH</a></li>
-            <li><a href="consultas.html">Consultas</a></li>
-            <li><a href="index.html#contacto">Contacto</a></li>
-            <li><a href="login.html" id="nav-login" style="color: var(--accent-color);"><i class="fas fa-lock"></i></a></li>
+            <li><a href="m_productos.html">Catálogo</a></li>
+            <li><a href="m_obras.html">Obras</a></li>
+            <li><a href="m_rrhh.html">RRHH</a></li>
+            <li><a href="m_consultas.html">Consultas</a></li>
+            <li><a href="m_index.html#contacto">Contacto</a></li>
+            <li><a href="m_login.html" id="nav-login" style="color: var(--accent-color);"><i class="fas fa-lock"></i></a></li>
         </ul>
     </nav>
 

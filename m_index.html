@@ -7,21 +7,14 @@
     <title>Mariño | Construcción en seco y decoraciones</title>
     <!-- Awesome Font Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="m_styles.css">
     <link rel="icon" href="mariño.ico" type="image/x-icon">
-
-    <script>
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768) {
-            var currentParams = window.location.hash + window.location.search;
-            window.location.href = "m_index.html" + currentParams;
-        }
-    </script>
 </head>
 
 <body>
 
     <nav class="navbar glass" id="navbar">
-        <a href="index.html" class="logo">
+        <a href="m_index.html" class="logo">
             <img src="mariño.png" alt="Mariño Logo" class="nav-logo">
             <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.1;">
                 <div>Mariño</div>
@@ -30,15 +23,18 @@
                     construcción en seco & decoraciones</div>
             </div>
         </a>
+        <div class="menu-toggle" id="mobile-menu">
+            <i class="fas fa-bars"></i>
+        </div>
         <ul class="nav-links">
             <li><a href="#inicio">Inicio</a></li>
             <li><a href="#nosotros">Nosotros</a></li>
-            <li><a href="productos.html">Catálogo</a></li>
-            <li><a href="obras.html">Obras</a></li>
-            <li><a href="rrhh.html">RRHH</a></li>
-            <li><a href="consultas.html">Consultas</a></li>
+            <li><a href="m_productos.html">Catálogo</a></li>
+            <li><a href="m_obras.html">Obras</a></li>
+            <li><a href="m_rrhh.html">RRHH</a></li>
+            <li><a href="m_consultas.html">Consultas</a></li>
             <li><a href="#contacto">Contacto</a></li>
-            <li><a href="login.html" id="nav-login"><i class="fas fa-lock"></i></a></li>
+            <li><a href="m_login.html" id="nav-login"><i class="fas fa-lock"></i></a></li>
         </ul>
     </nav>
 
@@ -48,7 +44,7 @@
             <p>Especialistas en construcción en seco y decoraciones de alta calidad. Dale una nueva vida a tu hogar u
                 oficina con nuestro catálogo exclusivo de materiales.</p>
             <div class="hero-btns">
-                <a href="productos.html" class="btn btn-primary">Ver Catálogo completo</a>
+                <a href="m_productos.html" class="btn btn-primary">Ver Catálogo completo</a>
                 <a href="#contacto" class="btn btn-secondary">Contacto</a>
             </div>
         </div>
@@ -156,7 +152,7 @@
 
     <section id="contacto">
         <h2 class="section-title reveal">Contacto</h2>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: stretch;" class="contact-split">
+        <div class="contact-split">
             <!-- Columna del mapa -->
             <div class="map-container glass reveal delay-1"
                 style="border-radius: 20px; overflow: hidden; min-height: 400px; padding: 0.5rem;">
@@ -168,7 +164,7 @@
             </div>
 
             <!-- Columna de tarjetas -->
-            <div class="contact-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="contact-container" style="gap: 1rem;">
                 <div class="contact-card glass reveal delay-2" style="padding: 1.5rem; min-width: auto;">
                     <i class="fas fa-map-marker-alt" style="font-size: 2rem;"></i>
                     <h4>Dirección</h4>
@@ -221,7 +217,7 @@
     </a>
 
     <script src="auth.js"></script>
-    <script src="app.js"></script>
+    <script src="m_app.js"></script>
 </body>
 
 </html>
