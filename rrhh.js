@@ -1,40 +1,58 @@
+import { db } from './firebase-config.js';
+import { collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
 // RRHH Logic
-const JOBS_KEY = 'marino_jobs';
 let jobsData = [];
 
 // Determine if admin
 const isAdminUser = localStorage.getItem('isAdmin') === 'true';
 
+const defaultJobs = [
+    {
+        id: "job_1",
+        title: "Vendedor/a de Salón",
+        type: "Full-time",
+        location: "Gálvez, Santa Fe",
+        desc: "Buscamos una persona proactiva, con marcado perfil comercial y conocimientos (o ganas de aprender) sobre materiales de construcción en seco. Tareas principales: atención al público, elaboración de presupuestos, asesoramiento técnico.",
+        date: "2026-03-05"
+    },
+    {
+        id: "job_2",
+        title: "Chofer / Repartidor",
+        type: "Full-time",
+        location: "Gálvez y Zona",
+        desc: "Nos encontramos en la búsqueda de un chofer para reparto de materiales. Se requiere: Carnet de conducir profesional vigente, experiencia en puestos similares, buen trato con los clientes y responsabilidad en el manejo de cargas.",
+        date: "2026-03-10"
+    }
+];
+
 // Initialize mock jobs
-function initializeJobs() {
-    const stored = localStorage.getItem(JOBS_KEY);
-    if (!stored) {
-        jobsData = [
-            {
-                id: 1,
-                title: "Vendedor/a de Salón",
-                type: "Full-time",
-                location: "Gálvez, Santa Fe",
-                desc: "Buscamos una persona proactiva, con marcado perfil comercial y conocimientos (o ganas de aprender) sobre materiales de construcción en seco. Tareas principales: atención al público, elaboración de presupuestos, asesoramiento técnico.",
-                date: "2026-03-05"
-            },
-            {
-                id: 2,
-                title: "Chofer / Repartidor",
-                type: "Full-time",
-                location: "Gálvez y Zona",
-                desc: "Nos encontramos en la búsqueda de un chofer para reparto de materiales. Se requiere: Carnet de conducir profesional vigente, experiencia en puestos similares, buen trato con los clientes y responsabilidad en el manejo de cargas.",
-                date: "2026-03-10"
-            }
-        ];
-        saveJobs();
-    } else {
-        jobsData = JSON.parse(stored);
+async function initializeJobs() {
+    try {
+        const querySnapshot = await getDocs(collection(db, "jobs"));
+        jobsData = [];
+        querySnapshot.forEach((doc) => {
+            jobsData.push({ id: doc.id, ...doc.data() });
+        });
+        
+        if (jobsData.length === 0 && isAdminUser) {
+             for (const j of defaultJobs) {
+                 await saveJob(j);
+                 jobsData.push(j);
+             }
+        } else if (jobsData.length === 0) {
+             jobsData = [...defaultJobs];
+        }
+        
+        renderJobs();
+    } catch (e) {
+        console.error("Error loading jobs: ", e);
+        alert("Error cargando búsquedas laborales.");
     }
 }
 
-function saveJobs() {
-    localStorage.setItem(JOBS_KEY, JSON.stringify(jobsData));
+async function saveJob(job) {
+    await setDoc(doc(db, "jobs", String(job.id)), job);
 }
 
 // Render Jobs
@@ -76,10 +94,10 @@ function renderJobs() {
                 
                 ${isAdminUser ? `
                 <div class="admin-controls" style="margin-top: 0.5rem; display: flex; gap: 0.5rem;">
-                    <button class="btn btn-secondary" onclick="editJob(${job.id})" style="flex: 1; border-radius: 50px; padding: 0.5rem;">
+                    <button class="btn btn-secondary" onclick="editJob('${job.id}')" style="flex: 1; border-radius: 50px; padding: 0.5rem;">
                        <i class="fas fa-edit"></i> Editar
                     </button>
-                    <button class="btn btn-danger" onclick="deleteJob(${job.id})" style="flex: 1; border-radius: 50px; padding: 0.5rem;">
+                    <button class="btn btn-danger" onclick="deleteJob('${job.id}')" style="flex: 1; border-radius: 50px; padding: 0.5rem;">
                        <i class="fas fa-trash"></i>
                     </button>
                 </div>` : ''}
@@ -99,7 +117,7 @@ function renderJobs() {
 }
 
 // Admin Functions
-window.editJob = function (id) {
+window.editJob = window.editJob || async function (id) {
     const j = jobsData.find(x => x.id === id);
     if (!j) return;
 
@@ -113,11 +131,13 @@ window.editJob = function (id) {
     document.getElementById('addJobModal').style.display = 'flex';
 }
 
-window.deleteJob = function (id) {
+window.deleteJob = window.deleteJob || async function (id) {
     if (confirm("¿Estás seguro de que deseas eliminar esta oferta de empleo?")) {
-        jobsData = jobsData.filter(j => j.id !== id);
-        saveJobs();
-        renderJobs();
+        try {
+            await deleteDoc(doc(db, "jobs", String(id)));
+            jobsData = jobsData.filter(j => j.id !== id);
+            renderJobs();
+        } catch(e) { console.error(e); }
     }
 }
 
@@ -310,41 +330,55 @@ document.addEventListener('DOMContentLoaded', () => {
     // Admin Add/Edit Job Form
     const addJobForm = document.getElementById('add-job-form');
     if (addJobForm) {
-        addJobForm.addEventListener('submit', (e) => {
+        addJobForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const editId = document.getElementById('j-id').value;
-            const title = document.getElementById('j-title').value;
-            const type = document.getElementById('j-type').value;
-            const location = document.getElementById('j-location').value;
-            const desc = document.getElementById('j-desc').value;
+            const btnSubmit = e.target.querySelector('button[type="submit"]');
+            btnSubmit.disabled = true;
+            btnSubmit.innerText = 'Guardando...';
 
-            if (editId) {
-                // Edit existing
-                const idx = jobsData.findIndex(j => j.id == editId);
-                if (idx !== -1) {
-                    jobsData[idx].title = title;
-                    jobsData[idx].type = type;
-                    jobsData[idx].location = location;
-                    jobsData[idx].desc = desc;
+            try {
+                const editId = document.getElementById('j-id').value;
+                const title = document.getElementById('j-title').value;
+                const type = document.getElementById('j-type').value;
+                const location = document.getElementById('j-location').value;
+                const desc = document.getElementById('j-desc').value;
+
+                if (editId) {
+                    // Edit existing
+                    const idx = jobsData.findIndex(j => j.id == editId);
+                    if (idx !== -1) {
+                        jobsData[idx].title = title;
+                        jobsData[idx].type = type;
+                        jobsData[idx].location = location;
+                        jobsData[idx].desc = desc;
+                        await saveJob(jobsData[idx]);
+                    }
+                } else {
+                    // Add new
+                    const today = new Date().toISOString().split('T')[0];
+                    const newId = 'job_' + Date.now();
+                    const newObj = {
+                        id: newId,
+                        title,
+                        type,
+                        location,
+                        desc,
+                        date: today
+                    };
+                    await saveJob(newObj);
+                    jobsData.unshift(newObj);
                 }
-            } else {
-                // Add new
-                const today = new Date().toISOString().split('T')[0];
-                const newId = jobsData.length > 0 ? Math.max(...jobsData.map(j => j.id)) + 1 : 1;
-                jobsData.unshift({
-                    id: newId,
-                    title,
-                    type,
-                    location,
-                    desc,
-                    date: today
-                });
-            }
 
-            saveJobs();
-            addJobModal.style.display = 'none';
-            addJobForm.reset();
-            renderJobs();
+                addJobModal.style.display = 'none';
+                addJobForm.reset();
+                renderJobs();
+            } catch(e) {
+                console.error(e);
+                alert("Error al guardar la posición.");
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerText = 'Publicar Vacante';
+            }
         });
     }
 });

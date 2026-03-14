@@ -124,7 +124,7 @@ h4 {
   align-items: center;
   padding: 0 5%;
   position: relative;
-  background: linear-gradient(rgba(75, 75, 75, 0.8), rgba(75, 75, 75, 0.9)), url('MariñoFrente.jpg') center/cover no-repeat;
+  background: linear-gradient(rgba(75, 75, 75, 0.8), rgba(75, 75, 75, 0.9)), url('IMG_4423.jpg') center/cover no-repeat;
 }
 
 .hero-content {
@@ -479,7 +479,7 @@ footer {
   padding: 150px 5% 50px;
   /* Offset for navbar */
   text-align: center;
-  background: linear-gradient(rgba(75, 75, 75, 0.9), rgba(75, 75, 75, 1)), url('https://images.unsplash.com/photo-1541123437800-1c5c16b14d2e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+  background: linear-gradient(rgba(75, 75, 75, 0.9), rgba(75, 75, 75, 1)), url('IMG_4423.jpg') center/cover no-repeat;
   border-bottom: 1px solid var(--glass-border);
 }
 
