@@ -549,10 +549,10 @@
                 </div>
 
                 <div class="form-group">
-                    <label>URLs de Imágenes (separadas por coma) *</label>
-                    <textarea id="p-imgs" rows="3" required placeholder="https://img1.jpg, https://img2.jpg"></textarea>
-                    <small style="color: var(--text-secondary);">Podrás reemplazarlas por las de tu carpeta local (ej:
-                        obras_ejemplo/oficina1.jpg)</small>
+                    <label>Imágenes de la Obra (Múltiples) *</label>
+                    <input type="file" id="p-img-files" accept="image/*" multiple style="margin-bottom: 0.5rem; width: 100%; padding: 0.8rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 8px; color: white;">
+                    <textarea id="p-imgs" rows="3" placeholder="O URLs separadas por coma (https://img1.jpg, ...)"></textarea>
+                    <small style="color: var(--text-secondary);">Selecciona archivos de tu dispositivo o usa URLs directas</small>
                 </div>
 
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Publicar Proyecto</button>
@@ -574,8 +574,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label>URL de la Imagen *</label>
-                    <input type="text" id="g-img" required placeholder="https://...">
+                    <label>Imagen de Galería *</label>
+                    <input type="file" id="g-img-file" accept="image/*" style="margin-bottom: 0.5rem; width: 100%; padding: 0.8rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 8px; color: white;">
+                    <input type="url" id="g-img" placeholder="O pega una URL aquí (https://...)">
                 </div>
 
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Añadir Foto</button>
@@ -590,9 +591,9 @@
         </p>
     </footer>
 
-    <script src="auth.js"></script>
-    <script src="obras.js"></script>
-    <script src="m_app.js"></script>
+    <script type="module" src="auth.js"></script>
+    <script type="module" src="obras.js"></script>
+    <script type="module" src="m_app.js"></script>
 </body>
 
 </html>

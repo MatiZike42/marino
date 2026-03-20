@@ -1,6 +1,6 @@
 import { db, storage } from './firebase-config.js';
 import { collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
-import { ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-storage.js";
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-storage.js";
 
 // Product Data Management
 const ITEMS_PER_PAGE = 24;
@@ -12,6 +12,9 @@ let currentSearch = '';
 let selectedCategories = new Set();
 let selectedProviders = new Set();
 let selectedColors = new Set();
+
+// Quantity state per product card (module-level so it persists across renders)
+const cardQtyMap = new Map();
 
 // Check if admin to show controls
 const isAdminUser = localStorage.getItem('isAdmin') === 'true';
@@ -130,9 +133,15 @@ function renderProducts() {
                 
                 ${!isAdminUser ? `
                 <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
-                    <button class="btn btn-secondary" style="width: 100%; border-radius: 8px; padding: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 0;" onclick="event.preventDefault(); window.addToCart('${p.id}', '${p.name.replace(/'/g, "\\'")}', '${p.img}', '${p.category}')">
-                        <i class="fas fa-cart-plus" style="transform: translateY(1px);"></i> Sumar al Carrito
-                    </button>
+                    <!-- Quantity selector + add button -->
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+                        <button class="catalog-qty-btn" data-id="${p.id}" data-delta="-1" style="width:32px;height:32px;border-radius:50%;border:2px solid var(--accent-color);background:transparent;color:var(--accent-color);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">−</button>
+                        <span class="catalog-qty-display" data-id="${p.id}" style="font-size:1.1rem;font-weight:700;min-width:28px;text-align:center;">1</span>
+                        <button class="catalog-qty-btn" data-id="${p.id}" data-delta="1" style="width:32px;height:32px;border-radius:50%;border:2px solid var(--accent-color);background:transparent;color:var(--accent-color);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">+</button>
+                        <button class="btn btn-secondary catalog-add-btn" data-id="${p.id}" data-name="${p.name.replace(/"/g, '&quot;')}" data-img="${p.img}" data-cat="${p.category}" style="flex:1;border-radius:8px;padding:0.5rem;display:flex;align-items:center;justify-content:center;gap:0.4rem;margin:0;font-size:0.85rem;">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                    </div>
                 </div>
                 ` : ''}
 
@@ -157,6 +166,12 @@ function renderProducts() {
     if (typeof window.initAnimations === 'function') {
         setTimeout(window.initAnimations, 50);
     }
+    // Reset qty displays to match cardQtyMap (which persists across renders)
+    cardQtyMap.forEach((qty, id) => {
+        grid.querySelectorAll(`.catalog-qty-display[data-id="${id}"]`).forEach(el => {
+            el.textContent = qty;
+        });
+    });
 }
 
 function renderPagination(totalPages) {
@@ -337,6 +352,43 @@ document.addEventListener('DOMContentLoaded', () => {
         btnClearFilters.addEventListener('click', clearFilters);
     }
 
+    // ── Catalog qty/add event delegation (registered ONCE here) ──
+    const catalogGrid = document.getElementById('products-grid');
+    if (catalogGrid) {
+        catalogGrid.addEventListener('click', function(e) {
+            // Qty +/-
+            const qtyBtn = e.target.closest('.catalog-qty-btn');
+            if (qtyBtn) {
+                e.preventDefault();
+                const id = qtyBtn.dataset.id;
+                const delta = parseInt(qtyBtn.dataset.delta, 10);
+                let current = cardQtyMap.get(id) || 1;
+                current = Math.max(1, current + delta);
+                cardQtyMap.set(id, current);
+                catalogGrid.querySelectorAll(`.catalog-qty-display[data-id="${id}"]`).forEach(el => {
+                    el.textContent = current;
+                });
+                return;
+            }
+            // Add to cart
+            const addBtn = e.target.closest('.catalog-add-btn');
+            if (addBtn) {
+                e.preventDefault();
+                const id = addBtn.dataset.id;
+                const name = addBtn.dataset.name;
+                const img = addBtn.dataset.img;
+                const cat = addBtn.dataset.cat;
+                const qty = cardQtyMap.get(id) || 1;
+                window.addToCart(id, name, img, cat, qty);
+                // Reset display after adding
+                cardQtyMap.set(id, 1);
+                catalogGrid.querySelectorAll(`.catalog-qty-display[data-id="${id}"]`).forEach(el => {
+                    el.textContent = '1';
+                });
+            }
+        });
+    }
+
     // Add/Edit Product
     if (addForm) {
         addForm.addEventListener('submit', async (e) => {
@@ -361,10 +413,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Process image upload if a file is selected
                 if (imgFileInput && imgFileInput.files.length > 0) {
                     const file = imgFileInput.files[0];
-                    const storageRef = ref(storage, 'products/' + file.name + '_' + Date.now());
-                    btnSubmit.innerText = 'Subiendo imagen...';
-                    await uploadBytes(storageRef, file);
-                    img = await getDownloadURL(storageRef);
+                    const storageRef = ref(storage, `products/${Date.now()}_${file.name}`);
+                    
+                    console.log(`Iniciando subida de imagen de producto: ${file.name} (${file.size} bytes)`);
+                    const uploadTask = uploadBytesResumable(storageRef, file);
+                    
+                    await new Promise((resolve, reject) => {
+                        uploadTask.on('state_changed', 
+                            (snapshot) => {
+                                const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                                console.log(`Progreso de producto: ${progress}%`);
+                                btnSubmit.innerText = `Subiendo: ${progress}%`;
+                            }, 
+                            (error) => {
+                                console.error("Error en uploadTask de producto:", error);
+                                reject(error);
+                            }, 
+                            () => {
+                                console.log("Subida de producto exitosa");
+                                resolve();
+                            }
+                        );
+                    });
+
+                    img = await getDownloadURL(uploadTask.snapshot.ref);
                 } else if (!img) {
                     img = `https://picsum.photos/seed/${Date.now()}/400/300`;
                 }
@@ -405,8 +477,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderFilters();
                 renderProducts();
             } catch(error) {
-                console.error("Error submitting product: ", error);
-                alert("Error al guardar el producto.");
+                console.error("Error detallado al guardar producto: ", error);
+                let msg = "Error al guardar el producto. ";
+                if (error.code === 'storage/unauthorized') msg += "No tenés permisos para subir archivos. Revisá las reglas de Firebase.";
+                else msg += error.message;
+                
+                alert(msg);
             } finally {
                 btnSubmit.disabled = false;
                 btnSubmit.innerText = 'Guardar Producto';

@@ -1,15 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --bg-color: #4b4b4b;
-  /* Dark Gray */
+  --bg-color: #545454;
+  /* Gris Mariño */
+  --bg-dark: #000000;
+  /* Negro Mariño */
   --text-primary: #ffffff;
   --text-secondary: #e0e0e0;
-  --accent-color: #fbd341;
-  /* Golden Yellow */
-  --accent-hover: #e3be3a;
+  --accent-color: #FEDE59;
+  /* Amarillo Mariño */
+  --accent-hover: #e6c93e;
   --danger-color: #ef4444;
-  --glass-bg: rgba(75, 75, 75, 0.7);
+  --glass-bg: rgba(84, 84, 84, 0.75);
   --glass-border: rgba(255, 255, 255, 0.15);
   --transition: all 0.3s ease;
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -25,7 +27,7 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   background-color: var(--bg-color);
   color: var(--text-primary);
   line-height: 1.6;
@@ -36,7 +38,8 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
 }
 
 /* Glassmorphism Utility */
@@ -61,7 +64,7 @@ h4 {
 }
 
 .navbar .logo {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 800;
   font-size: 1.8rem;
   letter-spacing: 1px;
@@ -124,7 +127,7 @@ h4 {
   align-items: center;
   padding: 0 5%;
   position: relative;
-  background: linear-gradient(rgba(75, 75, 75, 0.8), rgba(75, 75, 75, 0.9)), url('IMG_4423.jpg') center/cover no-repeat;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(84, 84, 84, 0.85)), url('IMG_4423.jpg') center/cover no-repeat;
 }
 
 .hero-content {
@@ -157,7 +160,7 @@ h4 {
   text-decoration: none;
   font-weight: 600;
   transition: var(--transition-spring);
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   cursor: pointer;
   border: none;
   font-size: 1rem;
@@ -165,14 +168,14 @@ h4 {
 
 .btn-primary {
   background-color: var(--accent-color);
-  color: #333333;
-  box-shadow: 0 4px 15px rgba(251, 211, 65, 0.4);
+  color: #000000;
+  box-shadow: 0 4px 15px rgba(254, 222, 89, 0.4);
 }
 
 .btn-primary:hover {
   background-color: var(--accent-hover);
   transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 8px 25px rgba(251, 211, 65, 0.6);
+  box-shadow: 0 8px 25px rgba(254, 222, 89, 0.6);
 }
 
 .btn-secondary {
@@ -376,7 +379,7 @@ section {
   transform: translateY(-10px) scale(1.03);
   border-color: var(--accent-color);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-  background: rgba(75, 75, 75, 0.85);
+  background: rgba(84, 84, 84, 0.9);
 }
 
 .contact-card i {
@@ -437,7 +440,7 @@ section {
 .form-group textarea:focus {
   outline: none;
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px rgba(251, 211, 65, 0.2);
+  box-shadow: 0 0 0 2px rgba(254, 222, 89, 0.25);
 }
 
 .form-group input::placeholder,
@@ -479,7 +482,7 @@ footer {
   padding: 150px 5% 50px;
   /* Offset for navbar */
   text-align: center;
-  background: linear-gradient(rgba(75, 75, 75, 0.9), rgba(75, 75, 75, 1)), url('IMG_4423.jpg') center/cover no-repeat;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(84, 84, 84, 1)), url('IMG_4423.jpg') center/cover no-repeat;
   border-bottom: 1px solid var(--glass-border);
 }
 
@@ -577,7 +580,7 @@ footer {
 
 .brands-carousel img:hover {
   /* Al hacer hover, se quita el filtro para ver el color original y se resalta */
-  filter: grayscale(0%) drop-shadow(0 8px 15px rgba(251, 211, 65, 0.4));
+  filter: grayscale(0%) drop-shadow(0 8px 15px rgba(254, 222, 89, 0.4));
   opacity: 1;
   transform: scale(1.15) translateY(-5px);
 }
@@ -650,6 +653,16 @@ footer {
   }
 }
 
+/* Mariño Brand Accent Utilities */
+.text-accent {
+  color: var(--accent-color);
+}
+
+.bg-accent {
+  background-color: var(--accent-color);
+  color: #000;
+}
+
 .nav-logo {
   height: 45px;
   width: auto;
@@ -659,31 +672,34 @@ footer {
 /* Toast Notification */
 #toast-container {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  bottom: 100px;
+  right: 20px;
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
+  pointer-events: none;
 }
 
 .toast {
-  min-width: 280px;
-  padding: 16px 20px;
+  min-width: 260px;
+  max-width: 320px;
+  padding: 12px 18px;
   border-radius: 12px;
   color: #fff;
-  font-weight: 500;
-  font-size: 0.95rem;
+  font-weight: 600;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
-  gap: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  animation: slideInRight 0.4s var(--ease-spring) forwards;
-  opacity: 0;
+  gap: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  animation: slideInRight 0.5s var(--ease-spring) forwards;
+  opacity: 1;                 /* Ensure visible */
   transform: translateX(100%);
-  border: 1px solid rgba(255,255,255,0.1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  pointer-events: none;       /* Never blocks the cart button behind it */
 }
 
 .toast.toast-success {

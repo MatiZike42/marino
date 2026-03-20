@@ -17,12 +17,12 @@ function saveCart() {
     renderCartItems();
 }
 
-window.addToCart = function (id, name, img, priceOrDesc = '') {
+window.addToCart = function (id, name, img, priceOrDesc = '', qty = 1) {
     const existing = cart.find(item => item.id === id);
     if (existing) {
-        existing.qty++;
+        existing.qty += qty;
     } else {
-        cart.push({ id, name, img, desc: priceOrDesc, qty: 1 });
+        cart.push({ id, name, img, desc: priceOrDesc, qty });
     }
     saveCart();
 
@@ -34,7 +34,8 @@ window.addToCart = function (id, name, img, priceOrDesc = '') {
     }
 
     // Optional: show a mini toast
-    showToast(`Agregado: ${name}`);
+    const qtyLabel = qty > 1 ? ` (x${qty})` : '';
+    showCartToast(`${name}${qtyLabel} ha sido agregado`);
 }
 
 window.removeFromCart = function (id) {
@@ -81,12 +82,12 @@ function renderCartItems() {
             <div class="cart-item-info">
                 <h4>${item.name}</h4>
                 <div class="cart-item-qty">
-                    <button onclick="updateQty(${item.id}, -1)">-</button>
+                    <button onclick="updateQty('${item.id}', -1)">-</button>
                     <span>${item.qty}</span>
-                    <button onclick="updateQty(${item.id}, 1)">+</button>
+                    <button onclick="updateQty('${item.id}', 1)">+</button>
                 </div>
             </div>
-            <button class="cart-item-remove" onclick="removeFromCart(${item.id})"><i class="fas fa-trash"></i></button>
+            <button class="cart-item-remove" onclick="removeFromCart('${item.id}')"><i class="fas fa-trash"></i></button>
         `;
         container.appendChild(div);
     });
@@ -128,17 +129,34 @@ window.checkoutGmail = function () {
     window.open(mailtoUrl, '_blank');
 }
 
-function showToast(msg) {
-    let toast = document.getElementById('cart-toast');
-    if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'cart-toast';
-        document.body.appendChild(toast);
-    }
-    toast.innerText = msg;
-    toast.className = 'show';
-    setTimeout(() => { toast.className = toast.className.replace('show', ''); }, 3000);
+function showCartToast(msg) {
+    // Small delay to ensure modules like app.js are initialized
+    requestAnimationFrame(() => {
+        if (typeof window.showToast === 'function') {
+            window.showToast(msg, 'success');
+        } else {
+            console.log("Cart Toast:", msg);
+        }
+    });
 }
+
+window.openCart = function() {
+    const modal = document.getElementById('cartModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        // Hide notifications when opening cart as requested
+        if (typeof window.hideAllToasts === 'function') {
+            window.hideAllToasts();
+        }
+    }
+};
+
+window.closeCart = function() {
+    const modal = document.getElementById('cartModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+};
 
 // Inject UI on load
 document.addEventListener('DOMContentLoaded', () => {
@@ -285,52 +303,23 @@ document.addEventListener('DOMContentLoaded', () => {
             gap: 0.8rem;
         }
         
-        /* Toast */
-        #cart-toast {
-            visibility: hidden;
-            min-width: 250px;
-            background-color: var(--accent-color);
-            color: #000;
-            text-align: center;
-            border-radius: 8px;
-            padding: 16px;
-            position: fixed;
-            z-index: 3000;
-            left: 50%;
-            bottom: 30px;
-            transform: translateX(-50%);
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-        #cart-toast.show {
-            visibility: visible;
-            animation: fadein 0.5s, fadeout 0.5s 2.5s;
-        }
-        @keyframes fadein {
-            from {bottom: 0; opacity: 0;}
-            to {bottom: 30px; opacity: 1;}
-        }
-        @keyframes fadeout {
-            from {bottom: 30px; opacity: 1;}
-            to {bottom: 0; opacity: 0;}
-        }
     `;
     document.head.appendChild(style);
 
     // Inject DOM
     const cartHTML = `
         <!-- Floating Button -->
-        <div id="floating-cart-btn" onclick="document.getElementById('cartModal').style.display='flex'">
+        <div id="floating-cart-btn" onclick="window.openCart()">
             <i class="fas fa-shopping-cart"></i>
             <span id="cart-badge" style="display:none;">0</span>
         </div>
         
         <!-- Cart Modal -->
-        <div id="cartModal" onclick="if(event.target === this) this.style.display='none'">
+        <div id="cartModal" onclick="if(event.target === this) window.closeCart()">
             <div class="cart-content">
                 <div class="cart-header">
                     <h3 style="margin:0; color:var(--accent-color);"><i class="fas fa-list"></i> Mi Presupuesto</h3>
-                    <span class="close-cart" onclick="document.getElementById('cartModal').style.display='none'">&times;</span>
+                    <span class="close-cart" onclick="window.closeCart()">&times;</span>
                 </div>
                 
                 <div id="cart-items-container">

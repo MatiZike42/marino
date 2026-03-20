@@ -21,6 +21,14 @@ window.showToast = function(message, type = 'success') {
     }, 4000);
 };
 
+// Global function to clear all toasts
+window.hideAllToasts = function() {
+    const container = document.getElementById('toast-container');
+    if (container) {
+        container.innerHTML = '';
+    }
+};
+
 // Copy to Clipboard Utility
 window.copyToClipboard = function(text, element = null) {
     navigator.clipboard.writeText(text).then(() => {

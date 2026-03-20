@@ -1,6 +1,6 @@
 import { db, storage } from './firebase-config.js';
 import { collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
-import { ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-storage.js";
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-storage.js";
 
 // Obras Logic
 let projectsData = [];
@@ -373,16 +373,36 @@ document.addEventListener('DOMContentLoaded', () => {
                     let newUploadedUrls = [];
                     
                     if (imgFileInputs && imgFileInputs.files.length > 0) {
-                        btnSubmit.innerText = 'Subiendo Imágenes...: 0%';
                         let total = imgFileInputs.files.length;
                         
                         for (let i = 0; i < total; i++) {
                             const file = imgFileInputs.files[i];
-                            const storageRef = ref(storage, 'projects/' + file.name + '_' + Date.now());
-                            await uploadBytes(storageRef, file);
-                            const url = await getDownloadURL(storageRef);
+                            const storageRef = ref(storage, `projects/${Date.now()}_${file.name}`);
+                            
+                            // Using Resumable Upload for progress
+                            console.log(`Iniciando subida de: ${file.name} (${file.size} bytes)`);
+                            const uploadTask = uploadBytesResumable(storageRef, file);
+                            
+                            await new Promise((resolve, reject) => {
+                                uploadTask.on('state_changed', 
+                                    (snapshot) => {
+                                        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                                        console.log(`Progreso de ${file.name}: ${progress}%`);
+                                        btnSubmit.innerText = `Subiendo (${i+1}/${total}): ${progress}%`;
+                                    }, 
+                                    (error) => {
+                                        console.error(`Error en subida de ${file.name}:`, error);
+                                        reject(error);
+                                    }, 
+                                    () => {
+                                        console.log(`Subida completada con éxito: ${file.name}`);
+                                        resolve();
+                                    }
+                                );
+                            });
+
+                            const url = await getDownloadURL(uploadTask.snapshot.ref);
                             newUploadedUrls.push(url);
-                            btnSubmit.innerText = `Subiendo Imágenes...: ${Math.round(((i+1)/total)*100)}%`;
                         }
                     }
 
@@ -420,8 +440,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderStackedCards();
                     window.scrollTo({ top: document.getElementById('obras-detalladas').offsetTop, behavior: 'smooth' });
                 } catch(err) {
-                    console.error(err);
-                    alert("Error guardando el proyecto");
+                    console.error("Error detallado:", err);
+                    let msg = "Error al guardar el proyecto. ";
+                    if (err.code === 'storage/unauthorized') msg += "No tenés permisos para subir archivos. Revisá las reglas de Firebase.";
+                    else if (err.code === 'storage/quota-exceeded') msg += "Se excedió la cuota de Firebase Storage.";
+                    else msg += err.message;
+                    
+                    alert(msg);
                 } finally {
                     btnSubmit.disabled = false;
                     btnSubmit.innerText = 'Publicar Proyecto';
@@ -447,10 +472,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     if (imgFileInput && imgFileInput.files.length > 0) {
                          const file = imgFileInput.files[0];
-                         const storageRef = ref(storage, 'gallery/' + file.name + '_' + Date.now());
-                         btnSubmit.innerText = 'Subiendo...';
-                         await uploadBytes(storageRef, file);
-                         img = await getDownloadURL(storageRef);
+                         const storageRef = ref(storage, `gallery/${Date.now()}_${file.name}`);
+                         
+                         const uploadTask = uploadBytesResumable(storageRef, file);
+                         
+                         await new Promise((resolve, reject) => {
+                             uploadTask.on('state_changed', 
+                                 (snapshot) => {
+                                     const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                                     btnSubmit.innerText = `Subiendo: ${progress}%`;
+                                 }, 
+                                 (error) => reject(error), 
+                                 () => resolve()
+                             );
+                         });
+
+                         img = await getDownloadURL(uploadTask.snapshot.ref);
                     }
 
                     if (editId) {

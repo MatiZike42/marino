@@ -184,34 +184,33 @@
     </footer>
 
     <script src="cart.js"></script>
-    <script src="auth.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('detail-container');
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('id');
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
-            if (!productId) {
-                showError('Producto no especificado.');
-                return;
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        if (!productId) {
+            showError('Producto no especificado.');
+        } else {
+            loadProduct(productId);
+        }
+
+        async function loadProduct(id) {
+            try {
+                const docRef = doc(db, "products", id);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    renderProductDetails({ id: docSnap.id, ...docSnap.data() });
+                } else {
+                    showError('El producto no existe o fue eliminado.');
+                }
+            } catch (error) {
+                console.error("Error loading product:", error);
+                showError('Error al cargar el producto. Verifica tu conexión.');
             }
-
-            const storedProducts = localStorage.getItem('marino_products');
-            if (!storedProducts) {
-                showError('No se encontró la base de datos de productos.');
-                return;
-            }
-
-            const productsData = JSON.parse(storedProducts);
-            const product = productsData.find(p => p.id == productId);
-
-            if (!product) {
-                showError('El producto no existe o fue eliminado.');
-                return;
-            }
-
-            renderProductDetails(product);
-        });
+        }
 
         function showError(msg) {
             const container = document.getElementById('detail-container');
@@ -220,16 +219,18 @@
                 <div class="error-state glass" style="border-radius: 20px;">
                     <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 1rem; color: var(--danger-color);"></i>
                     <p style="color: var(--text-primary); margin-bottom: 2rem;">${msg}</p>
-                    <a href="m_productos.html" class="btn btn-primary">Ver Catalogo</a>
+                    <a href="m_productos.html" class="btn btn-primary">Ver Catálogo</a>
                 </div>
             `;
         }
 
         function renderProductDetails(p) {
             const container = document.getElementById('detail-container');
-
-            // Set Page Title dynamically
             document.title = `Mariño | ${p.name}`;
+
+            const safeName = (p.name || '').replace(/'/g, "\\'");
+            const safeImg  = (p.img  || '').replace(/'/g, "\\'");
+            const safeCat  = (p.category || '').replace(/'/g, "\\'");
 
             container.innerHTML = `
                 <a href="m_productos.html" class="back-link reveal"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
@@ -237,54 +238,58 @@
                     <div class="product-image-container reveal delay-1">
                         <img src="${p.img}" alt="${p.name}">
                     </div>
-                    
                     <div class="product-info-container reveal delay-2">
                         <div>
                             <div class="pd-brand">${p.provider || 'Distribuidor Local'}</div>
                             <h1 class="pd-title">${p.name}</h1>
                         </div>
-                        
                         <p class="pd-desc">${p.desc}</p>
-
                         <div>
-                            <h3 style="margin-bottom: 1rem; font-family: 'Outfit', sans-serif;">Especificaciones</h3>
+                            <h3 style="margin-bottom: 1rem;">Especificaciones</h3>
                             <table class="specs-table">
                                 <tbody>
-                                    <tr>
-                                        <th>Categoría</th>
-                                        <td>${p.category || 'General'}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Marca / Proveedor</th>
-                                        <td>${p.provider || 'N/A'}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Color / Tonalidad</th>
-                                        <td>${p.color || 'Vario'}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Medidas / Formato</th>
-                                        <td>${p.size || 'Standard'}</td>
-                                    </tr>
+                                    <tr><th>Categoría</th><td>${p.category || 'General'}</td></tr>
+                                    <tr><th>Marca / Proveedor</th><td>${p.provider || 'N/A'}</td></tr>
+                                    <tr><th>Color / Tonalidad</th><td>${p.color || 'Vario'}</td></tr>
+                                    <tr><th>Medidas / Formato</th><td>${p.size || 'Standard'}</td></tr>
                                 </tbody>
                             </table>
-
                             <div class="buy-action glass">
                                 <h4>¿Te interesa este producto?</h4>
-                                <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">
-                                    Agregalo a tu presupuesto y solicitá cotización junto con otros artículos.
+                                <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.95rem;">
+                                    Elegí la cantidad y sumalo a tu presupuesto.
                                 </p>
-                                <button class="btn btn-primary" onclick="window.addToCart(${p.id}, '${p.name.replace(/'/g, "\\'")}', '${p.img}', '${p.category}')" style="width: 100%; margin: 0 0 1rem 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                                    <i class="fas fa-cart-plus" style="transform: translateY(1px);"></i> Sumar al Presupuesto
+                                <!-- Quantity selector -->
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1.2rem;">
+                                    <button id="detail-qty-minus" style="width:42px;height:42px;border-radius:50%;border:2px solid var(--accent-color);background:transparent;color:var(--accent-color);font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">−</button>
+                                    <span id="detail-qty-display" style="font-size:1.6rem;font-weight:700;min-width:40px;text-align:center;">1</span>
+                                    <button id="detail-qty-plus" style="width:42px;height:42px;border-radius:50%;border:2px solid var(--accent-color);background:transparent;color:var(--accent-color);font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
+                                </div>
+                                <button id="detail-add-btn" class="btn btn-primary" style="width:100%;margin:0 0 1rem 0;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+                                    <i class="fas fa-cart-plus" style="transform:translateY(1px);"></i> Sumar al Presupuesto
                                 </button>
-                                <a href="https://wa.me/5493404505350?text=Hola,%20quisiera%20consultar%20por%20el%20producto:%20${encodeURIComponent(p.name)}" target="_blank" class="btn btn-secondary" style="width: 100%; margin: 0; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                                    <i class="fab fa-whatsapp" style="transform: translateY(1px);"></i> Consultar Directo
+                                <a href="https://wa.me/5493404505350?text=Hola,%20quisiera%20consultar%20por%20el%20producto:%20${encodeURIComponent(p.name)}" target="_blank" class="btn btn-secondary" style="width:100%;margin:0;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+                                    <i class="fab fa-whatsapp" style="transform:translateY(1px);"></i> Consultar Directo
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
             `;
+
+            let qty = 1;
+            const qtyDisplay = document.getElementById('detail-qty-display');
+            document.getElementById('detail-qty-minus').addEventListener('click', () => {
+                if (qty > 1) { qty--; qtyDisplay.textContent = qty; }
+            });
+            document.getElementById('detail-qty-plus').addEventListener('click', () => {
+                qty++;
+                qtyDisplay.textContent = qty;
+            });
+            document.getElementById('detail-add-btn').addEventListener('click', () => {
+                window.addToCart(p.id, safeName, safeImg, safeCat, qty);
+            });
+
             if (typeof window.initAnimations === 'function') {
                 setTimeout(window.initAnimations, 50);
             }
