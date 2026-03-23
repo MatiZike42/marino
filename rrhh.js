@@ -35,13 +35,24 @@ async function initializeJobs() {
             jobsData.push({ id: doc.id, ...doc.data() });
         });
         
-        if (jobsData.length === 0 && isAdminUser) {
-             for (const j of defaultJobs) {
-                 await saveJob(j);
-                 jobsData.push(j);
-             }
+        // Ensure specific default jobs (Vendedor and Chofer) exist
+        if (isAdminUser) {
+            let changed = false;
+            for (const dj of defaultJobs) {
+                if (!jobsData.find(j => j.id === dj.id)) {
+                    console.log(`Restaurando empleo por defecto: ${dj.title}`);
+                    await saveJob(dj);
+                    jobsData.push(dj);
+                    changed = true;
+                }
+            }
+            // If we added missing defaults, re-sort
+            if (changed) {
+                jobsData.sort((a, b) => new Date(b.date) - new Date(a.date));
+            }
         } else if (jobsData.length === 0) {
-             jobsData = [...defaultJobs];
+            // Non-admin view and no jobs in DB -> show defaults from memory
+            jobsData = [...defaultJobs];
         }
         
         renderJobs();

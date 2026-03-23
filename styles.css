@@ -91,7 +91,44 @@ h4 {
   color: var(--text-primary);
   font-weight: 500;
   transition: var(--transition);
-  position: relative;
+}
+
+.nav-links li {
+    position: relative; /* Para el dropdown */
+}
+
+/* Navbar Dropdown */
+.nav-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--bg-color);
+    min-width: 180px;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    display: none;
+    flex-direction: column;
+    padding: 0.8rem 0;
+    z-index: 2000;
+}
+
+.nav-links li:hover .nav-dropdown {
+    display: flex;
+}
+
+.dropdown-link {
+    padding: 0.6rem 1.2rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.dropdown-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--accent-color);
 }
 
 .nav-links a::after {
@@ -497,6 +534,188 @@ footer {
   font-size: 1.2rem;
   max-width: 600px;
   margin: 0 auto;
+}
+
+/* Catalog Horizontal Filters */
+.horizontal-filters {
+    display: flex;
+    flex-wrap: wrap; /* Elimina el scroll horizontal */
+    gap: 0.8rem;
+    padding: 0.5rem 0;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 100; /* Asegura que los filtros estén arriba */
+}
+
+.filter-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.filter-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-btn:hover, .filter-btn.active {
+    background: var(--accent-color);
+    color: #0f172a;
+    border-color: var(--accent-color);
+}
+
+.filter-dropdown:hover .dropdown-content {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background: var(--bg-color);
+    min-width: 200px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 1000;
+    margin-top: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.dropdown-item {
+    padding: 0.8rem 1.2rem;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--accent-color);
+}
+
+/* Variant Selector */
+.variant-selector {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.variant-selector label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.variant-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.variant-chip {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.variant-chip:hover {
+    border-color: var(--accent-color);
+}
+
+.variant-chip.active {
+    background: var(--accent-color);
+    color: #0f172a;
+    border-color: var(--accent-color);
+    font-weight: 600;
+}
+
+/* Product Card Improvements */
+.product-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: var(--transition-spring);
+    height: 100%;
+    position: relative;
+    border: 1px solid var(--glass-border);
+    cursor: default; /* Solo los enlaces internos tienen cursor pointer */
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent-color);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+.product-link {
+    cursor: pointer;
+}
+
+.product-hover-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition);
+    backdrop-filter: blur(2px);
+}
+
+.product-link:hover .product-hover-overlay {
+    opacity: 1;
+}
+
+.product-card:hover .product-img {
+    transform: scale(1.05);
+}
+
+.product-img {
+    transition: transform 0.5s ease;
+}
+
+.catalog-qty-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-color);
+    background: transparent;
+    color: var(--accent-color);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.catalog-qty-display {
+    font-size: 1.1rem;
+    font-weight: 700;
+    min-width: 24px;
+    text-align: center;
 }
 
 /* Animations */

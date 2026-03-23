@@ -1,6 +1,8 @@
-import { db, storage } from './firebase-config.js';
+import { db } from './firebase-config.js';
 import { collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
-import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-storage.js";
+// Cloudinary Config - No longer using Firebase Storage for images
+const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/doissrwhj/image/upload";
+const CLOUDINARY_PRESET = "marino_preset";
 
 // Obras Logic
 let projectsData = [];
@@ -377,32 +379,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         
                         for (let i = 0; i < total; i++) {
                             const file = imgFileInputs.files[i];
-                            const storageRef = ref(storage, `projects/${Date.now()}_${file.name}`);
+                            btnSubmit.innerText = `Subiendo (${i+1}/${total})...`;
                             
-                            // Using Resumable Upload for progress
-                            console.log(`Iniciando subida de: ${file.name} (${file.size} bytes)`);
-                            const uploadTask = uploadBytesResumable(storageRef, file);
-                            
-                            await new Promise((resolve, reject) => {
-                                uploadTask.on('state_changed', 
-                                    (snapshot) => {
-                                        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                                        console.log(`Progreso de ${file.name}: ${progress}%`);
-                                        btnSubmit.innerText = `Subiendo (${i+1}/${total}): ${progress}%`;
-                                    }, 
-                                    (error) => {
-                                        console.error(`Error en subida de ${file.name}:`, error);
-                                        reject(error);
-                                    }, 
-                                    () => {
-                                        console.log(`Subida completada con éxito: ${file.name}`);
-                                        resolve();
-                                    }
-                                );
+                            const formData = new FormData();
+                            formData.append('file', file);
+                            formData.append('upload_preset', CLOUDINARY_PRESET);
+
+                            const response = await fetch(CLOUDINARY_URL, {
+                                method: 'POST',
+                                body: formData
                             });
 
-                            const url = await getDownloadURL(uploadTask.snapshot.ref);
-                            newUploadedUrls.push(url);
+                            if (!response.ok) throw new Error("Error al subir imagen a Cloudinary");
+                            
+                            const data = await response.json();
+                            newUploadedUrls.push(data.secure_url);
                         }
                     }
 
@@ -441,12 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.scrollTo({ top: document.getElementById('obras-detalladas').offsetTop, behavior: 'smooth' });
                 } catch(err) {
                     console.error("Error detallado:", err);
-                    let msg = "Error al guardar el proyecto. ";
-                    if (err.code === 'storage/unauthorized') msg += "No tenés permisos para subir archivos. Revisá las reglas de Firebase.";
-                    else if (err.code === 'storage/quota-exceeded') msg += "Se excedió la cuota de Firebase Storage.";
-                    else msg += err.message;
-                    
-                    alert(msg);
+                    alert("Error al guardar: " + err.message);
                 } finally {
                     btnSubmit.disabled = false;
                     btnSubmit.innerText = 'Publicar Proyecto';
@@ -472,22 +458,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     if (imgFileInput && imgFileInput.files.length > 0) {
                          const file = imgFileInput.files[0];
-                         const storageRef = ref(storage, `gallery/${Date.now()}_${file.name}`);
+                         btnSubmit.innerText = `Subiendo Foto...`;
                          
-                         const uploadTask = uploadBytesResumable(storageRef, file);
-                         
-                         await new Promise((resolve, reject) => {
-                             uploadTask.on('state_changed', 
-                                 (snapshot) => {
-                                     const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                                     btnSubmit.innerText = `Subiendo: ${progress}%`;
-                                 }, 
-                                 (error) => reject(error), 
-                                 () => resolve()
-                             );
+                         const formData = new FormData();
+                         formData.append('file', file);
+                         formData.append('upload_preset', CLOUDINARY_PRESET);
+
+                         const response = await fetch(CLOUDINARY_URL, {
+                             method: 'POST',
+                             body: formData
                          });
 
-                         img = await getDownloadURL(uploadTask.snapshot.ref);
+                         if (!response.ok) throw new Error("Error al subir a Cloudinary");
+                         
+                         const data = await response.json();
+                         img = data.secure_url;
                     }
 
                     if (editId) {

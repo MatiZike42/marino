@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiencia Mariño | Galería Multimedia</title>
+    <!-- Awesome Font Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="mariño.ico" type="image/x-icon">
+    <style>
+        .galeria-header {
+            padding: 150px 5% 50px;
+            text-align: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)), url('IMG_4561.jpg') center/cover no-repeat;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .galeria-header h1 {
+            font-size: 3.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .galeria-header p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .video-grid-section {
+            padding: 6rem 5%;
+            background: var(--bg-color);
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .video-card {
+            border-radius: 20px;
+            overflow: hidden;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            border-color: var(--accent-color);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            aspect-ratio: 16/9;
+            background: #000;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            opacity: 0.7;
+        }
+
+        .video-card:hover .video-thumbnail img {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        .play-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .play-btn {
+            width: 70px;
+            height: 70px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-color);
+            font-size: 1.5rem;
+            transition: var(--transition);
+            box-shadow: 0 0 20px rgba(255,183,0,0.4);
+        }
+
+        .video-card:hover .play-btn {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(255,183,0,0.6);
+        }
+
+        .video-info {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .video-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .video-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Video Modal Player */
+        .video-player-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 4000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .player-container {
+            width: 100%;
+            max-width: 1000px;
+            aspect-ratio: 16/9;
+            background: #000;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(255,183,0,0.2);
+        }
+
+        .player-container iframe, 
+        .player-container video {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .close-player {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-player:hover {
+            color: var(--accent-color);
+        }
+
+        /* Admin Video Panel & Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 5000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-color);
+            padding: 2.5rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--accent-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+        }
+        @media (max-width: 768px) {
+            .galeria-header h1 { font-size: 2.5rem; }
+            .video-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Style for different platforms */
+        .video-platform-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            z-index: 3;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+
+    <script>
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768) {
+            var currentParams = window.location.hash + window.location.search;
+            window.location.href = "m_galeria.html" + currentParams;
+        }
+    </script>
+</head>
+
+<body>
+
+    <nav class="navbar glass" id="navbar">
+        <a href="index.html" class="logo">
+            <img src="mariño.png" alt="Mariño Logo" class="nav-logo">
+            <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.1;">
+                <div>Mariño</div>
+                <div style="font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); letter-spacing: 0;">construcción en seco & decoraciones</div>
+            </div>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html#inicio">Inicio</a></li>
+            <li><a href="productos.html">Catálogo</a></li>
+            <li><a href="obras.html">Obras</a></li>
+            <li><a href="galeria.html" style="color: var(--accent-color);">Multimedia</a></li>
+            <li><a href="rrhh.html">RRHH</a></li>
+            <li><a href="consultas.html">Consultas</a></li>
+            <li><a href="login.html" id="nav-login"><i class="fas fa-lock"></i></a></li>
+        </ul>
+    </nav>
+
+    <header class="galeria-header">
+        <h1 class="reveal">Experiencia Mariño</h1>
+        <p class="reveal delay-1">Proyectos en acción, tutoriales y resultados finales. Descubrí el proceso detrás de cada obra maestra.</p>
+    </header>
+
+    <section class="video-grid-section">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+            <h2 class="section-title reveal" style="margin-bottom: 0;">Galería de Videos</h2>
+            <button id="btn-add-video" class="btn btn-primary" style="display: none;"><i class="fas fa-plus"></i> Cargar Video</button>
+        </div>
+
+        <div class="video-grid" id="video-grid">
+            <!-- Videos injected via JS -->
+        </div>
+    </section>
+
+    <!-- Modal Cargar Video (Admin) -->
+    <div id="videoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-video-modal">&times;</span>
+            <h3 id="modal-video-title" style="margin-bottom: 1.5rem; color: var(--accent-color);">Cargar Nuevo Video Multimedia</h3>
+            <form id="add-video-form">
+                <input type="hidden" id="v-id" value="">
+                
+                <div class="form-group">
+                    <label>Título del Video *</label>
+                    <input type="text" id="v-title" required placeholder="Ej: Resultado Final Obra Palermo">
+                </div>
+
+                <div class="form-group">
+                    <label>Descripción corta</label>
+                    <textarea id="v-desc" rows="2" placeholder="Detalles sobre lo que se ve en el video..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo de Contenido *</label>
+                    <select id="v-type" style="width: 100%; padding: 0.8rem; background: rgba(0,0,0,0.2); color:white; border: 1px solid var(--glass-border); border-radius: 8px;">
+                        <option value="youtube">YouTube (Link)</option>
+                        <option value="instagram">Instagram (Reel/Post Link)</option>
+                        <option value="facebook">Facebook (Video Link)</option>
+                        <option value="tiktok">TikTok (Video Link)</option>
+                        <option value="file">Video Nativo (Archivo .mp4)</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="url-input-group">
+                    <label>Enlace del Video *</label>
+                    <input type="url" id="v-url" placeholder="Pega el link aquí...">
+                </div>
+
+                <div class="form-group" id="file-input-group" style="display: none;">
+                    <label>Archivo de Video (.mp4) *</label>
+                    <input type="file" id="v-file" accept="video/mp4,video/x-m4v,video/*">
+                </div>
+
+                <div class="form-group">
+                    <label>Miniatura (Imagen de portada)</label>
+                    <input type="file" id="v-thumb-file" accept="image/*" style="margin-bottom: 0.5rem;">
+                    <input type="url" id="v-thumb" placeholder="O URL de miniatura...">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Publicar Video</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Video Player Overlay -->
+    <div class="video-player-modal" id="video-player-modal">
+        <div class="player-container">
+            <span class="close-player" id="close-player">&times;</span>
+            <div id="player-target"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Mariño Construcción en seco. Todos los derechos reservados.</p>
+        <p style="margin-top: 5px; font-size: 0.85rem; color: var(--text-secondary);">
+            Desarrollado por <a href="https://matiasschvabauer.github.io/portafolio/" target="_blank" style="color: var(--accent-color); text-decoration: none;">Schvabauer Matias</a>
+        </p>
+    </footer>
+
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="auth.js"></script>
+    <script type="module" src="galeria.js"></script>
+    <script type="module" src="app.js"></script>
+
+    <script>
+        // Toggle input between URL and File
+        document.getElementById('v-type').addEventListener('change', function(e) {
+            const isFile = e.target.value === 'file';
+            document.getElementById('url-input-group').style.display = isFile ? 'none' : 'block';
+            document.getElementById('file-input-group').style.display = isFile ? 'block' : 'none';
+        });
+    </script>
+</body>
+
+</html>

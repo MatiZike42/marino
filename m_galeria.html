@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiencia Mariño | Multimedia</title>
+    <!-- Awesome Font Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="m_styles.css">
+    <link rel="icon" href="mariño.ico" type="image/x-icon">
+    <style>
+        .m-galeria-header {
+            padding: 100px 5% 40px;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('IMG_4561.jpg') center/cover;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .m-galeria-header h1 {
+            font-size: 2.2rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .video-list-m {
+            padding: 2rem 5%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .video-card-m {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .video-thumb-m {
+            position: relative;
+            background: #000;
+            aspect-ratio: 16/9;
+        }
+
+        .video-thumb-m img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+
+        .play-icon-m {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 1.2rem;
+        }
+
+        .video-info-m {
+            padding: 1rem;
+        }
+
+        .video-info-m h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .video-info-m p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Modal Player Mobile */
+        .m-player-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 5000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .m-player-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            position: relative;
+        }
+
+        .m-close-player {
+            position: absolute;
+            top: -50px;
+            right: 20px;
+            color: white;
+            font-size: 2rem;
+        }
+
+        /* Badge for Platform */
+        .m-platform-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: bold;
+        }
+        /* Modals & Forms */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 5000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-color);
+            padding: 2.5rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="mobile-body">
+
+    <!-- Bottom Navigation for Mobile -->
+    <nav class="m-bottom-nav">
+        <a href="m_index.html" class="m-nav-item">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="m_productos.html" class="m-nav-item">
+            <i class="fas fa-search"></i>
+            <span>Catálogo</span>
+        </a>
+        <a href="m_galeria.html" class="m-nav-item active">
+            <i class="fas fa-play-circle"></i>
+            <span>Videos</span>
+        </a>
+        <a href="m_obras.html" class="m-nav-item">
+            <i class="fas fa-images"></i>
+            <span>Obras</span>
+        </a>
+        <a href="m_rrhh.html" class="m-nav-item">
+            <i class="fas fa-user-tie"></i>
+            <span>RRHH</span>
+        </a>
+    </nav>
+
+    <header class="m-galeria-header">
+        <h1>Experiencia Mariño</h1>
+        <p style="color:rgba(255,255,255,0.7); font-size: 0.9rem;">Proyectos y resultados en video.</p>
+    </header>
+
+    <main class="video-list-m" id="video-list-m">
+        <!-- Videos injected via JS -->
+    </main>
+
+    <div class="m-player-modal" id="m-player-modal">
+        <div class="m-player-container">
+            <span class="m-close-player" id="m-close-player">&times;</span>
+            <div id="m-player-target"></div>
+        </div>
+    </div>
+
+    <!-- Admin Button -->
+    <button id="m-btn-add-video" class="btn btn-primary" style="display:none; position: fixed; bottom: 80px; right: 20px; border-radius: 50%; width: 50px; height: 50px; z-index: 1000;"><i class="fas fa-plus"></i></button>
+
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="auth.js"></script>
+    <script type="module" src="galeria.js"></script>
+</body>
+
+</html>

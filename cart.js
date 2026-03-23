@@ -17,12 +17,22 @@ function saveCart() {
     renderCartItems();
 }
 
-window.addToCart = function (id, name, img, priceOrDesc = '', qty = 1) {
-    const existing = cart.find(item => item.id === id);
+window.addToCart = function (id, name, img, priceOrDesc = '', qty = 1, variant = '') {
+    const itemKey = variant ? `${id}_${variant}` : id;
+    const existing = cart.find(item => item.itemKey === itemKey);
+    
     if (existing) {
         existing.qty += qty;
     } else {
-        cart.push({ id, name, img, desc: priceOrDesc, qty });
+        cart.push({ 
+            id, 
+            itemKey,
+            name, 
+            img, 
+            desc: priceOrDesc, 
+            qty,
+            variant 
+        });
     }
     saveCart();
 
@@ -38,17 +48,17 @@ window.addToCart = function (id, name, img, priceOrDesc = '', qty = 1) {
     showCartToast(`${name}${qtyLabel} ha sido agregado`);
 }
 
-window.removeFromCart = function (id) {
-    cart = cart.filter(item => item.id !== id);
+window.removeFromCart = function (itemKey) {
+    cart = cart.filter(item => item.itemKey !== itemKey);
     saveCart();
 }
 
-window.updateQty = function (id, delta) {
-    const item = cart.find(x => x.id === id);
+window.updateQty = function (itemKey, delta) {
+    const item = cart.find(x => x.itemKey === itemKey);
     if (item) {
         item.qty += delta;
         if (item.qty <= 0) {
-            removeFromCart(id);
+            removeFromCart(itemKey);
         } else {
             saveCart();
         }
@@ -81,13 +91,14 @@ function renderCartItems() {
             <img src="${item.img}" alt="${item.name}">
             <div class="cart-item-info">
                 <h4>${item.name}</h4>
+                ${item.variant ? `<div class="cart-item-variant-label">Medida: ${item.variant}</div>` : ''}
                 <div class="cart-item-qty">
-                    <button onclick="updateQty('${item.id}', -1)">-</button>
+                    <button onclick="updateQty('${item.itemKey}', -1)">-</button>
                     <span>${item.qty}</span>
-                    <button onclick="updateQty('${item.id}', 1)">+</button>
+                    <button onclick="updateQty('${item.itemKey}', 1)">+</button>
                 </div>
             </div>
-            <button class="cart-item-remove" onclick="removeFromCart('${item.id}')"><i class="fas fa-trash"></i></button>
+            <button class="cart-item-remove" onclick="removeFromCart('${item.itemKey}')"><i class="fas fa-trash"></i></button>
         `;
         container.appendChild(div);
     });
@@ -97,7 +108,8 @@ function getCheckoutText() {
     if (cart.length === 0) return '';
     let text = 'Hola, me gustaría solicitar un presupuesto por los siguientes artículos de su catálogo:\n\n';
     cart.forEach(item => {
-        text += `- ${item.qty}x ${item.name}\n`;
+        const variantStr = item.variant ? ` (${item.variant})` : '';
+        text += `- ${item.qty}x ${item.name}${variantStr}\n`;
     });
     text += '\n¡Muchas gracias!';
     return text;
@@ -301,6 +313,17 @@ document.addEventListener('DOMContentLoaded', () => {
             display: flex;
             flex-direction: column;
             gap: 0.8rem;
+        }
+
+        .cart-item-variant-label {
+            display: inline-block;
+            background: rgba(254, 222, 89, 0.1);
+            color: var(--accent-color);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-top: 0.3rem;
+            border: 1px solid rgba(254, 222, 89, 0.2);
         }
         
     `;

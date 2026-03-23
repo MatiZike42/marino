@@ -713,6 +713,26 @@ footer {
     right: 0;
   }
 
+  /* Mobile Navbar Dropdown */
+  .nav-item-dropdown .nav-dropdown {
+      position: static;
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: none;
+      border: none;
+      width: 100%;
+      display: none;
+      padding-left: 1.5rem;
+  }
+
+  .nav-item-dropdown:hover .nav-dropdown {
+      display: flex;
+  }
+
+  .dropdown-link {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
   .menu-toggle {
     display: block;
   }

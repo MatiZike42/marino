@@ -259,9 +259,25 @@
                                     <tr><th>Categoría</th><td>${p.category || 'General'}</td></tr>
                                     <tr><th>Marca / Proveedor</th><td>${p.provider || 'N/A'}</td></tr>
                                     <tr><th>Color / Tonalidad</th><td>${p.color || 'Vario'}</td></tr>
-                                    <tr><th>Medidas / Formato</th><td>${p.size || 'Standard'}</td></tr>
+                                    <tr><th>Medidas / Formato</th><td>${p.variants && p.variants.length > 0 ? p.variants.join(', ') : (p.size || 'Standard')}</td></tr>
                                 </tbody>
                             </table>
+
+                            ${p.variants && p.variants.length > 0 ? `
+                            <div class="variant-selector" style="margin-top: 2rem;">
+                                <label style="display: block; margin-bottom: 0.8rem; font-weight: 600; color: var(--accent-color);">Elegir ${p.category.includes('PVC') || p.category.includes('Moldura') ? 'Medida/Color' : 'Medida'}:</label>
+                                <div class="variant-chips" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                                    ${p.variants.map((v, idx) => `
+                                        <button class="variant-chip" 
+                                                style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid ${idx === 0 ? 'var(--accent-color)' : 'var(--glass-border)'}; background: ${idx === 0 ? 'rgba(254, 222, 89, 0.1)' : 'rgba(255,255,255,0.05)'}; color: ${idx === 0 ? 'var(--accent-color)' : 'white'}; cursor: pointer; transition: all 0.3s;"
+                                                onclick="selectDetailVariant('${v}', this)">
+                                            ${v}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            ` : ''}
+
                             <div class="buy-action glass">
                                 <h4>¿Te interesa este producto?</h4>
                                 <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.95rem;">
@@ -287,6 +303,20 @@
 
             // Quantity logic
             let qty = 1;
+            let selectedVariant = p.variants && p.variants.length > 0 ? p.variants[0] : '';
+
+            window.selectDetailVariant = (v, el) => {
+                selectedVariant = v;
+                el.parentElement.querySelectorAll('.variant-chip').forEach(c => {
+                    c.style.borderColor = 'var(--glass-border)';
+                    c.style.background = 'rgba(255,255,255,0.05)';
+                    c.style.color = 'white';
+                });
+                el.style.borderColor = 'var(--accent-color)';
+                el.style.background = 'rgba(254, 222, 89, 0.1)';
+                el.style.color = 'var(--accent-color)';
+            };
+
             const qtyDisplay = document.getElementById('detail-qty-display');
             document.getElementById('detail-qty-minus').addEventListener('click', () => {
                 if (qty > 1) { qty--; qtyDisplay.textContent = qty; }
@@ -296,7 +326,7 @@
                 qtyDisplay.textContent = qty;
             });
             document.getElementById('detail-add-btn').addEventListener('click', () => {
-                window.addToCart(p.id, safeName, safeImg, safeCat, qty);
+                window.addToCart(p.id, p.name, p.img, p.category, qty, selectedVariant);
             });
 
             if (typeof window.initAnimations === 'function') {

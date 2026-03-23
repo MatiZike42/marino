@@ -285,8 +285,19 @@
         <ul class="nav-links">
             <li><a href="index.html#inicio">Inicio</a></li>
             <li><a href="index.html#nosotros">Nosotros</a></li>
-            <li><a href="productos.html" style="color: var(--accent-color);">Catálogo</a></li>
+            <li class="nav-item-dropdown">
+                <a href="productos.html" style="color: var(--accent-color);">Catálogo <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i></a>
+                <div class="nav-dropdown">
+                    <a href="productos.html" class="dropdown-link">Todos los Productos</a>
+                    <a href="productos.html?provider=Durlock" class="dropdown-link">Durlock</a>
+                    <a href="productos.html?provider=JMA" class="dropdown-link">JMA</a>
+                    <a href="productos.html?provider=Aisplac" class="dropdown-link">Aisplac</a>
+                    <a href="productos.html?provider=Atenneas" class="dropdown-link">Atenneas</a>
+                    <a href="productos.html?provider=Maropor" class="dropdown-link">Maropor</a>
+                </div>
+            </li>
             <li><a href="obras.html">Obras</a></li>
+            <li><a href="galeria.html">Multimedia</a></li>
             <li><a href="rrhh.html">RRHH</a></li>
             <li><a href="consultas.html">Consultas</a></li>
             <li><a href="index.html#contacto">Contacto</a></li>
@@ -333,6 +344,26 @@
 
             <!-- Main Content Area -->
             <main class="catalog-main">
+                <!-- Horizontal Filters Toggle/Bar -->
+                <div class="horizontal-filters" id="horizontal-filters">
+                    <div class="filter-dropdown">
+                        <button class="filter-btn"><i class="fas fa-tags"></i> Todos los Productos</button>
+                    </div>
+                    <!-- Categories and Providers will be injected as dropdowns here or simple buttons -->
+                    <div class="filter-dropdown">
+                        <button class="filter-btn">Categorías <i class="fas fa-chevron-down"></i></button>
+                        <div class="dropdown-content" id="h-filter-categories">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                    <div class="filter-dropdown">
+                        <button class="filter-btn">Marcas <i class="fas fa-chevron-down"></i></button>
+                        <div class="dropdown-content" id="h-filter-providers">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+
                 <div class="catalog-controls">
                     <div class="search-box">
                         <i class="fas fa-search"></i>
