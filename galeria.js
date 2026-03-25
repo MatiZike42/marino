@@ -134,27 +134,85 @@ window.playVideo = function(id) {
 
     const modal = document.getElementById('video-player-modal') || document.getElementById('m-player-modal');
     const target = document.getElementById('player-target') || document.getElementById('m-player-target');
-    
+    const container = modal.querySelector('.player-container') || modal.querySelector('.m-player-container');
+
     let embedHtml = '';
     const url = video.url;
+
+    if (container) {
+        if (video.type === 'instagram') {
+            container.style.aspectRatio = 'auto'; // Let Insta script size it
+            container.style.width = '100%';
+            container.style.maxWidth = '450px';
+            container.style.height = '85vh';
+            container.style.maxHeight = '90vh';
+            container.style.backgroundColor = '#fff';
+            container.style.overflowY = 'auto';
+            container.style.borderRadius = '12px';
+
+            if (!document.getElementById('ig-fix-css')) {
+                const style = document.createElement('style');
+                style.id = 'ig-fix-css';
+                style.innerHTML = `
+                    .player-container iframe.instagram-media,
+                    .m-player-container iframe.instagram-media {
+                        height: 700px !important;
+                        min-height: 700px !important;
+                        width: 100% !important;
+                        max-height: none !important;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        } else if (video.type === 'tiktok') {
+            container.style.aspectRatio = '9/16';
+            container.style.maxWidth = '100%';
+            container.style.width = 'auto';
+            container.style.height = '85vh';
+            container.style.backgroundColor = '#000';
+            container.style.overflowY = 'visible';
+            container.style.maxHeight = 'none';
+        } else {
+            container.style.aspectRatio = '16/9';
+            container.style.maxWidth = '1000px';
+            container.style.width = '100%';
+            container.style.height = 'auto';
+            container.style.backgroundColor = '#000';
+            container.style.overflowY = 'visible';
+            container.style.maxHeight = 'none';
+        }
+    }
 
     if (video.type === 'youtube') {
         const vidId = extractYoutubeId(url);
         embedHtml = `<iframe src="https://www.youtube.com/embed/${vidId}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
     } else if (video.type === 'instagram') {
-        const cleanUrl = url.split('?')[0];
-        embedHtml = `<iframe src="${cleanUrl}embed" allowtransparency="true" frameborder="0" scrolling="no"></iframe>`;
+        const urlStr = String(url).trim();
+        if (urlStr.startsWith('<iframe') || urlStr.startsWith('<blockquote')) {
+            embedHtml = urlStr;
+        } else {
+            const cleanUrl = urlStr.split('?')[0].replace(/\/$/, '') + '/';
+            embedHtml = `<blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="${cleanUrl}" data-instgrm-version="14" style="background:#FFF; border:0; margin: 0 auto; max-width:450px; padding:0; width:100%;"></blockquote>`;
+        }
     } else if (video.type === 'facebook') {
         embedHtml = `<iframe src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=0&width=560" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`;
     } else if (video.type === 'tiktok') {
         const vidId = url.split('/').pop();
         embedHtml = `<iframe src="https://www.tiktok.com/embed/v2/${vidId}" allowfullscreen></iframe>`;
     } else {
-        embedHtml = `<video src="${url}" controls autoplay style="width:100%; height:100%;"></video>`;
+        embedHtml = `<video src="${url}" controls autoplay playsinline style="width:100%; height:100%; object-fit: contain; outline: none; background-color: transparent;"></video>`;
     }
 
     target.innerHTML = embedHtml;
     modal.style.display = 'flex';
+
+    if (video.type === 'instagram') {
+        setTimeout(() => {
+            if (window.instgrm) {
+                window.instgrm.Embeds.process();
+            }
+        }, 500); // Wait a bit longer for modal display flex to fully layout
+    }
 };
 
 function extractYoutubeId(url) {
@@ -163,15 +221,26 @@ function extractYoutubeId(url) {
     return (match && match[2].length === 11) ? match[2] : null;
 }
 
-// Close player
+// Close player functions
+function closeVideoPlayer() {
+    const modal = document.getElementById('video-player-modal') || document.getElementById('m-player-modal');
+    const target = document.getElementById('player-target') || document.getElementById('m-player-target');
+    if(modal) modal.style.display = 'none';
+    if(target) target.innerHTML = '';
+}
+
 const closePlayerBtn = document.getElementById('close-player') || document.getElementById('m-close-player');
 if (closePlayerBtn) {
-    closePlayerBtn.onclick = () => {
-        const modal = document.getElementById('video-player-modal') || document.getElementById('m-player-modal');
-        const target = document.getElementById('player-target') || document.getElementById('m-player-target');
-        modal.style.display = 'none';
-        target.innerHTML = '';
-    };
+    closePlayerBtn.onclick = closeVideoPlayer;
+}
+
+const videoPlayerModal = document.getElementById('video-player-modal') || document.getElementById('m-player-modal');
+if (videoPlayerModal) {
+    videoPlayerModal.addEventListener('click', (e) => {
+        if (e.target.id === 'video-player-modal' || e.target.id === 'm-player-modal') {
+            closeVideoPlayer();
+        }
+    });
 }
 
 // Admin Logic
@@ -220,6 +289,9 @@ function setupAdminUI() {
                         const res = await fetch(CLOUDINARY_URL_VIDEO, { method: 'POST', body: formData });
                         const data = await res.json();
                         url = data.secure_url;
+                        if (url && url.lastIndexOf('.') > -1) {
+                            url = url.substring(0, url.lastIndexOf('.')) + '.mp4';
+                        }
                     }
                 }
 
@@ -292,4 +364,14 @@ window.deleteVideo = async function(id) {
     }
 };
 
-document.addEventListener('DOMContentLoaded', initializeGaleria);
+document.addEventListener('DOMContentLoaded', () => {
+    initializeGaleria();
+    // Inject official Instagram script globally
+    if (!document.getElementById('ig-embed-script')) {
+        const s = document.createElement('script');
+        s.id = 'ig-embed-script';
+        s.src = "//www.instagram.com/embed.js";
+        s.async = true;
+        document.head.appendChild(s);
+    }
+});

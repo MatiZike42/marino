@@ -34,7 +34,7 @@
 
         .product-detail-layout {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 0.8fr 1.2fr;
             gap: 4rem;
             align-items: start;
         }
@@ -51,8 +51,8 @@
             height: auto;
             display: block;
             object-fit: contain;
-            background: rgba(255, 255, 255, 0.02);
-            aspect-ratio: 4/3;
+            background: #ffffff;
+            aspect-ratio: 1/1;
         }
 
         .product-info-container {
@@ -304,9 +304,29 @@
             // Quantity logic
             let qty = 1;
             let selectedVariant = p.variants && p.variants.length > 0 ? p.variants[0] : '';
+            let currentImg = p.img;
+
+            // Load initial variant image if present
+            if (selectedVariant && p.variantImgs && p.variantImgs[selectedVariant]) {
+                currentImg = p.variantImgs[selectedVariant];
+                setTimeout(() => {
+                    const imgEl = document.querySelector('.product-image-container img');
+                    if (imgEl) imgEl.src = currentImg;
+                }, 0);
+            }
 
             window.selectDetailVariant = (v, el) => {
                 selectedVariant = v;
+                
+                // Switch image based on variant
+                if (p.variantImgs && p.variantImgs[v]) {
+                    currentImg = p.variantImgs[v];
+                } else {
+                    currentImg = p.img;
+                }
+                const imgEl = document.querySelector('.product-image-container img');
+                if (imgEl) imgEl.src = currentImg;
+
                 el.parentElement.querySelectorAll('.variant-chip').forEach(c => {
                     c.style.borderColor = 'var(--glass-border)';
                     c.style.background = 'rgba(255,255,255,0.05)';
@@ -326,7 +346,7 @@
                 qtyDisplay.textContent = qty;
             });
             document.getElementById('detail-add-btn').addEventListener('click', () => {
-                window.addToCart(p.id, p.name, p.img, p.category, qty, selectedVariant);
+                window.addToCart(p.id, p.name, currentImg, p.category, qty, selectedVariant);
             });
 
             if (typeof window.initAnimations === 'function') {

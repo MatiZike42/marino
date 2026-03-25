@@ -99,10 +99,12 @@
 
         .m-close-player {
             position: absolute;
-            top: -50px;
+            top: 20px;
             right: 20px;
             color: white;
-            font-size: 2rem;
+            font-size: 3rem;
+            cursor: pointer;
+            z-index: 5010;
         }
 
         /* Badge for Platform */
@@ -213,8 +215,8 @@
     </main>
 
     <div class="m-player-modal" id="m-player-modal">
+        <span class="m-close-player" id="m-close-player">&times;</span>
         <div class="m-player-container">
-            <span class="m-close-player" id="m-close-player">&times;</span>
             <div id="m-player-target"></div>
         </div>
     </div>

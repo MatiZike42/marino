@@ -81,6 +81,14 @@ async function initializeObras() {
              galleryData = [...defaultGallery];
         }
 
+        const sortByIdDesc = (a, b) => {
+            const numA = parseInt(String(a.id).replace(/\D/g, '')) || 0;
+            const numB = parseInt(String(b.id).replace(/\D/g, '')) || 0;
+            return numB - numA;
+        };
+        projectsData.sort(sortByIdDesc);
+        galleryData.sort(sortByIdDesc);
+
         renderStackedCards();
         renderBentoGallery();
     } catch (e) {
@@ -423,7 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const newId = 'proj_' + Date.now();
                         const newObj = { id: newId, client, title, desc, tags, imgs: finalImgsArr };
                         await saveProject(newObj);
-                        projectsData.push(newObj);
+                        projectsData.unshift(newObj);
                     }
                     
                     pModal.style.display = 'none';

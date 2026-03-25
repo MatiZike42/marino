@@ -158,12 +158,13 @@
 
         .close-player {
             position: absolute;
-            top: -40px;
-            right: 0;
+            top: 20px;
+            right: 40px;
             color: white;
-            font-size: 2rem;
+            font-size: 3rem;
             cursor: pointer;
             transition: color 0.3s;
+            z-index: 10;
         }
 
         .close-player:hover {
@@ -332,8 +333,8 @@
                 </div>
 
                 <div class="form-group" id="url-input-group">
-                    <label>Enlace del Video *</label>
-                    <input type="url" id="v-url" placeholder="Pega el link aquí...">
+                    <label>Enlace del Video o Código Embed *</label>
+                    <input type="text" id="v-url" placeholder="Pega el link o código HTML aquí...">
                 </div>
 
                 <div class="form-group" id="file-input-group" style="display: none;">
@@ -354,8 +355,8 @@
 
     <!-- Video Player Overlay -->
     <div class="video-player-modal" id="video-player-modal">
+        <span class="close-player" id="close-player">&times;</span>
         <div class="player-container">
-            <span class="close-player" id="close-player">&times;</span>
             <div id="player-target"></div>
         </div>
     </div>

@@ -24,22 +24,22 @@ const isAdminUser = localStorage.getItem('isAdmin') === 'true';
 // Basic initial data (Official Mariño Catalog extracted from images)
 const defaultProducts = [
     // DURLOCK - Placas de Yeso
-    { id: "dur_placa_std", name: "Placa Estándar - STD", desc: "Placa de yeso para cielorrasos y revestimientos interiores.", category: "Placas de Yeso", provider: "Durlock", variants: ["12.5mm x 2.40m", "12.5mm x 2.60m", "12.5mm x 3.00m"], img: "1.png" },
-    { id: "dur_placa_rh", name: "Placa Resistente a la Humedad - RH", desc: "Ideal para baños, cocinas y ambientes húmedos.", category: "Placas de Yeso", provider: "Durlock", variants: ["12.5mm x 2.40m", "12.5mm x 2.60m"], img: "1.png" },
-    { id: "dur_placa_rf", name: "Placa Resistente al Fuego - RF", desc: "Mayor resistencia al fuego para sectores críticos.", category: "Placas de Yeso", provider: "Durlock", variants: ["12.5mm x 2.40m"], img: "1.png" },
-    { id: "dur_placa_técnica", name: "Placas Técnicas Durlock", desc: "Placas especiales para aislamiento, acústica e impactos.", category: "Placas de Yeso", provider: "Durlock", variants: ["ACU 60", "Antihumedad AH", "Extra Resistente ER", "Cuatro Dimensiones 4D", "Semicubiertos SC", "Aquaboard"], img: "1.png" },
-    { id: "dur_placa_ciel", name: "Placa Ciel - 7mm", desc: "Placa ultra delgada para cielorrasos y curvas.", category: "Placas de Yeso", provider: "Durlock", variants: ["1.20 x 2.40m"], img: "1.png" },
+    { id: "dur_placa_std", name: "Placa Estándar - STD", desc: "Placa de yeso para cielorrasos y revestimientos interiores.", category: "Placas de Yeso", provider: "Durlock", variants: ["12.5mm x 2.40m", "12.5mm x 2.60m", "12.5mm x 3.00m"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774386363/f3ywjy8gwsn9vj0rtp2g.png", variantImgs: {"12.5mm x 2.40m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774386366/poh3wbestfhaoich75ys.png", "12.5mm x 2.60m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774386368/ldxqigzzhz0kdssgc8dl.png", "12.5mm x 3.00m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774386370/fzrqajvspmtaudtnaoga.png"} },
+    { id: "dur_placa_rh", name: "Placa Resistente a la Humedad - RH", desc: "Ideal para baños, cocinas y ambientes húmedos.", category: "Placas de Yeso", provider: "Durlock", variants: ["12.5mm x 2.40m", "12.5mm x 2.60m"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774386372/horrdjucobl38pmpg83u.png", variantImgs: {"12.5mm x 2.40m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774386375/iy82pjjru9br6db8jmb2.png", "12.5mm x 2.60m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774386377/jokohss69sgmc4whpqdf.png"} },
+    { id: "dur_placa_rf", name: "Placa Resistente al Fuego - RF", desc: "Mayor resistencia al fuego para sectores críticos.", category: "Placas de Yeso", provider: "Durlock", variants: ["12.5mm x 2.40m"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774386379/z7jrqua7t67x9za3jmrm.png", variantImgs: {"12.5mm x 2.40m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774386381/tniyz9x1sdd0mjx4rl2d.png"} },
+    { id: "dur_placa_técnica", name: "Placas Técnicas Durlock", desc: "Placas especiales para aislamiento, acústica e impactos.", category: "Placas de Yeso", provider: "Durlock", variants: ["ACU 60", "Antihumedad AH", "Extra Resistente ER", "Cuatro Dimensiones 4D", "Semicubiertos SC", "Aquaboard"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774391701/nvnwrsjgshmbuccezxbx.png", variantImgs: {"ACU 60": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391705/a17f5wzcfqhdldjh5i6s.png", "Antihumedad AH": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391712/g2b5qyt3wtgpvqrr21fb.png", "Extra Resistente ER": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391715/sno0gdi7oc806o01nekn.png", "Cuatro Dimensiones 4D": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391717/muo6pml5kpn0wqtfjujd.png", "Semicubiertos SC": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391720/zhiusn6b4shxpgwaoa2j.png", "Aquaboard": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391722/zxr2ozl72g5zypot0jau.png"} },
+    { id: "dur_placa_ciel", name: "Placa Ciel - 7mm", desc: "Placa ultra delgada para cielorrasos y curvas.", category: "Placas de Yeso", provider: "Durlock", variants: ["1.20 x 2.40m"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774391724/ybckcasp4traatnoy7mv.png", variantImgs: {"1.20 x 2.40m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391726/qvot1b2pw5rz4tt7f6n0.png"} },
     
     // DURLOCK - Cementicia y Decorativa
-    { id: "dur_siding", name: "Siding Durlock", desc: "Tablas de cemento para revestimiento exterior imitación madera.", category: "Cementicia", provider: "Durlock", variants: ["8mm x 0.20 x 3.66"], img: "1.png" },
-    { id: "dur_superboard", name: "Superboard", desc: "Placa de cemento autoclavada estructural.", category: "Cementicia", provider: "Durlock", variants: ["6mm x 2.40m", "8mm x 2.40m", "10mm x 2.40m"], img: "1.png" },
-    { id: "dur_simplisima", name: "Simplísima", desc: "Placa decorativa con acabados premium.", category: "Simplísima", provider: "Durlock", variants: ["Mármol Traviatta", "Madera Veteada", "Madera Entablonada", "Piedra Azteca"], img: "1.png" },
-    { id: "dur_deco_vinyl", name: "Placa Deco Vinyl", desc: "Placa de yeso revestida en vinilo para cielorrasos desmontables.", category: "Deco Vinyl", provider: "Durlock", variants: ["0.60 x 0.60m", "1.20 x 0.60m"], img: "1.png" },
+    { id: "dur_siding", name: "Siding Durlock", desc: "Tablas de cemento para revestimiento exterior imitación madera.", category: "Cementicia", provider: "Durlock", variants: ["8mm x 0.20 x 3.66"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774391729/p1acbtbf9ro1b35qofxs.png", variantImgs: {"8mm x 0.20 x 3.66": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391731/xlxo4rwoh2toznrhne0u.png"} },
+    { id: "dur_superboard", name: "Superboard", desc: "Placa de cemento autoclavada estructural.", category: "Cementicia", provider: "Durlock", variants: ["6mm x 2.40m", "8mm x 2.40m", "10mm x 2.40m"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774391733/rwgydvefloauahbo5h9l.png", variantImgs: {"6mm x 2.40m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391735/q7cl2g434rkbmx1tfmn4.png", "8mm x 2.40m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391737/nqektktvx6u78sjiudkv.png", "10mm x 2.40m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391739/bsq2tt3r5bw9zsn1n4yt.png"} },
+    { id: "dur_simplisima", name: "Simplísima", desc: "Placa decorativa con acabados premium.", category: "Simplísima", provider: "Durlock", variants: ["Mármol Traviatta", "Madera Veteada", "Madera Entablonada", "Piedra Azteca"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774391741/w4jzspy81kkopwa1qez1.png", variantImgs: {"Mármol Traviatta": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391744/cc851er5j5t5ggzw7jo2.png", "Madera Veteada": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391746/d0um6sfplah5cuat7a3n.png", "Madera Entablonada": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391749/v9ld3kqtxqvcc18fv2v0.png", "Piedra Azteca": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391751/thd8x4nglqdcreq92w6a.png"} },
+    { id: "dur_deco_vinyl", name: "Placa Deco Vinyl", desc: "Placa de yeso revestida en vinilo para cielorrasos desmontables.", category: "Deco Vinyl", provider: "Durlock", variants: ["0.60 x 0.60m", "1.20 x 0.60m"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774391753/c3ntzzotrqyeqy2czv9s.jpg", variantImgs: {"0.60 x 0.60m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391755/tp7r7bcogux01my7l0kw.jpg", "1.20 x 0.60m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391758/k3pw5n8pighgck3cz9yr.jpg"} },
     
     // DURLOCK - Masillas y Lana
-    { id: "dur_masilla_lpu", name: "Masilla LPU Durlock", desc: "Masilla lista para usar de secado rápido.", category: "Adhesivos y Masillas", provider: "Durlock", variants: ["7kg", "18kg", "32kg"], img: "1.png" },
-    { id: "dur_masilla_sr", name: "Masilla SR 30min", desc: "Masilla de fragüe rápido.", category: "Adhesivos y Masillas", provider: "Durlock", variants: ["25kg", "10kg"], img: "1.png" },
-    { id: "dur_lana_vidrio", name: "Lana de Vidrio Premium", desc: "Aislante térmico y acústico con foil de aluminio.", category: "Aislantes", provider: "Durlock", variants: ["50mm espesor", "70mm espesor"], img: "1.png" },
+    { id: "dur_masilla_lpu", name: "Masilla LPU Durlock", desc: "Masilla lista para usar de secado rápido.", category: "Adhesivos y Masillas", provider: "Durlock", variants: ["7kg", "18kg", "32kg"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774391760/kd1lmagsu72hh7ogmpyy.jpg", variantImgs: {"7kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391762/rmzsz0gxelsuwlfimnd4.jpg", "18kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391764/khjm3ahdvhjcoaixh6tk.jpg", "32kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391766/pgv4ci2xe2peqglykkze.jpg"} },
+    { id: "dur_masilla_sr", name: "Masilla SR 30min", desc: "Masilla de fragüe rápido.", category: "Adhesivos y Masillas", provider: "Durlock", variants: ["25kg", "10kg"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774391768/j2eyjmexevt2jj1b81wj.jpg", variantImgs: {"25kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391771/qd1idej0notamaj0ohs1.jpg", "10kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391772/yiyjopwwykypf3vvkem8.jpg"} },
+    { id: "dur_lana_vidrio", name: "Lana de Vidrio Premium", desc: "Aislante térmico y acústico con foil de aluminio.", category: "Aislantes", provider: "Durlock", variants: ["50mm espesor", "70mm espesor"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774391774/gyc4v5jxm4jbre1udtl1.jpg", variantImgs: {"50mm espesor": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391776/bashzcdfub4iyvkbgazp.jpg", "70mm espesor": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391778/dlkyoqjqzczyqizv3mnl.jpg"} },
     
     // AISPLAC - PVC
     { id: "ais_pvc_blanco", name: "PVC Blanco", desc: "Cielorraso de PVC Blanco (20cm ancho x 1cm espesor).", category: "PVC", provider: "Aisplac", variants: ["1.00m", "2.00m", "3.00m", "4.00m", "5.00m", "6.00m"], img: "1.png" },
@@ -149,6 +149,22 @@ window.selectVariant = function(productId, variantName, element) {
     if (addBtn) {
         addBtn.setAttribute('data-variant', variantName);
     }
+
+    // Update Image if Variant has a mapped image
+    const p = productsData.find(x => x.id === productId);
+    if (p) {
+        const imgEl = card.querySelector('.product-img');
+        if (imgEl) {
+            if (p.variantImgs && p.variantImgs[variantName]) {
+                imgEl.src = p.variantImgs[variantName];
+                if (addBtn) addBtn.dataset.img = p.variantImgs[variantName];
+            } else if (p.img) {
+                // Fallback to main image if no variant image mapped
+                imgEl.src = p.img;
+                if (addBtn) addBtn.dataset.img = p.img;
+            }
+        }
+    }
 };
 
 // Purge and Reset System (One-time usage for Admin to clear Firestore)
@@ -192,7 +208,7 @@ async function initializeProducts() {
         productsData = [...fbProducts, ...missingDefaults];
 
         // Botón de sincronización para administradores
-        if (isAdminUser && missingDefaults.length > 0) {
+        if (isAdminUser) {
             const controls = document.querySelector('.catalog-controls');
             if (controls && !document.getElementById('btn-reset-catalog')) {
                 const btn = document.createElement('button');
@@ -207,7 +223,7 @@ async function initializeProducts() {
 
         // Aviso de catálogo antiguo o desactualizado
         const isLegacy = productsData.some(p => !p.variants || p.variants.length === 0);
-        if ((isLegacy || missingDefaults.length > 0) && isAdminUser) {
+        if (isLegacy && isAdminUser) {
             setTimeout(() => {
                 alert(`AVISO: Hay ${missingDefaults.length} productos nuevos para sincronizar. Usa el botón rojo.`);
             }, 1000);
@@ -294,8 +310,8 @@ function renderProducts() {
             card.className = 'product-card glass reveal delay-2';
             card.innerHTML = `
                 <a href="producto-detalle.html?id=${p.id}" class="product-link" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; flex: 1;">
-                    <div style="position: relative; overflow: hidden; height: 200px;">
-                         <img src="${p.img}" alt="${p.name}" class="product-img" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div style="position: relative; overflow: hidden; height: 200px; background: #ffffff; display: flex; align-items: center; justify-content: center;">
+                         <img src="${p.img}" alt="${p.name}" class="product-img" loading="lazy" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                          <div class="product-hover-overlay">
                             <span class="btn btn-secondary">Ver detalles</span>
                          </div>
