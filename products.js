@@ -24,7 +24,7 @@ const isAdminUser = localStorage.getItem('isAdmin') === 'true';
 // Basic initial data (Official Mariño Catalog extracted from images)
 const defaultProducts = [
     // DURLOCK - Placas de Yeso
-    { id: "dur_placa_std", name: "Placa Estándar - STD", desc: "Placa de yeso para cielorrasos y revestimientos interiores.", category: "Placas de Yeso", provider: "Durlock", variants: ["12.5mm x 2.40m", "12.5mm x 2.60m", "12.5mm x 3.00m"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774386363/f3ywjy8gwsn9vj0rtp2g.png", variantImgs: {"12.5mm x 2.40m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774386366/poh3wbestfhaoich75ys.png", "12.5mm x 2.60m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774386368/ldxqigzzhz0kdssgc8dl.png", "12.5mm x 3.00m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774386370/fzrqajvspmtaudtnaoga.png"} },
+    { id: "dur_placa_std", name: "Placa Estándar - STD", desc: "Placa de yeso para cielorrasos y revestimientos interiores.", category: "Placas de Yeso", provider: "Durlock", variants: ["12.5mm x 2.40m", "12.5mm x 2.60m", "12.5mm x 3.00m"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774491663/kkqnjunv35gewystmspw.png", variantImgs: {"12.5mm x 2.40m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774386366/poh3wbestfhaoich75ys.png", "12.5mm x 2.60m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774386368/ldxqigzzhz0kdssgc8dl.png", "12.5mm x 3.00m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774386370/fzrqajvspmtaudtnaoga.png"} },
     { id: "dur_placa_rh", name: "Placa Resistente a la Humedad - RH", desc: "Ideal para baños, cocinas y ambientes húmedos.", category: "Placas de Yeso", provider: "Durlock", variants: ["12.5mm x 2.40m", "12.5mm x 2.60m"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774386372/horrdjucobl38pmpg83u.png", variantImgs: {"12.5mm x 2.40m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774386375/iy82pjjru9br6db8jmb2.png", "12.5mm x 2.60m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774386377/jokohss69sgmc4whpqdf.png"} },
     { id: "dur_placa_rf", name: "Placa Resistente al Fuego - RF", desc: "Mayor resistencia al fuego para sectores críticos.", category: "Placas de Yeso", provider: "Durlock", variants: ["12.5mm x 2.40m"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774386379/z7jrqua7t67x9za3jmrm.png", variantImgs: {"12.5mm x 2.40m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774386381/tniyz9x1sdd0mjx4rl2d.png"} },
     { id: "dur_placa_técnica", name: "Placas Técnicas Durlock", desc: "Placas especiales para aislamiento, acústica e impactos.", category: "Placas de Yeso", provider: "Durlock", variants: ["ACU 60", "Antihumedad AH", "Extra Resistente ER", "Cuatro Dimensiones 4D", "Semicubiertos SC", "Aquaboard"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774391701/nvnwrsjgshmbuccezxbx.png", variantImgs: {"ACU 60": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391705/a17f5wzcfqhdldjh5i6s.png", "Antihumedad AH": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391712/g2b5qyt3wtgpvqrr21fb.png", "Extra Resistente ER": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391715/sno0gdi7oc806o01nekn.png", "Cuatro Dimensiones 4D": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391717/muo6pml5kpn0wqtfjujd.png", "Semicubiertos SC": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391720/zhiusn6b4shxpgwaoa2j.png", "Aquaboard": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391722/zxr2ozl72g5zypot0jau.png"} },
@@ -42,37 +42,37 @@ const defaultProducts = [
     { id: "dur_lana_vidrio", name: "Lana de Vidrio Premium", desc: "Aislante térmico y acústico con foil de aluminio.", category: "Aislantes", provider: "Durlock", variants: ["50mm espesor", "70mm espesor"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774391774/gyc4v5jxm4jbre1udtl1.jpg", variantImgs: {"50mm espesor": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391776/bashzcdfub4iyvkbgazp.jpg", "70mm espesor": "https://res.cloudinary.com/doissrwhj/image/upload/v1774391778/dlkyoqjqzczyqizv3mnl.jpg"} },
     
     // AISPLAC - PVC
-    { id: "ais_pvc_blanco", name: "PVC Blanco", desc: "Cielorraso de PVC Blanco (20cm ancho x 1cm espesor).", category: "PVC", provider: "Aisplac", variants: ["1.00m", "2.00m", "3.00m", "4.00m", "5.00m", "6.00m"], img: "1.png" },
-    { id: "ais_pvc_color", name: "PVC Color", desc: "Cielorraso de PVC imitación madera.", category: "PVC", provider: "Aisplac", variants: ["Fresno", "Valencia", "Negro", "Roble (5.95m)", "Cedro (5.95m)"], img: "1.png" },
-    { id: "ais_molduras", name: "Molduras PVC", desc: "Terminaciones U, N y H para cielorrasos PVC.", category: "Molduras", provider: "Aisplac", variants: ["U Blanca", "U Fresno", "U Negro", "N Blanca", "N Fresno", "H Blanca", "H Negro"], img: "1.png" },
+    { id: "ais_pvc_blanco", name: "PVC Blanco", desc: "Cielorraso de PVC Blanco (20cm ancho x 1cm espesor).", category: "PVC", provider: "Aisplac", variants: ["1.00m", "2.00m", "3.00m", "4.00m", "5.00m", "6.00m"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774461693/z1hmunmamsbzejozp7x0.jpg", variantImgs: {"1.00m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461695/qagdentmwsraiacbgce8.jpg", "2.00m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461696/ibfb5hmtlga7mza1zeoc.jpg", "3.00m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461698/uc7cf8xstxflv6cbeuyf.jpg", "4.00m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461701/knz5cdfofoe8cxbihmxa.jpg", "5.00m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461702/jiv82rhuennentkn1gh9.jpg", "6.00m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461704/wpqq2zrp1eqaaqccpk07.jpg"} },
+    { id: "ais_pvc_color", name: "PVC Color", desc: "Cielorraso de PVC imitación madera.", category: "PVC", provider: "Aisplac", variants: ["Fresno", "Valencia", "Negro", "Roble (5.95m)", "Cedro (5.95m)"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774461706/zaxb2omld6yzsmgr05of.png", variantImgs: {"Fresno": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461707/uc5gvgvt52lyavau4map.png", "Valencia": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461709/ybl4bo5josj0qgg9fke6.jpg", "Negro": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461710/srhlxmvbchlkzrh06mkk.jpg"} },
+    { id: "ais_molduras", name: "Molduras PVC", desc: "Terminaciones U, N y H para cielorrasos PVC.", category: "Molduras", provider: "Aisplac", variants: ["U Blanca", "U Fresno", "U Negro", "N Blanca", "N Fresno", "H Blanca", "H Negro"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774461712/axl3nlqgic8hytvitike.jpg", variantImgs: {"U Blanca": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461713/srjt3hqblsqw1sctgxf6.jpg", "U Fresno": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461715/tieqw2jru4hfdjpjrvru.jpg", "U Negro": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461716/mlhopcgzgmos8mtvh8bi.jpg", "H Blanca": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461718/a6jqzmo5z0bvrva8zljb.jpg", "H Negro": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461719/oive3omukk4wvujfjcpa.jpg", "N Blanca": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461721/rk44z4tec6phm2kbhzc9.jpg", "N Fresno": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461723/fz9mqrqtmeqgptav9l9n.jpg"} },
 
     // JMA - Perfiles
-    { id: "jma_montante", name: "Montante JMA", desc: "Perfil estructural de acero galvanizado.", category: "Perfiles", provider: "JMA", variants: ["34mm x 2.60m", "34mm x 4.00m", "69mm x 2.60m"], img: "1.png" },
-    { id: "jma_solera", name: "Solera JMA", desc: "Perfil guía para tabiques.", category: "Perfiles", provider: "JMA", variants: ["35mm x 2.60m", "35mm x 4.00m", "70mm x 2.60m"], img: "1.png" },
-    { id: "jma_perfiles_v", name: "Perfiles Varios JMA", desc: "Perfiles complementarios para construcción en seco.", category: "Perfiles", provider: "JMA", variants: ["Omega", "Buña Z", "Cantonera", "Ángulo Ajuste"], img: "1.png" },
+    { id: "jma_montante", name: "Montante JMA", desc: "Perfil estructural de acero galvanizado.", category: "Perfiles", provider: "JMA", variants: ["34mm x 2.60m", "34mm x 4.00m", "69mm x 2.60m"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774461725/vvngltdxil3xxi0gotsg.jpg", variantImgs: {"34mm x 2.60m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461728/grm384psqtx2unxgysb2.jpg", "34mm x 4.00m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461732/sztlj3yke7vjbiyozyxu.jpg", "69mm x 2.60m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461734/y7mujdmewakhx8lfcn0g.jpg"} },
+    { id: "jma_solera", name: "Solera JMA", desc: "Perfil guía para tabiques.", category: "Perfiles", provider: "JMA", variants: ["35mm x 2.60m", "35mm x 4.00m", "70mm x 2.60m"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774461735/kxxw251f86vemu2l0l1e.jpg", variantImgs: {"35mm x 2.60m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461737/muzdvwolpv0mlzgod1ry.jpg", "35mm x 4.00m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461738/xb5dwulquyda6idfqz66.jpg", "70mm x 2.60m": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461740/jq88oyju8jsvrx7hvstr.jpg"} },
+    { id: "jma_perfiles_v", name: "Perfiles Varios JMA", desc: "Perfiles complementarios para construcción en seco.", category: "Perfiles", provider: "JMA", variants: ["Omega", "Buña Z", "Cantonera", "Ángulo Ajuste"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774461742/kk89o6a8ogg1gpz46zrg.jpg", variantImgs: {"Omega": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461743/srllhhoty6pe961vx8t5.png", "Buña Z": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461745/wbawk3r5i4ak7qxsr5up.png", "Cantonera": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461746/jfivnm7ysckyngffep3d.png", "Ángulo Ajuste": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461747/wix5amqfvrhm9mavaigk.png"} },
     // ATENNEAS
-    { id: "ate_molduras", name: "Molduras Atenneas", desc: "Molduras decorativas de poliuretano (2.00mts).", category: "Molduras", provider: "Atenneas", variants: ["AT-31R", "AT-35", "AT-40", "AT-46", "AT-49", "AT-52", "AT-58", "AT-61R", "AT-70", "AT-76", "AT-85", "AT-90", "AT-91R", "AT-105"], img: "1.png" },
-    { id: "ate_guardas", name: "Guardas Atenneas", desc: "Guardas decorativas coordinadas.", category: "Guardas", provider: "Atenneas", variants: ["AT-04", "AT-05", "AT-06", "AT-06S", "AT-07"], img: "1.png" },
+    { id: "ate_molduras", name: "Molduras Atenneas", desc: "Molduras decorativas de poliuretano (2.00mts).", category: "Molduras", provider: "Atenneas", variants: ["AT-31R", "AT-35", "AT-40", "AT-46", "AT-49", "AT-52", "AT-58", "AT-61R", "AT-70", "AT-76", "AT-85", "AT-90", "AT-91R", "AT-105"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774461749/oxsxlgvtdwxraggakowa.png", variantImgs: {"AT-35": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461751/vhxv297udospmkmzxwcb.jpg", "AT-40": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461752/mf7qnwf3p1lnzsbvncvr.jpg", "AT-46": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461753/jztrjnocbanhfpb92zrp.jpg", "AT-49": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461755/x0wcox0okulboibrv3za.jpg", "AT-52": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461756/tpqholgwyjweojh48euv.jpg", "AT-58": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461758/afktxred0tp2msm87ppl.jpg", "AT-61R": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461759/q7qpizchkettsg60dxsg.jpg", "AT-70": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461761/hojtso5lyxegkxnugu9x.jpg", "AT-76": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461763/c71kcpnsx5niadqrnvpj.jpg", "AT-85": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461764/qgcsnwquj5lp1qrcgqju.jpg", "AT-90": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461765/ztupxyxtntlqnm4exf0f.jpg", "AT-91R": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461768/viujjohwnghd49n51til.jpg", "AT-105": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461769/tu71rf0r5uvpxnhwh3ed.jpg", "AT-31R": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461770/esptlwrlmsky1w6fqe9c.jpg"} },
+    { id: "ate_guardas", name: "Guardas Atenneas", desc: "Guardas decorativas coordinadas.", category: "Guardas", provider: "Atenneas", variants: ["AT-04", "AT-05", "AT-06", "AT-06S", "AT-07"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774461772/vefiqglgkzjtgormo3jq.jpg", variantImgs: {"AT-04": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461773/rsa66ua46fqrtbj8z9cc.jpg", "AT-05": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461774/sanx22nddphfdt21i7xj.jpg", "AT-06": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461775/u0sz21jpqjlwwxv3ahlk.jpg", "AT-06S": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461777/nuohczyontcfazipk61x.jpg", "AT-07": "https://res.cloudinary.com/doissrwhj/image/upload/v1774461779/ldj522qo4istnc7yjqox.jpg"} },
     { id: "ate_muropanel", name: "Muropanel Nude", desc: "Revestimiento de pared texturado.", category: "Revestimientos", provider: "Atenneas", variants: ["PRAGA", "TERRARUM", "FINLANDÉS", "CAJÚ"], img: "1.png" },
-    { id: "ate_adhesivos", name: "Adhesivos Atenneas", desc: "Pegamento especial para poliuretano.", category: "Adhesivos", provider: "Atenneas", variants: ["Cartucho 400gr", "Pote 1.5kg", "Balde 5kg"], img: "1.png" },
+    { id: "ate_adhesivos", name: "Adhesivos Atenneas", desc: "Pegamento especial para poliuretano.", category: "Adhesivos", provider: "Atenneas", variants: ["Cartucho 400gr", "Pote 1.5kg", "Balde 5kg"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774476890/oimnphdavsmkd0seqazu.png", variantImgs: {"Cartucho 400gr": "https://res.cloudinary.com/doissrwhj/image/upload/v1774476891/tkhm9weyaq3xz0mdumgo.png", "Pote 1.5kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774476892/hqjelmiqresz7qaivh5o.png", "Balde 5kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774476894/m6djda2mzc2q3dlpnnd8.png"} },
 
     // MAROPOR
-    { id: "mar_masilla_lpu", name: "Masilla LPU Maropor", desc: "Masilla lista para usar.", category: "Masilla", provider: "Maropor", variants: ["Doypack 2kg", "Balde 7kg", "Balde 16kg", "Balde 32kg"], img: "1.png" },
-    { id: "mar_masilla_duo", name: "Masilla Duo Maropor", desc: "Masilla de fragüe para juntas.", category: "Masilla", provider: "Maropor", variants: ["1.7kg", "7kg", "16kg", "32kg"], img: "1.png" },
-    { id: "mar_masilla_ext", name: "Masilla Exterior Maropor", desc: "Masilla reforzada para exteriores.", category: "Masilla", provider: "Maropor", variants: ["1.5kg", "6kg", "15kg", "30kg"], img: "1.png" },
-    { id: "mar_adhesivo_moldura", name: "Adhesivo Moldura Maropor", desc: "Pegamento para moldura interior.", category: "Adhesivos", provider: "Maropor", variants: ["Cartucho 450gr", "Doypack 1kg", "Pote 1kg", "Balde 7kg"], img: "1.png" },
-    { id: "mar_adhesivo_zocalo", name: "Adhesivo Zócalo Maropor", desc: "Pegamento extra fuerte para zócalos.", category: "Adhesivos", provider: "Maropor", variants: ["Cartucho 450gr", "Pote 1.7kg", "Balde 7kg"], img: "1.png" },
-    { id: "mar_molduras", name: "Molduras Maropor", desc: "Molduras decorativas de poliestireno (2.00mts).", category: "Molduras", provider: "Maropor", variants: ["M30", "M33", "M35", "M37", "M40", "M42", "M46", "M47", "M49", "M60", "M68", "M78", "MP1", "MP2", "MP3", "MP18"], img: "1.png" },
-    { id: "mar_desmontables", name: "Perfiles Desmontables Maropor", desc: "Sistema de suspensión para cielorrasos.", category: "Perfiles", provider: "Maropor", variants: ["Larguero 3.66", "Travesaño 0.61", "Travesaño 1.22", "Perimetral 3.05"], img: "1.png" },
+    { id: "mar_masilla_lpu", name: "Masilla LPU Maropor", desc: "Masilla lista para usar.", category: "Masilla", provider: "Maropor", variants: ["Doypack 2kg", "Balde 7kg", "Balde 16kg", "Balde 32kg"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774491664/cmqdzj2iw3nsquhv3teg.jpg", variantImgs: {"Doypack 2kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491666/twvaioyltfk6obzrieth.jpg", "Balde 7kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491667/ypxofwjq6wnzq5l1duvb.jpg", "Balde 16kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491669/j7uifpobh6g0aalpzf8v.jpg", "Balde 32kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491670/kefsschrbcgqyuop5v9b.jpg"} },
+    { id: "mar_masilla_duo", name: "Masilla Duo Maropor", desc: "Masilla de fragüe para juntas.", category: "Masilla", provider: "Maropor", variants: ["1.7kg", "7kg", "16kg", "32kg"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774491671/qdiw9nadu4kinbsw6tsc.jpg", variantImgs: {"1.7kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491673/y1bjpuqltqu1ttgmhgue.jpg", "7kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491674/twxkgvpnbsdc2actzxir.jpg", "16kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491675/wk0dijgguncxiblikigi.jpg", "32kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491677/iidvgj1svqjlltc8evjw.jpg"} },
+    { id: "mar_masilla_ext", name: "Masilla Exterior Maropor", desc: "Masilla reforzada para exteriores.", category: "Masilla", provider: "Maropor", variants: ["1.5kg", "6kg", "15kg", "30kg"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774491678/nsoqacg6dmvh3wyruhdz.jpg", variantImgs: {"1.5kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491679/p0gvsemtrvuti2ktsqfs.jpg", "6kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491680/fqf0a6eqqqx0fdvzcvlp.jpg", "15kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491682/go0ugvevwdctdr7alar6.jpg", "30kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491683/loih34xxtyxqzqvdp0zi.jpg"} },
+    { id: "mar_adhesivo_moldura", name: "Adhesivo Moldura Maropor", desc: "Pegamento para moldura interior.", category: "Adhesivos", provider: "Maropor", variants: ["Cartucho 450gr", "Doypack 1kg", "Pote 1kg", "Balde 7kg"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774491684/sais5ijkfcrta3df3lyu.jpg", variantImgs: {"Cartucho 450gr": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491685/ahe7nmah7bu8u1blbflw.jpg", "Doypack 1kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491687/hcbb4eynm3ibvbbwbf5g.jpg", "Pote 1kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491688/lu9xjhwti0wm7mdzf8nc.jpg", "Balde 7kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491689/vi0mfmjqkgonbqznjfz3.jpg"} },
+    { id: "mar_adhesivo_zocalo", name: "Adhesivo Zócalo Maropor", desc: "Pegamento extra fuerte para zócalos.", category: "Adhesivos", provider: "Maropor", variants: ["Cartucho 450gr", "Pote 1.7kg", "Balde 7kg"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774491690/yfo1fyy1iddxzodunnom.jpg", variantImgs: {"Cartucho 450gr": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491691/v6jdoszlo8m7peqbzhct.jpg", "Pote 1.7kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491692/mhea1vqgt2wij8d8ajyq.jpg", "Balde 7kg": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491694/kfrgeb3jlalltzipjg3q.jpg"} },
+    { id: "mar_molduras", name: "Molduras Maropor", desc: "Molduras decorativas de poliestireno (2.00mts).", category: "Molduras", provider: "Maropor", variants: ["M30", "M33", "M35", "M37", "M40", "M42", "M46", "M47", "M49", "M60", "M68", "M78", "MP1", "MP2", "MP3", "MP18"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774491695/lwal4tiasvnqvdpbnnn7.jpg", variantImgs: {"M30": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491697/lh6hvtvjsdfoampoymzp.jpg", "M33": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491699/vsehsp8n9ermfu2gpmgv.jpg", "M35": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491700/l27ffk4u9uorhkpfilbq.jpg", "M37": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491702/ojocokh7dtzo4o3bhnun.jpg", "M40": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491703/aoperpggingdji2l9xjn.jpg", "M42": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491704/zapscy2w3l1cbwexjwcv.jpg", "M46": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491706/dvywdhad4nl4xjfx1tnk.jpg", "M47": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491707/d46koqhx8anbg7vpkxer.jpg", "M49": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491708/xmyo6brnroqjgin3gazh.jpg", "M60": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491710/kvpch3akuoaf1uadhulj.jpg", "M68": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491711/nkc4vhv3gwbqe0rhfwj5.jpg", "M78": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491712/lhme3uvmy5e1xsigwew0.jpg", "MP18": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491713/afot05qyfpbzl2it5gdr.jpg", "MP1": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491714/ctirlfmgfzderktsehuy.jpg", "MP2": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491715/v24tvzhpnawygc3cvgvk.jpg", "MP3": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491717/m2iuorwdickmx9bqroiu.jpg"} },
+    { id: "mar_desmontables", name: "Perfiles Desmontables Maropor", desc: "Sistema de suspensión para cielorrasos.", category: "Perfiles", provider: "Maropor", variants: ["Larguero 3.66", "Travesaño 0.61", "Travesaño 1.22", "Perimetral 3.05"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774491719/vnkkie0lmoqhfesp3kw3.jpg", variantImgs: {"Larguero 3.66": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491722/h3gtpo7m7hx1nkbxipgc.jpg", "Travesaño 1.22": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491723/tul9mfdrulqk92yshanc.jpg", "Travesaño 0.61": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491725/cc3kwdeum79p6041k5ud.jpg", "Perimetral 3.05": "https://res.cloudinary.com/doissrwhj/image/upload/v1774491727/dryd2w1ji1d2ikxci9th.jpg"} },
 
     // ACON
     { id: "aco_gargantas", name: "Gargantas ACON", desc: "Gargantas para iluminación LED perimetral.", category: "Iluminación", provider: "ACON", variants: ["GIL 1 (Pared/Techo)", "GIL 3 (Central)", "GIF 2 (Perimetral)", "GIM 1 (LED)", "CZI (Cortinero)"], img: "1.png" },
 
     // IPROA
-    { id: "ipr_cortinas", name: "Cortinas IPROA", desc: "Sistemas de cortinería a medida.", category: "Cortinas", provider: "IPROA", variants: ["Roller", "Roller Doble", "Veneciana Alum.", "Veneciana Madera", "Bandas Vert.", "Parcelle", "Etienne"], img: "1.png" },
+    { id: "ipr_cortinas", name: "Cortinas IPROA", desc: "Sistemas de cortinería a medida.", category: "Cortinas", provider: "IPROA", variants: ["Roller", "Roller Doble", "Veneciana Alum.", "Veneciana Madera", "Bandas Vert.", "Parcelle", "Etienne"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774479022/dgyhqhmlb62qqqzhxhoq.jpg" },
 
     // TELPLAST
-    { id: "tel_pegamentos", name: "Pegamentos y Químicos TelPlast", desc: "Soluciones de adhesión para obra.", category: "Adhesivos", provider: "TelPlast", variants: ["Cola 1kg", "Cola 500gr", "Cola 250gr", "WOW 400gr Cartucho", "WOW 120gr Pomo", "Masilla Madera 1.7kg", "Masilla Madera 800gr", "Masilla Yeso 32kg", "Fijador 4Lt", "Sellador Grietas 400gr"], img: "1.png" },
+    { id: "tel_pegamentos", name: "Pegamentos y Químicos TelPlast", desc: "Soluciones de adhesión para obra.", category: "Adhesivos", provider: "TelPlast", variants: ["Cola 1kg", "Cola 500gr", "Cola 250gr", "WOW 400gr Cartucho", "WOW 120gr Pomo", "Masilla Madera 1.7kg", "Masilla Madera 800gr", "Masilla Yeso 32kg", "Fijador 4Lt", "Sellador Grietas 400gr"], img: "https://res.cloudinary.com/doissrwhj/image/upload/v1774476896/bwks5hfazzgwxoeuccnm.jpg" },
 
     // CASETO
     { id: "cas_accesorios", name: "Accesorios Caseto", desc: "Perfilería y accesorios de terminación.", category: "Accesorios", provider: "Caseto", variants: ["Ángulo 320", "Ángulo 300", "Ángulo 301", "Ángulo 1012", "Fleje 321", "Fleje 324", "Media Caña 1020", "Perfil T1 - 309", "Perfil T2 - 310"], img: "1.png" },
@@ -163,6 +163,17 @@ window.selectVariant = function(productId, variantName, element) {
                 imgEl.src = p.img;
                 if (addBtn) addBtn.dataset.img = p.img;
             }
+        }
+        
+        // Update OUT OF STOCK status
+        const isOOS = (p.outOfStock || []).includes(variantName);
+        const badge = document.getElementById(`oos-badge-${productId}`);
+        if (badge) badge.style.display = isOOS ? 'block' : 'none';
+        
+        const addBtnText = document.getElementById(`add-text-${productId}`);
+        if (addBtn) {
+            addBtn.disabled = isOOS;
+            if (addBtnText) addBtnText.innerText = isOOS ? 'Sin Stock' : 'Agregar';
         }
     }
 };
@@ -306,15 +317,26 @@ function renderProducts() {
         grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); font-size: 1.2rem; padding: 2rem;">No se encontraron productos en el catálogo que coincidan con la búsqueda.</p>';
     } else {
         paginated.forEach(p => {
+            // Check default variant out of stock status
+            let defaultVariant = p.variants && p.variants.length > 0 ? p.variants[0] : 'main';
+            let isOOS = false;
+            if (p.variants && p.variants.length > 0) {
+                isOOS = (p.outOfStock || []).includes(defaultVariant);
+            } else {
+                isOOS = p.outOfStock === true || (Array.isArray(p.outOfStock) && p.outOfStock.includes('main'));
+            }
+
             const card = document.createElement('div');
             card.className = 'product-card glass reveal delay-2';
             card.innerHTML = `
                 <a href="producto-detalle.html?id=${p.id}" class="product-link" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; flex: 1;">
                     <div style="position: relative; overflow: hidden; height: 200px; background: #ffffff; display: flex; align-items: center; justify-content: center;">
                          <img src="${p.img}" alt="${p.name}" class="product-img" loading="lazy" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                         <div class="out-of-stock-badge" id="oos-badge-${p.id}" style="display: ${isOOS ? 'block' : 'none'};">SIN STOCK</div>
                          <div class="product-hover-overlay">
                             <span class="btn btn-secondary">Ver detalles</span>
                          </div>
+
                     </div>
                     <div class="product-info" style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column;">
                         <span class="product-provider-badge">${p.provider}</span>
@@ -354,8 +376,9 @@ function renderProducts() {
                                 data-name="${p.name.replace(/"/g, '&quot;')}" 
                                 data-img="${p.img}" 
                                 data-cat="${p.category}"
-                                data-variant="${p.variants && p.variants.length > 0 ? p.variants[0] : ''}">
-                            <i class="fas fa-cart-plus"></i> Agregar
+                                data-variant="${p.variants && p.variants.length > 0 ? p.variants[0] : ''}"
+                                ${isOOS ? 'disabled' : ''}>
+                            <i class="fas fa-cart-plus"></i> <span id="add-text-${p.id}">${isOOS ? 'Sin Stock' : 'Agregar'}</span>
                         </button>
                     </div>
                 </div>
@@ -363,14 +386,18 @@ function renderProducts() {
 
                 ${isAdminUser ? `
                 <div class="admin-controls" style="display: flex; gap: 0.5rem; padding: 0 1.5rem 1.5rem 1.5rem;">
-                    <button class="btn btn-secondary" onclick="event.preventDefault(); editProduct('${p.id}')" style="flex: 1; padding: 0.5rem;">
-                       <i class="fas fa-edit"></i> Editar
+                    <button class="btn btn-warning" onclick="event.preventDefault(); openStockManager('${p.id}')" style="flex: 1; padding: 0.5rem;" title="Gestionar Stock">
+                       <i class="fas fa-boxes"></i>
                     </button>
-                    <button class="btn btn-danger" onclick="event.preventDefault(); deleteProduct('${p.id}')" style="flex: 1; padding: 0.5rem;">
+                    <button class="btn btn-secondary" onclick="event.preventDefault(); editProduct('${p.id}')" style="flex: 1; padding: 0.5rem;" title="Editar">
+                       <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-danger" onclick="event.preventDefault(); deleteProduct('${p.id}')" style="flex: 1; padding: 0.5rem;" title="Eliminar">
                        <i class="fas fa-trash"></i>
                     </button>
                 </div>` : ''}
             `;
+
             grid.appendChild(card);
         });
     }
@@ -438,6 +465,51 @@ window.editProduct = window.editProduct || async function (id) {
     document.getElementById('addModal').style.display = 'flex';
 }
 
+// Stock Management
+window.openStockManager = function(id) {
+    const p = productsData.find(x => x.id === id);
+    if (!p) return;
+    
+    document.getElementById('stock-p-id').value = p.id;
+    document.getElementById('stock-modal-title').innerText = `Stock: ${p.name}`;
+    
+    // Si la modal o el contenedor no existen es porque puede que esta vista no las implemente 
+    // pero evitamos el error
+    const container = document.getElementById('stock-variants-container');
+    if (!container) return;
+    container.innerHTML = '';
+    
+    const outOfStock = p.outOfStock || [];
+    
+    if (p.variants && p.variants.length > 0) {
+        p.variants.forEach(v => {
+            const isOutOfStock = outOfStock.includes(v);
+            container.innerHTML += `
+                <div class="stock-item" style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; border-bottom: 1px solid var(--glass-border);">
+                    <span style="font-size: 1rem; color: white;">${v}</span>
+                    <label class="switch">
+                        <input type="checkbox" class="stock-toggle-input" value="${v}" ${!isOutOfStock ? 'checked' : ''}>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            `;
+        });
+    } else {
+        const isOutOfStock = outOfStock === true || (Array.isArray(outOfStock) && outOfStock.includes('main'));
+        container.innerHTML += `
+            <div class="stock-item" style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; border-bottom: 1px solid var(--glass-border);">
+                <span style="font-size: 1rem; color: white;">Producto Único</span>
+                <label class="switch">
+                    <input type="checkbox" class="stock-toggle-input" value="main" ${!isOutOfStock ? 'checked' : ''}>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        `;
+    }
+    
+    document.getElementById('stockModal').style.display = 'flex';
+};
+
 window.deleteProduct = window.deleteProduct || async function (id) {
     if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
         const p = productsData.find(x => x.id === id);
@@ -453,7 +525,7 @@ window.deleteProduct = window.deleteProduct || async function (id) {
             }
         }
     }
-}
+};
 
 // Render dynamic filters based on current productsData
 function renderFilters() {
@@ -600,6 +672,57 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Stock Modal behavior
+    const stockModal = document.getElementById('stockModal');
+    const btnCloseStockModal = document.getElementById('close-stock-modal');
+    const stockForm = document.getElementById('stock-form');
+    
+    if (stockModal) {
+        btnCloseStockModal.addEventListener('click', () => stockModal.style.display = 'none');
+        window.addEventListener('click', (e) => {
+            if (e.target === stockModal) stockModal.style.display = 'none';
+        });
+        
+        stockForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btnSubmit = stockForm.querySelector('button[type="submit"]');
+            btnSubmit.disabled = true;
+            btnSubmit.innerText = 'Guardando...';
+            
+            try {
+                const id = document.getElementById('stock-p-id').value;
+                const pIndex = productsData.findIndex(x => x.id === id);
+                if (pIndex !== -1) {
+                    const checkboxes = stockForm.querySelectorAll('.stock-toggle-input');
+                    let newOutOfStock = [];
+                    let hasVariants = productsData[pIndex].variants && productsData[pIndex].variants.length > 0;
+                    
+                    checkboxes.forEach(cb => {
+                        if (!cb.checked) { // Not checked = out of stock
+                            newOutOfStock.push(cb.value);
+                        }
+                    });
+                    
+                    if (!hasVariants) {
+                        productsData[pIndex].outOfStock = newOutOfStock.includes('main') ? true : false;
+                    } else {
+                        productsData[pIndex].outOfStock = newOutOfStock;
+                    }
+                    
+                    await saveProduct(productsData[pIndex]);
+                    renderProducts();
+                }
+                stockModal.style.display = 'none';
+            } catch (error) {
+                console.error("Error al guardar stock:", error);
+                alert("Hubo un error al guardar el estado del stock.");
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerText = 'Guardar Stock';
+            }
+        });
+    }
+
     // Clear filters behavior
     const btnClearFilters = document.getElementById('btn-clear-filters');
     if (btnClearFilters) {
@@ -660,6 +783,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const provider = document.getElementById('p-provider').value;
                 const color = document.getElementById('p-color').value;
                 const size = document.getElementById('p-size').value;
+                const variants = size.split(',').map(s => s.trim()).filter(Boolean);
                 const desc = document.getElementById('p-desc').value;
                 
                 // Allow file upload or URL

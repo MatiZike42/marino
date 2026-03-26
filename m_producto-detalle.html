@@ -142,6 +142,24 @@
                 font-size: 2rem;
             }
         }
+
+        /* Out of Stock Badge */
+        .out-of-stock-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(220, 53, 69, 0.95);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            font-weight: 800;
+            font-size: 1.2rem;
+            border-radius: 4px;
+            z-index: 10;
+            pointer-events: none;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 
@@ -232,11 +250,20 @@
             const safeImg  = (p.img  || '').replace(/'/g, "\\'");
             const safeCat  = (p.category || '').replace(/'/g, "\\'");
 
+            let defaultVariant = p.variants && p.variants.length > 0 ? p.variants[0] : 'main';
+            let isOOS = false;
+            if (p.variants && p.variants.length > 0) {
+                isOOS = (p.outOfStock || []).includes(defaultVariant);
+            } else {
+                isOOS = p.outOfStock === true || (Array.isArray(p.outOfStock) && p.outOfStock.includes('main'));
+            }
+
             container.innerHTML = `
                 <a href="m_productos.html" class="back-link reveal"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
                 <div class="product-detail-layout">
-                    <div class="product-image-container reveal delay-1">
+                    <div class="product-image-container reveal delay-1" style="position: relative;">
                         <img src="${p.img}" alt="${p.name}">
+                        <div class="out-of-stock-badge" id="pd-oos-badge" style="display: ${isOOS ? 'block' : 'none'};">SIN STOCK</div>
                     </div>
                     <div class="product-info-container reveal delay-2">
                         <div>
@@ -281,8 +308,8 @@
                                     <span id="detail-qty-display" style="font-size:1.6rem;font-weight:700;min-width:40px;text-align:center;">1</span>
                                     <button id="detail-qty-plus" style="width:42px;height:42px;border-radius:50%;border:2px solid var(--accent-color);background:transparent;color:var(--accent-color);font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
                                 </div>
-                                <button id="detail-add-btn" class="btn btn-primary" style="width:100%;margin:0 0 1rem 0;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
-                                    <i class="fas fa-cart-plus" style="transform:translateY(1px);"></i> Sumar al Presupuesto
+                                <button id="detail-add-btn" class="btn btn-primary" style="width:100%;margin:0 0 1rem 0;display:flex;align-items:center;justify-content:center;gap:0.5rem;" ${isOOS ? 'disabled' : ''}>
+                                    <i class="fas fa-cart-plus" style="transform:translateY(1px);"></i> <span id="add-text-detail">${isOOS ? 'Sin Stock' : 'Sumar al Presupuesto'}</span>
                                 </button>
                                 <a href="https://wa.me/5493404505350?text=Hola,%20quisiera%20consultar%20por%20el%20producto:%20${encodeURIComponent(p.name)}" target="_blank" class="btn btn-secondary" style="width:100%;margin:0;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
                                     <i class="fab fa-whatsapp" style="transform:translateY(1px);"></i> Consultar Directo
@@ -317,6 +344,18 @@
                 }
                 const imgEl = document.querySelector('.product-image-container img');
                 if (imgEl) imgEl.src = currentImg;
+
+                // Update out of stock UI
+                const isOutOfStock = (p.outOfStock || []).includes(v);
+                const badge = document.getElementById('pd-oos-badge');
+                if (badge) badge.style.display = isOutOfStock ? 'block' : 'none';
+                
+                const addBtn = document.getElementById('detail-add-btn');
+                const addText = document.getElementById('add-text-detail');
+                if (addBtn && addText) {
+                    addBtn.disabled = isOutOfStock;
+                    addText.innerText = isOutOfStock ? 'Sin Stock' : 'Sumar al Presupuesto';
+                }
 
                 el.parentElement.querySelectorAll('.variant-chip').forEach(c => {
                     c.style.borderColor = 'var(--glass-border)';

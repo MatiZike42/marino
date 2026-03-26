@@ -260,6 +260,32 @@
             text-align: center;
             margin-top: 1rem;
         }
+
+        /* Out of Stock Badge */
+        .out-of-stock-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(220, 53, 69, 0.95);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            font-weight: 800;
+            font-size: 1.2rem;
+            border-radius: 4px;
+            z-index: 10;
+            pointer-events: none;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Switch Toggle */
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #dc3545; transition: .4s; border-radius: 34px;}
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;}
+        input:checked + .slider { background-color: #28a745; }
+        input:checked + .slider:before { transform: translateX(24px); }
     </style>
 
     <script>
@@ -434,6 +460,28 @@
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Guardar
                     Producto</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Stock Modal -->
+    <div id="stockModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2 id="stock-modal-title">Gestión de Stock</h2>
+                <span class="close-modal" id="close-stock-modal">&times;</span>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">
+                Activa el interruptor verde si hay stock. Desactívalo (rojo) si no hay stock.
+            </p>
+            <form id="stock-form">
+                <input type="hidden" id="stock-p-id" value="">
+                
+                <div id="stock-variants-container" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 300px; overflow-y: auto; margin-bottom: 1.5rem;">
+                    <!-- Se inyecta con JS -->
+                </div>
+
+                <button type="submit" class="btn btn-warning" style="width: 100%;">Guardar Stock</button>
             </form>
         </div>
     </div>
