@@ -446,7 +446,7 @@ function renderProducts() {
                     <div class="product-info" style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column;">
                         <span class="product-provider-badge">${p.provider}</span>
                         <h3 class="product-title" style="margin: 0.5rem 0; font-size: 1.1rem;">${p.name}</h3>
-                        <p class="product-desc" style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem; flex: 1;">${p.desc}</p>
+                        <p class="product-desc" style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem; flex: 1;">${(p.desc || '').replace(/\n/g, '<br>')}</p>
                         
                         <!-- Variant Selector -->
                         ${p.variants && p.variants.length > 0 ? `

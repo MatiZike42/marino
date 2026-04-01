@@ -45,6 +45,13 @@ async function initializeGaleria() {
             videosData = [...defaultVideos];
         }
 
+        // Ordenar por campo order (ascendente), sin order van al final
+        videosData.sort((a, b) => {
+            const oA = (a.order !== undefined && a.order !== null && a.order !== '') ? Number(a.order) : 9999;
+            const oB = (b.order !== undefined && b.order !== null && b.order !== '') ? Number(b.order) : 9999;
+            return oA - oB;
+        });
+
         renderVideos();
         setupAdminUI();
     } catch (error) {
@@ -72,7 +79,7 @@ function renderVideos() {
                 </div>
                 <div class="video-info">
                     <h3>${v.title}</h3>
-                    <p>${v.desc || ''}</p>
+                    <p>${(v.desc || '').replace(/\n/g, '<br>')}</p>
                     ${isAdminUser ? `
                         <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
                             <button class="btn btn-secondary" style="flex:1; padding: 0.4rem;" onclick="editVideo('${v.id}')"><i class="fas fa-edit"></i></button>
@@ -92,7 +99,7 @@ function renderVideos() {
                 </div>
                 <div class="video-info-m">
                     <h3>${v.title}</h3>
-                    <p>${v.desc || ''}</p>
+                    <p>${(v.desc || '').replace(/\n/g, '<br>')}</p>
                     ${isAdminUser ? `
                         <div style="margin-top: 0.8rem; display: flex; gap: 0.5rem;">
                             <button class="btn btn-secondary" style="flex:1; font-size: 0.8rem;" onclick="editVideo('${v.id}')">Editar</button>
@@ -312,7 +319,11 @@ function setupAdminUI() {
                     desc: document.getElementById('v-desc').value,
                     type,
                     url,
-                    thumb: thumb || '1.png'
+                    thumb: thumb || '1.png',
+                    order: (() => {
+                        const raw = document.getElementById('v-order') ? document.getElementById('v-order').value.trim() : '';
+                        return raw !== '' ? Number(raw) : null;
+                    })()
                 };
 
                 await setDoc(doc(db, "videos", id), videoObj);
@@ -343,6 +354,8 @@ window.editVideo = function(id) {
     document.getElementById('v-type').value = v.type;
     document.getElementById('v-url').value = v.url || '';
     document.getElementById('v-thumb').value = v.thumb || '';
+    const vOrder = document.getElementById('v-order');
+    if (vOrder) vOrder.value = (v.order !== undefined && v.order !== null) ? v.order : '';
     
     // Trigger change event to show/hide correct inputs
     document.getElementById('v-type').dispatchEvent(new Event('change'));
