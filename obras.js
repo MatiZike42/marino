@@ -81,12 +81,17 @@ async function initializeObras() {
              galleryData = [...defaultGallery];
         }
 
+        const sortByOrder = (a, b) => {
+            const oA = (a.order !== undefined && a.order !== null && a.order !== '') ? Number(a.order) : 9999;
+            const oB = (b.order !== undefined && b.order !== null && b.order !== '') ? Number(b.order) : 9999;
+            return oA - oB;
+        };
         const sortByIdDesc = (a, b) => {
             const numA = parseInt(String(a.id).replace(/\D/g, '')) || 0;
             const numB = parseInt(String(b.id).replace(/\D/g, '')) || 0;
             return numB - numA;
         };
-        projectsData.sort(sortByIdDesc);
+        projectsData.sort(sortByOrder);
         galleryData.sort(sortByIdDesc);
 
         renderStackedCards();
@@ -149,7 +154,7 @@ function renderStackedCards() {
             <div class="project-card" id="card-${proj.id}">
                 <div class="project-info">
                     <h3><span>${proj.client}</span>${proj.title}</h3>
-                    <p>${proj.desc}</p>
+                    <p>${(proj.desc || '').replace(/\n/g, '<br>')}</p>
                     <div class="project-tags">${tagHtml}</div>
                     ${adminHtml}
                 </div>
@@ -159,6 +164,14 @@ function renderStackedCards() {
                 </div>
             </div>
         `;
+
+        // Click en la tarjeta abre el popup de detalle
+        wrapper.querySelector('.project-card').addEventListener('click', (e) => {
+            // Evitar abrir si el click fue en un botón de admin o de galería
+            if (e.target.closest('.admin-controls-card') || e.target.closest('.gallery-controls') || e.target.closest('.g-btn')) return;
+            openProjectModal(proj.id);
+        });
+        wrapper.querySelector('.project-card').style.cursor = 'pointer';
 
         container.appendChild(wrapper);
     });
@@ -275,6 +288,8 @@ window.editProject = window.editProject || async function (id) {
     document.getElementById('p-desc').value = p.desc;
     document.getElementById('p-tags').value = p.tags.join(', ');
     document.getElementById('p-imgs').value = p.imgs.join(', ');
+    const orderInput = document.getElementById('p-order');
+    if (orderInput) orderInput.value = (p.order !== undefined && p.order !== null) ? p.order : '';
 
     document.getElementById('modal-project-title').innerText = 'Editar Proyecto Detallado';
     document.getElementById('addProjectModal').style.display = 'flex';
@@ -312,7 +327,80 @@ window.deleteGalleryItem = window.deleteGalleryItem || async function (id) {
     }
 }
 
+// ─── PROJECT DETAIL POPUP ───────────────────────────────────────────────────
+let popupGalleryIdx = 0;
+let popupImgs = [];
+
+function openProjectModal(id) {
+    const proj = projectsData.find(p => p.id === id);
+    if (!proj) return;
+
+    const modal = document.getElementById('projectDetailModal');
+    if (!modal) return;
+
+    popupImgs = proj.imgs || [];
+    popupGalleryIdx = 0;
+
+    // Fill content
+    modal.querySelector('.pdm-client').textContent = proj.client || '';
+    modal.querySelector('.pdm-title').textContent = proj.title || '';
+    modal.querySelector('.pdm-desc').innerHTML = (proj.desc || '').replace(/\n/g, '<br>');
+
+    const tagsEl = modal.querySelector('.pdm-tags');
+    tagsEl.innerHTML = (proj.tags || []).map(t => `<span class="project-tag">${t.trim()}</span>`).join('');
+
+    updatePopupGallery();
+
+    // Show/hide nav arrows
+    const prevBtn = modal.querySelector('.pdm-prev');
+    const nextBtn = modal.querySelector('.pdm-next');
+    const counter = modal.querySelector('.pdm-counter');
+    if (prevBtn && nextBtn) {
+        prevBtn.style.display = popupImgs.length > 1 ? 'flex' : 'none';
+        nextBtn.style.display = popupImgs.length > 1 ? 'flex' : 'none';
+    }
+    if (counter) {
+        counter.style.display = popupImgs.length > 1 ? 'block' : 'none';
+        counter.textContent = `1 / ${popupImgs.length}`;
+    }
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function updatePopupGallery() {
+    const modal = document.getElementById('projectDetailModal');
+    if (!modal) return;
+    const imgEl = modal.querySelector('.pdm-img');
+    if (imgEl && popupImgs.length > 0) {
+        imgEl.style.opacity = '0';
+        setTimeout(() => {
+            imgEl.src = popupImgs[popupGalleryIdx];
+            imgEl.style.opacity = '1';
+        }, 180);
+    } else if (imgEl) {
+        imgEl.src = '';
+        imgEl.style.display = 'none';
+    }
+    const counter = modal.querySelector('.pdm-counter');
+    if (counter && popupImgs.length > 1) {
+        counter.textContent = `${popupGalleryIdx + 1} / ${popupImgs.length}`;
+    }
+    // Dot indicators
+    modal.querySelectorAll('.pdm-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === popupGalleryIdx);
+    });
+}
+
+function closeProjectModal() {
+    const modal = document.getElementById('projectDetailModal');
+    if (modal) modal.style.display = 'none';
+    document.body.style.overflow = '';
+}
+window.closeProjectModal = closeProjectModal;
+
 document.addEventListener('DOMContentLoaded', () => {
+
     if (!document.getElementById('stacked-cards-container')) return;
 
     initializeObras();
@@ -327,6 +415,46 @@ document.addEventListener('DOMContentLoaded', () => {
         lb.addEventListener('click', (e) => {
             if (e.target === lb) lb.style.display = 'none';
         });
+    }
+
+    // Project Detail Modal (popup de detalle de obra)
+    const pdModal = document.getElementById('projectDetailModal');
+    if (pdModal) {
+        // Cerrar al click en el overlay
+        pdModal.addEventListener('click', (e) => {
+            if (e.target === pdModal) closeProjectModal();
+        });
+        // Cerrar con Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && pdModal.style.display === 'flex') closeProjectModal();
+        });
+        // Flecha anterior
+        const prevBtn = pdModal.querySelector('.pdm-prev');
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                popupGalleryIdx = (popupGalleryIdx - 1 + popupImgs.length) % popupImgs.length;
+                updatePopupGallery();
+            });
+        }
+        // Flecha siguiente
+        const nextBtn = pdModal.querySelector('.pdm-next');
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                popupGalleryIdx = (popupGalleryIdx + 1) % popupImgs.length;
+                updatePopupGallery();
+            });
+        }
+        // Swipe táctil
+        let touchStartX = 0;
+        pdModal.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+        pdModal.addEventListener('touchend', (e) => {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 40) {
+                if (diff > 0) { popupGalleryIdx = (popupGalleryIdx + 1) % popupImgs.length; }
+                else          { popupGalleryIdx = (popupGalleryIdx - 1 + popupImgs.length) % popupImgs.length; }
+                updatePopupGallery();
+            }
+        }, { passive: true });
     }
 
     // Modals & Admin
@@ -377,6 +505,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const title = document.getElementById('p-title').value;
                     const desc = document.getElementById('p-desc').value;
                     const tags = document.getElementById('p-tags').value.split(',').map(t => t.trim()).filter(t => t);
+                    const orderRaw = document.getElementById('p-order') ? document.getElementById('p-order').value.trim() : '';
+                    const order = orderRaw !== '' ? Number(orderRaw) : null;
                     
                     // Allow file uploads (multiple)
                     const imgFileInputs = document.getElementById('p-img-files');
@@ -423,16 +553,24 @@ document.addEventListener('DOMContentLoaded', () => {
                             projectsData[idx].desc = desc;
                             projectsData[idx].tags = tags;
                             projectsData[idx].imgs = finalImgsArr;
+                            projectsData[idx].order = order;
                             
                             await saveProject(projectsData[idx]);
                         }
                     } else {
                         finalImgsArr = [...manualUrls, ...newUploadedUrls];
                         const newId = 'proj_' + Date.now();
-                        const newObj = { id: newId, client, title, desc, tags, imgs: finalImgsArr };
+                        const newObj = { id: newId, client, title, desc, tags, imgs: finalImgsArr, order };
                         await saveProject(newObj);
                         projectsData.unshift(newObj);
                     }
+                    
+                    // Re-sort after save
+                    projectsData.sort((a, b) => {
+                        const oA = (a.order !== undefined && a.order !== null && a.order !== '') ? Number(a.order) : 9999;
+                        const oB = (b.order !== undefined && b.order !== null && b.order !== '') ? Number(b.order) : 9999;
+                        return oA - oB;
+                    });
                     
                     pModal.style.display = 'none';
                     e.target.reset();

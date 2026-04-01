@@ -417,7 +417,7 @@
 
     <!-- Add Product Modal -->
     <div id="addModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 620px; max-height: 90vh; overflow-y: auto;">
             <div class="modal-header">
                 <h2 id="modal-product-title">Añadir Nuevo Producto</h2>
                 <span class="close-modal" id="close-modal">&times;</span>
@@ -442,7 +442,7 @@
                     style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; margin-bottom: 1rem;">
                     <div class="form-group" style="margin-bottom: 0;">
                         <label>Color / Tonalidad</label>
-                        <input type="text" id="p-color" required placeholder="Ej: Blanco">
+                        <input type="text" id="p-color" placeholder="Ej: Blanco">
                     </div>
                     <div class="form-group" style="margin-bottom: 0;">
                         <label>Medidas / Formato</label>
@@ -456,8 +456,19 @@
                 <div class="form-group">
                     <label>Imagen del Producto</label>
                     <input type="file" id="p-img-file" accept="image/*" style="margin-bottom: 0.5rem;">
-                    <input type="url" id="p-img" placeholder="O pega una URL aquí (https://...)">
+                    <input type="text" id="p-img" placeholder="O pega una URL aquí (https://)">
                 </div>
+
+                <!-- Variant Images Section -->
+                <div class="form-group" id="variant-imgs-section" style="display:none;">
+                    <label style="color: var(--accent-color); font-weight: 600;"
+                           title="Asigná una imagen específica a cada variante/tipo del producto">
+                        <i class="fas fa-images"></i> Imágenes por Variante
+                        <span style="font-weight:400; font-size:0.82rem; color:var(--text-secondary); margin-left:0.4rem;">(opcional)</span>
+                    </label>
+                    <div id="variant-imgs-container" style="max-height:280px; overflow-y:auto; padding-right:0.25rem;"></div>
+                </div>
+
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Guardar
                     Producto</button>
             </form>
