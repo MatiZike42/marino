@@ -17,10 +17,12 @@ const ADMIN_EMAILS = [
 
 // ─── Helpers globales (accesibles desde otros scripts) ────────────
 window.getCurrentUser = () => auth.currentUser;
-window.isAdminUser = () => {
+window._firebaseIsAdmin = () => {
     const user = auth.currentUser;
     return user ? ADMIN_EMAILS.includes(user.email) : false;
 };
+// Alias legacy
+window.isAdminUser = window._firebaseIsAdmin;
 
 // ─── Login con Google (llamado desde login.html) ──────────────────
 window.loginWithGoogle = async function () {

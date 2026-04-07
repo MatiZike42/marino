@@ -109,11 +109,10 @@ let selectedColors = new Set();
 // Quantity state per product card (module-level so it persists across renders)
 const cardQtyMap = new Map();
 
-// Check admin status via Firebase Auth (set by auth.js)
+// Admin check vía Firebase Auth SDK (seteado por auth.js)
 function _isAdmin() {
-    return typeof window.isAdminUser === 'function' ? window.isAdminUser() : false;
+    return typeof window._firebaseIsAdmin === 'function' ? window._firebaseIsAdmin() : false;
 }
-// Alias para compatibilidad con el resto del archivo
 const isAdminUser = _isAdmin;
 
 // Basic initial data (Official Mariño Catalog extracted from images)
@@ -302,7 +301,7 @@ window.selectVariant = function(productId, variantName, element) {
 
 // Sync Catalog: only ADDS products missing from Firestore, never overwrites existing ones
 async function purgeAndResetCatalog() {
-    if (!isAdminUser) return;
+    if (!isAdminUser()) return;
 
     const choice = confirm(
         "SINCRONIZAR CATÁLOGO\n\n" +
@@ -336,7 +335,7 @@ window.purgeAndResetCatalog = purgeAndResetCatalog;
 
 // RESET TOTAL (destructivo) - solo para emergencias extremas
 async function hardResetCatalog() {
-    if (!isAdminUser) return;
+    if (!isAdminUser()) return;
     if (!confirm("⚠️ RESET TOTAL\n\nBorrará TODOS los productos (incluyendo imágenes cargadas manualmente) y reimportará desde cero.\n\n¿Estás seguro?")) return;
     if (!confirm("Segunda confirmación: Esta acción NO se puede deshacer. ¿Continuar?")) return;
     try {
@@ -374,7 +373,7 @@ async function initializeProducts() {
         }
 
         // Botón de sincronización para administradores
-        if (isAdminUser) {
+        if (isAdminUser()) {
             const controls = document.querySelector('.catalog-controls');
             if (controls && !document.getElementById('btn-reset-catalog')) {
                 const btn = document.createElement('button');
@@ -389,14 +388,14 @@ async function initializeProducts() {
 
         // Aviso de catálogo antiguo o desactualizado
         const isLegacy = productsData.some(p => !p.variants || p.variants.length === 0);
-        if (isLegacy && isAdminUser) {
+        if (isLegacy && isAdminUser()) {
             setTimeout(() => {
                 alert(`AVISO: Hay ${missingDefaults.length} productos nuevos para sincronizar. Usa el botón rojo.`);
             }, 1000);
         }
 
         // Migración de imágenes antiguas
-        if (isAdminUser) {
+        if (isAdminUser()) {
             for (const p of productsData) {
                 if (p.img && (p.img.includes('proveedores/') || p.img.includes('picsum.photos'))) {
                     p.img = '1.png';
@@ -523,7 +522,7 @@ function renderProducts() {
                     </div>
                 </a>
                 
-                ${!isAdminUser ? `
+                ${!isAdminUser() ? `
                 <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
                     <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem;">
                         <button class="catalog-qty-btn" data-id="${p.id}" data-delta="-1">−</button>
@@ -543,7 +542,7 @@ function renderProducts() {
                 </div>
                 ` : ''}
 
-                ${isAdminUser ? `
+                ${isAdminUser() ? `
                 <div class="admin-controls" style="display: flex; gap: 0.5rem; padding: 0 1.5rem 1.5rem 1.5rem;">
                     <button class="btn btn-warning" onclick="event.preventDefault(); openStockManager('${p.id}')" style="flex: 1; padding: 0.5rem;" title="Gestionar Stock">
                        <i class="fas fa-boxes"></i>
@@ -809,9 +808,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const addForm = document.getElementById('add-product-form');
 
     // Admin display
-    if (isAdminUser && btnAdd) {
-        btnAdd.style.display = 'inline-block';
-    }
+    const updateAdminUI = () => {
+        if (isAdminUser()) {
+            if (btnAdd) btnAdd.style.display = 'inline-block';
+        } else {
+            if (btnAdd) btnAdd.style.display = 'none';
+        }
+    };
+
+    updateAdminUI();
+
+    // Re-render when auth state changes or is ready
+    window.addEventListener('authReady', (e) => {
+        updateAdminUI();
+        renderProducts();
+        renderFilters();
+    });
 
     // Search
     let timeout;

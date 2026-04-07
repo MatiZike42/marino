@@ -5,9 +5,12 @@ import { collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic
 let jobsData = [];
 
 // Admin check vía Firebase Auth SDK (seteado por auth.js)
-function isAdminUser() {
-    return typeof window.isAdminUser === 'function' ? window.isAdminUser() : false;
-}
+// NOTA: Se usa _fbIsAdmin para evitar colisión de nombre con window.isAdminUser
+const _fbIsAdmin = () => {
+    const fn = window._firebaseIsAdmin;
+    return typeof fn === 'function' ? fn() : false;
+};
+function isAdminUser() { return _fbIsAdmin(); }
 
 const defaultJobs = [
     {
@@ -38,7 +41,7 @@ async function initializeJobs() {
         });
         
         // Ensure specific default jobs (Vendedor and Chofer) exist
-        if (isAdminUser) {
+        if (isAdminUser()) {
             let changed = false;
             for (const dj of defaultJobs) {
                 if (!jobsData.find(j => j.id === dj.id)) {
@@ -105,7 +108,7 @@ function renderJobs() {
                     Postularse
                 </button>
                 
-                ${isAdminUser ? `
+                ${isAdminUser() ? `
                 <div class="admin-controls" style="margin-top: 0.5rem; display: flex; gap: 0.5rem;">
                     <button class="btn btn-secondary" onclick="editJob('${job.id}')" style="flex: 1; border-radius: 50px; padding: 0.5rem;">
                        <i class="fas fa-edit"></i> Editar
@@ -175,10 +178,21 @@ document.addEventListener('DOMContentLoaded', () => {
     applyModal = document.getElementById('applyModal');
     addJobModal = document.getElementById('addJobModal');
 
-    // Auth Check -> Show Admin Adding Button
-    if (isAdminUser && btnAddJob) {
-        btnAddJob.style.display = 'inline-block';
-    }
+    // Admin display
+    const updateAdminUI = () => {
+        if (isAdminUser()) {
+            if (btnAddJob) btnAddJob.style.display = 'inline-block';
+        } else {
+            if (btnAddJob) btnAddJob.style.display = 'none';
+        }
+    };
+
+    updateAdminUI();
+
+    window.addEventListener('authReady', () => {
+        updateAdminUI();
+        renderJobs();
+    });
 
     // Modal Close Triggers
     document.getElementById('close-apply-modal').addEventListener('click', () => applyModal.style.display = 'none');

@@ -6,9 +6,18 @@ const CLOUDINARY_URL_VIDEO = "https://api.cloudinary.com/v1_1/doissrwhj/video/up
 const CLOUDINARY_PRESET = "marino_preset";
 
 let videosData = [];
-// Admin check vía Firebase Auth SDK (seteado por auth.js)
+// Admin check vía Firebase Auth SDK
 function isAdminUser() {
-    return typeof window.isAdminUser === 'function' ? window.isAdminUser() : false;
+    return typeof window._firebaseIsAdmin === 'function' ? window._firebaseIsAdmin() : false;
+}
+
+// Helper for image optimization via Cloudinary
+function optimizeImg(url, width = 600) {
+    if (!url || !url.includes('cloudinary.com')) return url;
+    if (url.includes('upload/')) {
+        return url.replace('upload/', `upload/w_${width},q_auto,f_auto/`);
+    }
+    return url;
 }
 
 // Default mock videos to populate if empty
@@ -39,7 +48,7 @@ async function initializeGaleria() {
             videosData.push({ id: doc.id, ...doc.data() });
         });
 
-        if (videosData.length === 0 && isAdminUser) {
+        if (videosData.length === 0 && isAdminUser()) {
             for (const v of defaultVideos) {
                 await setDoc(doc(db, "videos", v.id), v);
                 videosData.push(v);
@@ -75,7 +84,7 @@ function renderVideos() {
             <div class="video-card reveal">
                 <div class="video-thumbnail" onclick="playVideo('${v.id}')">
                     <span class="video-platform-badge">${platformIcon} ${v.type}</span>
-                    <img src="${v.thumb || '1.png'}" alt="${v.title}">
+                    <img src="${optimizeImg(v.thumb, 600)}" alt="${v.title}">
                     <div class="play-overlay">
                         <div class="play-btn"><i class="fas fa-play"></i></div>
                     </div>
@@ -97,7 +106,7 @@ function renderVideos() {
             <div class="video-card-m">
                 <div class="video-thumb-m" onclick="playVideo('${v.id}')">
                     <span class="m-platform-badge">${platformIcon} ${v.type}</span>
-                    <img src="${v.thumb || '1.png'}" alt="${v.title}">
+                    <img src="${optimizeImg(v.thumb, 400)}" alt="${v.title}">
                     <div class="play-icon-m"><i class="fas fa-play"></i></div>
                 </div>
                 <div class="video-info-m">
@@ -255,25 +264,37 @@ if (videoPlayerModal) {
 
 // Admin Logic
 function setupAdminUI() {
-    if (!isAdminUser) return;
-    
-    const btnAdd = document.getElementById('btn-add-video') || document.getElementById('m-btn-add-video');
-    if (btnAdd) btnAdd.style.display = 'block';
+    const updateAdminUI = () => {
+        const btnAdd = document.getElementById('btn-add-video') || document.getElementById('m-btn-add-video');
+        if (isAdminUser()) {
+            if (btnAdd) btnAdd.style.display = 'block';
+        } else {
+            if (btnAdd) btnAdd.style.display = 'none';
+        }
+    };
 
+    updateAdminUI();
+
+    window.addEventListener('authReady', () => {
+        updateAdminUI();
+        renderVideos();
+    });
+
+    const btnAdd = document.getElementById('btn-add-video') || document.getElementById('m-btn-add-video');
     const modal = document.getElementById('videoModal');
     const closeBtn = document.getElementById('close-video-modal');
     const form = document.getElementById('add-video-form');
 
     if (btnAdd && modal) {
         btnAdd.onclick = () => {
-            form.reset();
+            if (form) form.reset();
             document.getElementById('v-id').value = '';
             document.getElementById('modal-video-title').innerText = 'Cargar Nuevo Video Multimedia';
             modal.style.display = 'flex';
         };
     }
 
-    if (closeBtn) closeBtn.onclick = () => modal.style.display = 'none';
+    if (closeBtn && modal) closeBtn.onclick = () => modal.style.display = 'none';
 
     if (form) {
         form.onsubmit = async (e) => {
