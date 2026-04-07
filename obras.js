@@ -8,8 +8,10 @@ const CLOUDINARY_PRESET = "marino_preset";
 let projectsData = [];
 let galleryData = [];
 
-// Determine if admin
-const isAdminUser = localStorage.getItem('isAdmin') === 'true';
+// Admin check vía Firebase Auth SDK (seteado por auth.js)
+function isAdminUser() {
+    return typeof window.isAdminUser === 'function' ? window.isAdminUser() : false;
+}
 
 // Temporary Unsplash images for mock
 const unsplashFotos = [

@@ -1,68 +1,90 @@
-// Authentication logic shared across pages
+// ═══════════════════════════════════════════════════════════════════
+// auth.js — Autenticación con Firebase Auth SDK (Google Sign-In)
+// Reemplaza el sistema anterior basado en localStorage + JWT manual.
+// ═══════════════════════════════════════════════════════════════════
+import { auth, googleProvider } from './firebase-config.js';
+import {
+    signInWithPopup,
+    signOut,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 
-// Function to decode JWT visually (since we do this frontend-only)
-function parseJwt(token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    return JSON.parse(jsonPayload);
-}
+// ─── Correos autorizados como administradores ─────────────────────
+const ADMIN_EMAILS = [
+    'decoracionesmar.dm@gmail.com',
+    'matiasschvabauer@gmail.com'
+];
 
-// Global callback for Google Login
-window.handleGoogleLogin = function(response) {
-    const payload = parseJwt(response.credential);
-    
-    // Store basic user info
-    localStorage.setItem('userEmail', payload.email);
-    localStorage.setItem('userName', payload.name);
-    
-    // Admin check
-    const adminEmails = [
-        'decoracionesmar.dm@gmail.com',
-        'matiasschvabauer@gmail.com'
-    ];
-    
-    if (adminEmails.includes(payload.email)) {
-        localStorage.setItem('isAdmin', 'true');
-    } else {
-        localStorage.removeItem('isAdmin'); // just a normal user
-    }
-    
-    // Redirect to index
-    window.location.href = 'index.html';
+// ─── Helpers globales (accesibles desde otros scripts) ────────────
+window.getCurrentUser = () => auth.currentUser;
+window.isAdminUser = () => {
+    const user = auth.currentUser;
+    return user ? ADMIN_EMAILS.includes(user.email) : false;
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    const isAdmin = localStorage.getItem('isAdmin') === 'true';
-    const userEmail = localStorage.getItem('userEmail');
-    const navLoginIcon = document.getElementById('nav-login');
+// ─── Login con Google (llamado desde login.html) ──────────────────
+window.loginWithGoogle = async function () {
+    const btn = document.getElementById('google-login-btn');
+    const errEl = document.getElementById('login-error');
+    if (btn) { btn.disabled = true; btn.textContent = 'Conectando...'; }
+    if (errEl) errEl.style.display = 'none';
 
-    if (navLoginIcon && userEmail) {
-        // If logged in (admin or regular user)
-        let label = isAdmin ? 'Panel Admin' : 'Cerrar Sesión';
-        let icon = isAdmin ? 'fa-user-cog' : 'fa-sign-out-alt';
-        let color = isAdmin ? 'var(--accent-color)' : 'var(--danger-color)';
-        
-        navLoginIcon.innerHTML = `<span style="font-size: 0.9rem; font-family: Outfit, sans-serif;">${label}</span> <i class="fas ${icon}"></i>`;
-        
-        if (isAdmin && window.location.pathname.indexOf('admin.html') === -1) {
-             // Admin clicking icon usually goes to an admin panel, for now let's just make it a logout for simplicity if they click it directly, or redirect to a dashboard if you had one.
-             // We'll keep it as a logout to allow easy account switching.
-             navLoginIcon.innerHTML = '<span style="font-size: 0.9rem; font-family: Outfit, sans-serif;">Cerrar (Admin)</span> <i class="fas fa-sign-out-alt"></i>';
+    try {
+        await signInWithPopup(auth, googleProvider);
+        // onAuthStateChanged se encarga del resto — redirige automáticamente
+    } catch (err) {
+        console.error('Login error:', err);
+        if (errEl) {
+            errEl.textContent = 'Error al iniciar sesión. Intentá nuevamente.';
+            errEl.style.display = 'block';
+        }
+        if (btn) { btn.disabled = false; btn.textContent = 'Continuar con Google'; }
+    }
+};
+
+// ─── Logout ───────────────────────────────────────────────────────
+window.logoutUser = async function () {
+    await signOut(auth);
+    window.location.reload();
+};
+
+// ─── Observer: reacciona a cambios de sesión en tiempo real ───────
+onAuthStateChanged(auth, (user) => {
+    // Actualizar navbar
+    const navLoginIcon = document.getElementById('nav-login');
+    if (!navLoginIcon) return;
+
+    if (user) {
+        const isAdmin = ADMIN_EMAILS.includes(user.email);
+
+        if (isAdmin) {
+            navLoginIcon.innerHTML = `<span style="font-size:0.9rem;font-family:Outfit,sans-serif;">Cerrar (Admin)</span> <i class="fas fa-sign-out-alt"></i>`;
+            navLoginIcon.style.color = 'var(--accent-color)';
+        } else {
+            navLoginIcon.innerHTML = `<span style="font-size:0.9rem;font-family:Outfit,sans-serif;">Cerrar Sesión</span> <i class="fas fa-sign-out-alt"></i>`;
+            navLoginIcon.style.color = 'var(--danger-color)';
         }
 
         navLoginIcon.href = '#';
         navLoginIcon.title = 'Cerrar Sesión';
-        navLoginIcon.style.color = color;
-        
-        navLoginIcon.addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.removeItem('isAdmin');
-            localStorage.removeItem('userEmail');
-            localStorage.removeItem('userName');
-            window.location.reload();
-        });
+        navLoginIcon.onclick = (e) => { e.preventDefault(); window.logoutUser(); };
+
+        // Si estamos en la página de login y ya hay sesión → redirigir
+        if (window.location.pathname.includes('login')) {
+            const isMobile = window.location.pathname.includes('m_login');
+            window.location.href = isMobile ? 'm_index.html' : 'index.html';
+        }
+
+        // Disparar evento para que otros scripts (products.js, etc.) puedan reaccionar
+        window.dispatchEvent(new CustomEvent('authReady', { detail: { user, isAdmin } }));
+
+    } else {
+        // Sin sesión: resetear navbar al estado de login
+        navLoginIcon.innerHTML = `<i class="fas fa-lock"></i>`;
+        navLoginIcon.style.color = '';
+        navLoginIcon.href = window.location.pathname.includes('m_') ? 'm_login.html' : 'login.html';
+        navLoginIcon.onclick = null;
+
+        window.dispatchEvent(new CustomEvent('authReady', { detail: { user: null, isAdmin: false } }));
     }
 });

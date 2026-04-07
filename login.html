@@ -79,9 +79,7 @@
             <img src="mariño.png" alt="Mariño Logo" class="nav-logo">
             <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.1;">
                 <div>Mariño</div>
-                <div
-                    style="font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); font-family: 'Inter', sans-serif; letter-spacing: 0;">
-                    construcción en seco & decoraciones</div>
+                <div style="font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); font-family: 'Inter', sans-serif; letter-spacing: 0;">construcción en seco &amp; decoraciones</div>
             </div>
         </a>
         <ul class="nav-links">
@@ -96,29 +94,34 @@
 
     <div class="login-container">
         <div class="login-box glass">
+            <img src="mariño.png" alt="Logo Mariño" style="width:72px;margin-bottom:1.2rem;">
             <h2>Acceso al Sistema</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Iniciá sesión para acceder a las funciones administrativas o para autocompletar tus datos en futuras consultas.</p>
-            
-            <div id="g_id_onload"
-                 data-client_id="1057095210405-svt45t2boe1ebpf17dmoi6uae64ev42a.apps.googleusercontent.com"
-                 data-callback="handleGoogleLogin"
-                 data-auto_prompt="false">
-            </div>
-            <div class="g_id_signin"
-                 data-type="standard"
-                 data-size="large"
-                 data-theme="outline"
-                 data-text="sign_in_with"
-                 data-shape="rectangular"
-                 data-logo_alignment="left">
-            </div>
-            
-            <p class="error-msg" id="login-error" style="margin-top: 1rem; color: var(--accent-color);">Hubo un error al iniciar sesión. Intentá nuevamente.</p>
+            <p style="color: var(--text-secondary); margin-bottom: 2.5rem; font-size:0.95rem;">
+                Iniciá sesión con Google para acceder a las funciones administrativas.
+            </p>
+
+            <button id="google-login-btn"
+                onclick="loginWithGoogle()"
+                style="
+                    display: flex; align-items: center; justify-content: center; gap: 0.8rem;
+                    width: 100%; padding: 0.9rem 1.5rem;
+                    background: white; color: #333;
+                    border: none; border-radius: 10px;
+                    font-size: 1rem; font-family: 'Inter', sans-serif; font-weight: 500;
+                    cursor: pointer; transition: box-shadow 0.2s;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                ">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                     alt="Google" style="width:22px;height:22px;">
+                Continuar con Google
+            </button>
+
+            <p id="login-error" style="margin-top:1.2rem;color:var(--danger-color);display:none;font-size:0.9rem;"></p>
         </div>
     </div>
 
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="auth.js"></script>
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="auth.js"></script>
 </body>
 
 </html>

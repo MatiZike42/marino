@@ -6,7 +6,10 @@ const CLOUDINARY_URL_VIDEO = "https://api.cloudinary.com/v1_1/doissrwhj/video/up
 const CLOUDINARY_PRESET = "marino_preset";
 
 let videosData = [];
-const isAdminUser = localStorage.getItem('isAdmin') === 'true';
+// Admin check vía Firebase Auth SDK (seteado por auth.js)
+function isAdminUser() {
+    return typeof window.isAdminUser === 'function' ? window.isAdminUser() : false;
+}
 
 // Default mock videos to populate if empty
 const defaultVideos = [

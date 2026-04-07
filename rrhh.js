@@ -4,8 +4,10 @@ import { collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic
 // RRHH Logic
 let jobsData = [];
 
-// Determine if admin
-const isAdminUser = localStorage.getItem('isAdmin') === 'true';
+// Admin check vía Firebase Auth SDK (seteado por auth.js)
+function isAdminUser() {
+    return typeof window.isAdminUser === 'function' ? window.isAdminUser() : false;
+}
 
 const defaultJobs = [
     {

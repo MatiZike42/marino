@@ -109,8 +109,12 @@ let selectedColors = new Set();
 // Quantity state per product card (module-level so it persists across renders)
 const cardQtyMap = new Map();
 
-// Check if admin to show controls
-const isAdminUser = localStorage.getItem('isAdmin') === 'true';
+// Check admin status via Firebase Auth (set by auth.js)
+function _isAdmin() {
+    return typeof window.isAdminUser === 'function' ? window.isAdminUser() : false;
+}
+// Alias para compatibilidad con el resto del archivo
+const isAdminUser = _isAdmin;
 
 // Basic initial data (Official Mariño Catalog extracted from images)
 const defaultProducts = [
