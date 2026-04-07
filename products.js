@@ -53,6 +53,48 @@ function splitVariants(str) {
     return result;
 }
 
+// Helper: get images array for a variant (string or array, backward compatible)
+function getVariantImages(p, variantName) {
+    if (!p.variantImgs) return p.img ? [optimizeImg(p.img, 800)] : [];
+    const raw = p.variantImgs[variantName];
+    if (!raw) return p.img ? [optimizeImg(p.img, 800)] : [];
+    const arr = Array.isArray(raw) ? raw.filter(Boolean) : [raw];
+    return arr.map(u => optimizeImg(u, 800));
+}
+
+// ─── Cloudinary URL optimizer ────────────────────────────────────
+// Agrega transformaciones automáticas a URLs de Cloudinary.
+// Si la imagen NO es de Cloudinary, la devuelve sin cambios.
+// width: ancho máximo en px | q_auto: calidad automática | f_auto: formato automático (WebP si el browser lo soporta)
+function optimizeImg(url, width = 800) {
+    if (!url) return url;
+    if (!url.includes('res.cloudinary.com')) return url;  // No es Cloudinary → sin cambios
+    if (url.includes('/upload/w_')) return url;            // Ya tiene transformación → no duplicar
+    return url.replace('/upload/', `/upload/w_${width},q_auto,f_auto/`);
+}
+
+// Slideshow management for catalog cards
+const slideshowIntervals = new Map();
+function clearAllSlideshows() {
+    slideshowIntervals.forEach(id => clearInterval(id));
+    slideshowIntervals.clear();
+}
+function startCardSlideshow(productId, images) {
+    if (images.length <= 1) return;
+    let idx = 0;
+    const intervalId = setInterval(() => {
+        idx = (idx + 1) % images.length;
+        const imgEl = document.querySelector(`.product-img[data-pid="${productId}"]`);
+        if (imgEl) {
+            imgEl.src = optimizeImg(images[idx], 600); // Cards pueden usar ancho menor
+        } else {
+            clearInterval(intervalId);
+            slideshowIntervals.delete(productId);
+        }
+    }, 5000);
+    slideshowIntervals.set(productId, intervalId);
+}
+
 // Product Data Management
 const ITEMS_PER_PAGE = 24;
 let productsData = [];
@@ -219,33 +261,33 @@ window.selectVariant = function(productId, variantName, element) {
     const card = element.closest('.product-card');
     card.querySelectorAll('.variant-chip').forEach(c => c.classList.remove('active'));
     element.classList.add('active');
-    
+
     // Update Add Button data-variant
     const addBtn = document.getElementById(`add-btn-${productId}`);
-    if (addBtn) {
-        addBtn.setAttribute('data-variant', variantName);
-    }
+    if (addBtn) addBtn.setAttribute('data-variant', variantName);
 
-    // Update Image if Variant has a mapped image
     const p = productsData.find(x => x.id === productId);
     if (p) {
+        // Get images array for selected variant
+        const images = getVariantImages(p, variantName);
+        const firstImg = images[0] || optimizeImg(p.img, 600);
+
         const imgEl = card.querySelector('.product-img');
-        if (imgEl) {
-            if (p.variantImgs && p.variantImgs[variantName]) {
-                imgEl.src = p.variantImgs[variantName];
-                if (addBtn) addBtn.dataset.img = p.variantImgs[variantName];
-            } else if (p.img) {
-                // Fallback to main image if no variant image mapped
-                imgEl.src = p.img;
-                if (addBtn) addBtn.dataset.img = p.img;
-            }
+        if (imgEl) imgEl.src = firstImg;
+        if (addBtn) addBtn.dataset.img = firstImg;
+
+        // Restart slideshow for this card
+        if (slideshowIntervals.has(productId)) {
+            clearInterval(slideshowIntervals.get(productId));
+            slideshowIntervals.delete(productId);
         }
-        
+        startCardSlideshow(productId, images);
+
         // Update OUT OF STOCK status
         const isOOS = (p.outOfStock || []).includes(variantName);
         const badge = document.getElementById(`oos-badge-${productId}`);
         if (badge) badge.style.display = isOOS ? 'block' : 'none';
-        
+
         const addBtnText = document.getElementById(`add-text-${productId}`);
         if (addBtn) {
             addBtn.disabled = isOOS;
@@ -318,10 +360,14 @@ async function initializeProducts() {
             fbProducts.push({ id: doc.id, ...doc.data() });
         });
         
-        // Fusión: Priorizar Firestore pero inyectar defaults faltantes
-        const fbIds = new Set(fbProducts.map(p => p.id));
-        const missingDefaults = defaultProducts.filter(p => !fbIds.has(p.id));
-        productsData = [...fbProducts, ...missingDefaults];
+        // Si ya hay productos en Firestore, confiar 100% en Firestore.
+        // Solo inyectar defaults si la base está completamente vacía (instalación nueva).
+        // Esto evita que categorías de productos borrados persistan en los filtros.
+        if (fbProducts.length > 0) {
+            productsData = [...fbProducts];
+        } else {
+            productsData = [...defaultProducts];
+        }
 
         // Botón de sincronización para administradores
         if (isAdminUser) {
@@ -376,6 +422,7 @@ async function saveProduct(product) {
 
 // Function to render products
 function renderProducts() {
+    clearAllSlideshows();
     const grid = document.getElementById('products-grid');
     const stats = document.getElementById('stats-info');
     grid.innerHTML = '';
@@ -430,13 +477,16 @@ function renderProducts() {
             } else {
                 isOOS = p.outOfStock === true || (Array.isArray(p.outOfStock) && p.outOfStock.includes('main'));
             }
+            // Get initial image for default variant (supports multiple images)
+            const defaultImages = getVariantImages(p, defaultVariant);
+            const firstImg = defaultImages[0] || optimizeImg(p.img, 600);
 
             const card = document.createElement('div');
             card.className = 'product-card glass reveal delay-2';
             card.innerHTML = `
                 <a href="producto-detalle.html?id=${p.id}" class="product-link" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; flex: 1;">
                     <div style="position: relative; overflow: hidden; height: 200px; background: #ffffff; display: flex; align-items: center; justify-content: center;">
-                         <img src="${p.img}" alt="${p.name}" class="product-img" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
+                         <img src="${firstImg}" alt="${p.name}" class="product-img" data-pid="${p.id}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
                          <div class="out-of-stock-badge" id="oos-badge-${p.id}" style="display: ${isOOS ? 'block' : 'none'};">SIN STOCK</div>
                          <div class="product-hover-overlay">
                             <span class="btn btn-secondary">Ver detalles</span>
@@ -514,11 +564,17 @@ function renderProducts() {
     if (typeof window.initAnimations === 'function') {
         setTimeout(window.initAnimations, 50);
     }
-    // Reset qty displays to match cardQtyMap (which persists across renders)
+    // Reset qty displays
     cardQtyMap.forEach((qty, id) => {
         grid.querySelectorAll(`.catalog-qty-display[data-id="${id}"]`).forEach(el => {
             el.textContent = qty;
         });
+    });
+    // Start slideshows for cards that have multiple images
+    paginated.forEach(p => {
+        const defaultVar = p.variants && p.variants.length > 0 ? p.variants[0] : 'main';
+        const images = getVariantImages(p, defaultVar);
+        startCardSlideshow(p.id, images);
     });
 }
 
@@ -928,29 +984,33 @@ document.addEventListener('DOMContentLoaded', () => {
                     img = '1.png';
                 }
 
-                // Collect variant images from slots and upload if files selected
+                // Collect variant images (supports multiple per variant)
                 btnSubmit.innerText = 'Guardando variantes...';
                 const variantImgs = {};
                 const slots = document.querySelectorAll('.variant-img-slot');
                 for (const slot of slots) {
                     const varName = slot.dataset.variant;
-                    const fileInput = slot.querySelector('.vi-file');
-                    const urlInput = slot.querySelector('.vi-url');
-                    if (fileInput && fileInput.files.length > 0) {
-                        btnSubmit.innerText = `Subiendo imagen de "${varName}"...`;
-                        const fd = new FormData();
-                        fd.append('file', fileInput.files[0]);
-                        fd.append('upload_preset', CLOUDINARY_PRESET);
-                        const vRes = await fetch(CLOUDINARY_URL, { method: 'POST', body: fd });
-                        if (vRes.ok) {
-                            const vData = await vRes.json();
-                            variantImgs[varName] = vData.secure_url;
+                    const subSlots = slot.querySelectorAll('.vi-sub-slot');
+                    const imagesForVariant = [];
+                    for (const subSlot of subSlots) {
+                        const fileInput = subSlot.querySelector('.vi-file');
+                        const urlInput = subSlot.querySelector('.vi-url');
+                        let imgUrl = null;
+                        if (fileInput && fileInput.files.length > 0) {
+                            btnSubmit.innerText = `Subiendo imagen de "${varName}"...`;
+                            const fd = new FormData();
+                            fd.append('file', fileInput.files[0]);
+                            fd.append('upload_preset', CLOUDINARY_PRESET);
+                            const vRes = await fetch(CLOUDINARY_URL, { method: 'POST', body: fd });
+                            if (vRes.ok) { const vData = await vRes.json(); imgUrl = vData.secure_url; }
+                        } else if (urlInput && urlInput.value.trim()) {
+                            btnSubmit.innerText = `Alojando imagen de "${varName}"...`;
+                            imgUrl = await uploadToCloudinary(urlInput.value.trim(), varName);
                         }
-                    } else if (urlInput && urlInput.value.trim()) {
-                        // URL pasted: re-host on Cloudinary
-                        btnSubmit.innerText = `Alojando imagen de "${varName}"...`;
-                        variantImgs[varName] = await uploadToCloudinary(urlInput.value.trim(), varName);
+                        if (imgUrl) imagesForVariant.push(imgUrl);
                     }
+                    if (imagesForVariant.length === 1) variantImgs[varName] = imagesForVariant[0];
+                    else if (imagesForVariant.length > 1) variantImgs[varName] = imagesForVariant;
                 }
 
                 if (editId) {
@@ -1007,56 +1067,94 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ─── Variant Image Slots ────────────────────────────────────────────────────
+// ─── Variant Image Slots (multi-image support) ─────────────────────────────
+function addSubSlot(subContainer, existingUrl) {
+    const subSlot = document.createElement('div');
+    subSlot.className = 'vi-sub-slot';
+    subSlot.style.cssText = 'display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.5rem;padding:0.5rem;background:rgba(0,0,0,0.15);border-radius:6px;';
+
+    const preview = document.createElement('img');
+    preview.className = 'vi-preview';
+    preview.src = existingUrl || '';
+    preview.style.cssText = `width:40px;height:40px;object-fit:contain;border-radius:4px;background:#fff;border:1px solid #444;flex-shrink:0;${existingUrl ? '' : 'display:none;'}`;
+
+    const inputsDiv = document.createElement('div');
+    inputsDiv.style.cssText = 'flex:1;display:flex;flex-direction:column;gap:0.3rem;';
+
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file'; fileInput.className = 'vi-file'; fileInput.accept = 'image/*';
+    fileInput.style.cssText = 'font-size:0.75rem;';
+
+    const urlInput = document.createElement('input');
+    urlInput.type = 'text'; urlInput.className = 'vi-url'; urlInput.value = existingUrl || '';
+    urlInput.placeholder = 'URL de imagen (https://...)';
+    urlInput.style.cssText = 'width:100%;padding:0.3rem 0.5rem;border-radius:4px;border:1px solid var(--glass-border);background:rgba(255,255,255,0.05);color:white;font-size:0.78rem;';
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button'; removeBtn.innerHTML = '✕'; removeBtn.title = 'Eliminar imagen';
+    removeBtn.style.cssText = 'background:transparent;border:none;color:#ef4444;cursor:pointer;font-size:1rem;flex-shrink:0;padding:0.2rem;';
+
+    fileInput.addEventListener('change', e => {
+        const file = e.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => { preview.src = ev.target.result; preview.style.display = 'block'; };
+        reader.readAsDataURL(file);
+    });
+    urlInput.addEventListener('input', e => {
+        const val = e.target.value.trim();
+        preview.src = val; preview.style.display = val ? 'block' : 'none';
+    });
+    removeBtn.addEventListener('click', () => {
+        const parent = subSlot.parentElement;
+        subSlot.remove();
+        if (parent && parent.querySelectorAll('.vi-sub-slot').length === 0) addSubSlot(parent, '');
+    });
+
+    inputsDiv.appendChild(fileInput); inputsDiv.appendChild(urlInput);
+    subSlot.appendChild(preview); subSlot.appendChild(inputsDiv); subSlot.appendChild(removeBtn);
+    subContainer.appendChild(subSlot);
+}
+
 function renderVariantImageSlots(variantList, existingImgs) {
     const container = document.getElementById('variant-imgs-container');
     const section = document.getElementById('variant-imgs-section');
     if (!container) return;
 
-    // Show/hide the whole section
     if (!variantList || variantList.length === 0) {
         container.innerHTML = '';
         if (section) section.style.display = 'none';
         return;
     }
     if (section) section.style.display = 'block';
-
     container.innerHTML = '';
+
     variantList.forEach(v => {
-        const existing = (existingImgs && existingImgs[v]) || '';
+        const raw = (existingImgs && existingImgs[v]) || '';
+        const existingArray = raw ? (Array.isArray(raw) ? raw : [raw]) : [''];
+
         const slot = document.createElement('div');
         slot.className = 'variant-img-slot';
         slot.dataset.variant = v;
-        slot.style.cssText = 'background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.75rem; margin-bottom: 0.5rem;';
-        slot.innerHTML = `
-            <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem;">
-                <img class="vi-preview" src="${existing}" 
-                     style="width:48px;height:48px;object-fit:contain;border-radius:4px;background:#fff;border:1px solid #444; ${existing ? '' : 'display:none;'}">
-                <span style="font-size:0.9rem;font-weight:600;color:var(--accent-color);flex:1;">${v}</span>
-            </div>
-            <input type="file" class="vi-file" accept="image/*" style="font-size:0.82rem;margin-bottom:0.3rem;">
-            <input type="text" class="vi-url" value="${existing}" placeholder="O pegar URL (https://...)" 
-                   style="width:100%;padding:0.4rem 0.6rem;border-radius:6px;border:1px solid var(--glass-border);background:rgba(255,255,255,0.05);color:white;font-size:0.82rem;">
-        `;
+        slot.style.cssText = 'background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:8px;padding:0.75rem;margin-bottom:0.5rem;';
 
-        // File preview
-        slot.querySelector('.vi-file').addEventListener('change', e => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = ev => {
-                const prev = slot.querySelector('.vi-preview');
-                prev.src = ev.target.result;
-                prev.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        });
+        // Header with variant name + add button
+        const header = document.createElement('div');
+        header.style.cssText = 'display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;';
+        header.innerHTML = `<span style="font-size:0.9rem;font-weight:600;color:var(--accent-color);flex:1;">${v}</span>
+            <button type="button" class="vi-add-btn" style="font-size:0.73rem;padding:0.2rem 0.5rem;border-radius:4px;border:1px solid var(--accent-color);background:transparent;color:var(--accent-color);cursor:pointer;">+ Imagen</button>`;
+        slot.appendChild(header);
 
-        // URL preview
-        slot.querySelector('.vi-url').addEventListener('input', e => {
-            const prev = slot.querySelector('.vi-preview');
-            prev.src = e.target.value.trim();
-            prev.style.display = e.target.value.trim() ? 'block' : 'none';
+        const subContainer = document.createElement('div');
+        subContainer.className = 'vi-sub-slots-container';
+        slot.appendChild(subContainer);
+
+        existingArray.forEach(img => addSubSlot(subContainer, img));
+
+        header.querySelector('.vi-add-btn').addEventListener('click', () => {
+            if (subContainer.querySelectorAll('.vi-sub-slot').length >= 5) {
+                alert('Máximo 5 imágenes por variante.'); return;
+            }
+            addSubSlot(subContainer, '');
         });
 
         container.appendChild(slot);

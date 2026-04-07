@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# No indexar páginas de admin/login/móvil duplicadas
+Disallow: /login.html
+Disallow: /m_login.html
+Disallow: /m_index.html
+Disallow: /m_productos.html
+Disallow: /m_obras.html
+Disallow: /m_galeria.html
+Disallow: /m_consultas.html
+Disallow: /m_rrhh.html
+Disallow: /m_producto-detalle.html
+Disallow: /admin.html
+Disallow: /mapper.html
+Disallow: /firebase-config.js
+
+Sitemap: https://xn--marioenseco-4db.com/sitemap.xml

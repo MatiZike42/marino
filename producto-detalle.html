@@ -160,6 +160,41 @@
             letter-spacing: 2px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
+
+        /* Multi-image navigation arrows */
+        .pd-img-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.55);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            transition: background 0.2s;
+        }
+        .pd-img-nav:hover { background: rgba(0,0,0,0.8); }
+        .pd-img-prev { left: 10px; }
+        .pd-img-next { right: 10px; }
+        .pd-img-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 0.8rem;
+        }
+        .pd-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
     </style>
 
     <script>
@@ -265,14 +300,25 @@
             } else {
                 isOOS = p.outOfStock === true || (Array.isArray(p.outOfStock) && p.outOfStock.includes('main'));
             }
+            // Compute initial image (may be array for multi-image variants)
+            function _getVI(prod, vn) {
+                if (!prod.variantImgs) return prod.img || '';
+                const r = prod.variantImgs[vn];
+                if (!r) return prod.img || '';
+                return Array.isArray(r) ? (r[0] || prod.img || '') : r;
+            }
+            const firstImg = _getVI(p, defaultVariant) || p.img;
 
             container.innerHTML = `
                 <a href="productos.html" class="back-link reveal"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
                 <div class="product-detail-layout">
                     <div class="product-image-container reveal delay-1" style="position: relative;">
-                        <img src="${p.img}" alt="${p.name}">
+                        <img id="pd-main-img" src="${firstImg}" alt="${p.name}">
                         <div class="out-of-stock-badge" id="pd-oos-badge" style="display: ${isOOS ? 'block' : 'none'};">SIN STOCK</div>
+                        <button id="pd-img-prev" class="pd-img-nav pd-img-prev" style="display:none;">&#8249;</button>
+                        <button id="pd-img-next" class="pd-img-nav pd-img-next" style="display:none;">&#8250;</button>
                     </div>
+                    <div id="pd-img-dots" class="pd-img-dots" style="display:none;"></div>
                     <div class="product-info-container reveal delay-2">
                         <div>
                             <div class="pd-brand">${p.provider || 'Distribuidor Local'}</div>
@@ -293,11 +339,11 @@
                             ${p.variants && p.variants.length > 0 ? `
                             <div class="variant-selector" style="margin-top: 2rem;">
                                 <label style="display: block; margin-bottom: 0.8rem; font-weight: 600; color: var(--accent-color);">Elegir ${p.category.includes('PVC') || p.category.includes('Moldura') ? 'Medida/Color' : 'Medida'}:</label>
-                                <div class="variant-chips" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                                <div class="variant-chips" id="detail-variant-chips" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
                                     ${p.variants.map((v, idx) => `
                                         <button class="variant-chip" 
-                                                style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid ${idx === 0 ? 'var(--accent-color)' : 'var(--glass-border)'}; background: ${idx === 0 ? 'rgba(254, 222, 89, 0.1)' : 'rgba(255,255,255,0.05)'}; color: ${idx === 0 ? 'var(--accent-color)' : 'white'}; cursor: pointer; transition: all 0.3s;"
-                                                onclick="selectDetailVariant('${v}', this)">
+                                                data-variant="${v.replace(/"/g, '&quot;')}"
+                                                style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid ${idx === 0 ? 'var(--accent-color)' : 'var(--glass-border)'}; background: ${idx === 0 ? 'rgba(254, 222, 89, 0.1)' : 'rgba(255,255,255,0.05)'}; color: ${idx === 0 ? 'var(--accent-color)' : 'white'}; cursor: pointer; transition: all 0.3s;">
                                             ${v}
                                         </button>
                                     `).join('')}
@@ -328,44 +374,91 @@
                 </div>
             `;
 
-            // Quantity logic
+            // Cloudinary optimizer (inline — mismo que products.js)
+            function optimizeImg(url, width = 800) {
+                if (!url || !url.includes('res.cloudinary.com')) return url;
+                if (url.includes('/upload/w_')) return url;
+                return url.replace('/upload/', `/upload/w_${width},q_auto,f_auto/`);
+            }
+
+            // Multi-image helper (inline, same logic as products.js)
+            function getVariantImages(prod, variantName) {
+                if (!prod.variantImgs) return prod.img ? [optimizeImg(prod.img)] : [];
+                const raw = prod.variantImgs[variantName];
+                if (!raw) return prod.img ? [optimizeImg(prod.img)] : [];
+                const arr = Array.isArray(raw) ? raw.filter(Boolean) : [raw];
+                return arr.map(u => optimizeImg(u));
+            }
+
+            // Quantity + variant state
             let qty = 1;
             let selectedVariant = p.variants && p.variants.length > 0 ? p.variants[0] : '';
-            let currentImg = p.img;
+            let currentImages = getVariantImages(p, selectedVariant);
+            let currentImageIdx = 0;
+            let currentImg = currentImages[0] || p.img;
 
-            // Load initial variant image if present
-            if (selectedVariant && p.variantImgs && p.variantImgs[selectedVariant]) {
-                currentImg = p.variantImgs[selectedVariant];
+            function updateMainImage() {
+                const imgEl = document.getElementById('pd-main-img');
+                if (imgEl) imgEl.src = currentImages[currentImageIdx];
+                currentImg = currentImages[currentImageIdx];
+                // Update dots
+                document.querySelectorAll('.pd-dot').forEach((d, i) => {
+                    d.style.background = i === currentImageIdx ? 'var(--accent-color)' : 'rgba(255,255,255,0.35)';
+                });
+            }
+
+            function setupNavigation(images) {
+                const prevBtn = document.getElementById('pd-img-prev');
+                const nextBtn = document.getElementById('pd-img-next');
+                const dotsContainer = document.getElementById('pd-img-dots');
+                if (!prevBtn || !nextBtn || !dotsContainer) return;
+                if (images.length > 1) {
+                    prevBtn.style.display = 'flex';
+                    nextBtn.style.display = 'flex';
+                    dotsContainer.style.display = 'flex';
+                    dotsContainer.innerHTML = '';
+                    images.forEach((_, i) => {
+                        const dot = document.createElement('span');
+                        dot.className = 'pd-dot';
+                        dot.style.background = i === 0 ? 'var(--accent-color)' : 'rgba(255,255,255,0.35)';
+                        dot.addEventListener('click', () => { currentImageIdx = i; updateMainImage(); });
+                        dotsContainer.appendChild(dot);
+                    });
+                } else {
+                    prevBtn.style.display = 'none';
+                    nextBtn.style.display = 'none';
+                    dotsContainer.style.display = 'none';
+                }
+            }
+
+            // Init navigation for default variant
+            setupNavigation(currentImages);
+
+            // Load initial variant image
+            if (selectedVariant && currentImages.length > 0) {
                 setTimeout(() => {
-                    const imgEl = document.querySelector('.product-image-container img');
-                    if (imgEl) imgEl.src = currentImg;
+                    const imgEl = document.getElementById('pd-main-img');
+                    if (imgEl) imgEl.src = currentImages[0];
                 }, 0);
             }
 
             window.selectDetailVariant = (v, el) => {
                 selectedVariant = v;
-                
-                // Switch image based on variant
-                if (p.variantImgs && p.variantImgs[v]) {
-                    currentImg = p.variantImgs[v];
-                } else {
-                    currentImg = p.img;
-                }
-                const imgEl = document.querySelector('.product-image-container img');
-                if (imgEl) imgEl.src = currentImg;
+                currentImages = getVariantImages(p, v);
+                currentImageIdx = 0;
+                updateMainImage();
+                setupNavigation(currentImages);
 
                 // Update out of stock UI
                 const isOutOfStock = (p.outOfStock || []).includes(v);
                 const badge = document.getElementById('pd-oos-badge');
                 if (badge) badge.style.display = isOutOfStock ? 'block' : 'none';
-                
                 const addBtn = document.getElementById('detail-add-btn');
                 const addText = document.getElementById('add-text-detail');
                 if (addBtn && addText) {
                     addBtn.disabled = isOutOfStock;
                     addText.innerText = isOutOfStock ? 'Sin Stock' : 'Sumar al Presupuesto';
                 }
-
                 el.parentElement.querySelectorAll('.variant-chip').forEach(c => {
                     c.style.borderColor = 'var(--glass-border)';
                     c.style.background = 'rgba(255,255,255,0.05)';
@@ -387,6 +480,29 @@
             document.getElementById('detail-add-btn').addEventListener('click', () => {
                 window.addToCart(p.id, p.name, currentImg, p.category, qty, selectedVariant);
             });
+
+            // Arrow navigation
+            const prevBtn = document.getElementById('pd-img-prev');
+            const nextBtn = document.getElementById('pd-img-next');
+            if (prevBtn) prevBtn.addEventListener('click', () => {
+                currentImageIdx = (currentImageIdx - 1 + currentImages.length) % currentImages.length;
+                updateMainImage();
+            });
+            if (nextBtn) nextBtn.addEventListener('click', () => {
+                currentImageIdx = (currentImageIdx + 1) % currentImages.length;
+                updateMainImage();
+            });
+
+            // Variant chip listeners via delegation
+            const variantChipsContainer = document.getElementById('detail-variant-chips');
+            if (variantChipsContainer) {
+                variantChipsContainer.addEventListener('click', function(e) {
+                    const chip = e.target.closest('.variant-chip');
+                    if (!chip) return;
+                    const v = chip.dataset.variant;
+                    window.selectDetailVariant(v, chip);
+                });
+            }
 
             if (typeof window.initAnimations === 'function') {
                 setTimeout(window.initAnimations, 50);
