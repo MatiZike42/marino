@@ -31,19 +31,32 @@
             </div>
         </a>
         <ul class="nav-links">
-            <li><a href="index.html#inicio">Inicio</a></li>
-            <li><a href="index.html#nosotros">Nosotros</a></li>
-            <li><a href="productos.html">Catálogo</a></li>
-            <li><a href="obras.html">Obras</a></li>
-            <li><a href="galeria.html">Multimedia</a></li>
-            <li><a href="rrhh.html">RRHH</a></li>
-            <li><a href="consultas.html" style="color: var(--accent-color);">Consultas</a></li>
-            <li><a href="index.html#contacto">Contacto</a></li>
-            <li><a href="login.html" id="nav-login"><i class="fas fa-lock"></i></a></li>
+            <li><a href="index">Inicio</a></li>
+            <li><a href="index#nosotros">Nosotros</a></li>
+            <li class="nav-item-dropdown">
+                <a href="productos">Catálogo <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i></a>
+                <div class="nav-dropdown">
+                    <a href="productos" class="dropdown-link">Todos los Productos</a>
+                    <a href="productos?provider=Durlock" class="dropdown-link">Durlock</a>
+                    <a href="productos?provider=Aisplac" class="dropdown-link">Aisplac</a>
+                    <a href="productos?provider=JMA" class="dropdown-link">JMA</a>
+                    <a href="productos?provider=Atenneas" class="dropdown-link">Atenneas</a>
+                    <a href="productos?provider=Maropor" class="dropdown-link">Maropor</a>
+                    <a href="productos?provider=ACON" class="dropdown-link">ACON</a>
+                    <a href="productos?provider=IPROA" class="dropdown-link">IPROA</a>
+                    <a href="productos?provider=TelPlast" class="dropdown-link">TelPlast</a>
+                </div>
+            </li>
+            <li><a href="obras">Obras</a></li>
+            <li><a href="galeria">Multimedia</a></li>
+            <li><a href="rrhh">RRHH</a></li>
+            <li><a href="consultas" style="color: var(--accent-color);">Consultas</a></li>
+            <li><a href="index#contacto">Contacto</a></li>
+            <li><a href="login" id="nav-login"><i class="fas fa-lock"></i></a></li>
         </ul>
     </nav>
 
-    <header class="page-header" style="background: linear-gradient(rgba(75, 75, 75, 0.9), rgba(75, 75, 75, 1)), url('IMG_4545.jpg') center/cover no-repeat;">
+    <header class="page-header">
         <h1 class="reveal">Consultas Particulares</h1>
         <p class="reveal delay-1">Estamos acá para asesorarte en lo que necesites</p>
     </header>

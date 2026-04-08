@@ -403,6 +403,18 @@ async function initializeProducts() {
                 }
             }
         }
+        // Check for URL parameters to pre-filter
+        const urlParams = new URLSearchParams(window.location.search);
+        const providerParam = urlParams.get('provider');
+        const categoryParam = urlParams.get('category');
+        
+        if (providerParam) {
+            selectedProviders.add(providerParam);
+        }
+        if (categoryParam) {
+            selectedCategories.add(categoryParam);
+        }
+
     } catch (error) {
         console.error("Error loading products:", error);
         if (productsData.length === 0) {
@@ -486,8 +498,9 @@ function renderProducts() {
 
             const card = document.createElement('div');
             card.className = 'product-card glass reveal delay-2';
+            const detailPage = window.location.pathname.includes('m_') ? 'm_producto-detalle' : 'producto-detalle';
             card.innerHTML = `
-                <a href="producto-detalle.html?id=${p.id}" class="product-link" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; flex: 1;">
+                <a href="${detailPage}?id=${p.id}" class="product-link" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; flex: 1;">
                     <div style="position: relative; overflow: hidden; height: 200px; background: #ffffff; display: flex; align-items: center; justify-content: center;">
                          <img src="${firstImg}" alt="${p.name}" class="product-img" data-pid="${p.id}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
                          <div class="out-of-stock-badge" id="oos-badge-${p.id}" style="display: ${isOOS ? 'block' : 'none'};">SIN STOCK</div>

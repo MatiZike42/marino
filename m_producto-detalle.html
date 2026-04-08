@@ -177,7 +177,7 @@
 
 <body>
     <nav class="navbar glass" id="navbar">
-        <a href="m_index.html" class="logo">
+        <a href="m_index" class="logo">
             <img src="mariño.png" alt="Mariño Logo" class="nav-logo">
             <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.1;">
                 <div>Mariño</div>
@@ -190,14 +190,14 @@
             <i class="fas fa-bars"></i>
         </div>
         <ul class="nav-links">
-            <li><a href="m_index.html#inicio">Inicio</a></li>
-            <li><a href="m_index.html#nosotros">Nosotros</a></li>
-            <li><a href="m_productos.html" style="color: var(--accent-color);">Catálogo</a></li>
-            <li><a href="m_obras.html">Obras</a></li>
-            <li><a href="m_rrhh.html">RRHH</a></li>
-            <li><a href="m_consultas.html">Consultas</a></li>
-            <li><a href="m_index.html#contacto">Contacto</a></li>
-            <li><a href="m_login.html" id="nav-login"><i class="fas fa-lock"></i></a></li>
+            <li><a href="m_index#inicio">Inicio</a></li>
+            <li><a href="m_index#nosotros">Nosotros</a></li>
+            <li><a href="m_productos" style="color: var(--accent-color);">Catálogo</a></li>
+            <li><a href="m_obras">Obras</a></li>
+            <li><a href="m_rrhh">RRHH</a></li>
+            <li><a href="m_consultas">Consultas</a></li>
+            <li><a href="m_index#contacto">Contacto</a></li>
+            <li><a href="m_login" id="nav-login"><i class="fas fa-lock"></i></a></li>
         </ul>
     </nav>
 
@@ -245,11 +245,11 @@
         function showError(msg) {
             const container = document.getElementById('detail-container');
             container.innerHTML = `
-                <a href="m_productos.html" class="back-link"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
+                <a href="m_productos" class="back-link"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
                 <div class="error-state glass" style="border-radius: 20px;">
                     <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 1rem; color: var(--danger-color);"></i>
                     <p style="color: var(--text-primary); margin-bottom: 2rem;">${msg}</p>
-                    <a href="m_productos.html" class="btn btn-primary">Ver Catálogo</a>
+                    <a href="m_productos" class="btn btn-primary">Ver Catálogo</a>
                 </div>
             `;
         }
@@ -278,7 +278,7 @@
             const firstImg = _getVI(p, defaultVariant) || p.img;
 
             container.innerHTML = `
-                <a href="m_productos.html" class="back-link reveal"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
+                <a href="m_productos" class="back-link reveal"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
                 <div class="product-detail-layout">
                     <div class="product-image-container reveal delay-1" style="position: relative;">
                         <img id="pd-main-img" src="${firstImg}" alt="${p.name}">

@@ -485,26 +485,53 @@ footer {
 }
 
 /* Page Header (for pages other than index) */
-.page-header {
-  padding: 150px 5% 50px;
-  /* Offset for navbar */
+.page-header, .obras-header, .galeria-header, .rrhh-hero, .m-galeria-header {
+  padding: 120px 5% 60px;
   text-align: center;
-  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(84, 84, 84, 1)), url('IMG_4423.jpg') center/cover no-repeat;
-  border-bottom: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-color) !important;
+  border-bottom: 2px solid var(--accent-color);
+  z-index: 1;
 }
 
-.page-header h1 {
-  font-size: 3.5rem;
-  color: var(--text-primary);
-  margin-bottom: 1rem;
+.page-header::before, .obras-header::before, .galeria-header::before, .rrhh-hero::before, .m-galeria-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: blur(10px);
+  transform: scale(1.15);
+  opacity: 0.5;
+  z-index: -1;
 }
 
-.page-header p {
-  color: var(--text-secondary);
-  font-size: 1.2rem;
-  max-width: 600px;
+.page-header::before { background-image: url('IMG_4423.jpg'); }
+.obras-header::before { background-image: url('IMG_4420.jpg'); }
+.galeria-header::before { background-image: url('IMG_4561.jpg'); }
+.rrhh-hero::before { background-image: url('IMG_4561.jpg'); }
+.m-galeria-header::before { background-image: url('IMG_4561.jpg'); }
+
+.page-header h1, .obras-header h1, .galeria-header h1, .rrhh-hero h1, .m-galeria-header h1 {
+  font-size: 2.5rem;
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+.page-header p, .obras-header p, .galeria-header p, .rrhh-hero p, .m-galeria-header p {
+  color: rgba(255,255,255,0.8);
+  font-size: 1rem;
+  max-width: 90%;
   margin: 0 auto;
+  position: relative;
+  z-index: 2;
 }
+
 
 /* Animations */
 @keyframes fadeIn {
@@ -767,7 +794,7 @@ footer {
   }
 
   .nav-item-dropdown:hover .nav-dropdown {
-      display: flex;
+      display: none; /* Desactivado para móviles para permitir navegación directa */
   }
 
   .dropdown-link {
@@ -793,6 +820,10 @@ footer {
 
   .products-grid {
     grid-template-columns: 1fr;
+  }
+
+  .product-hover-overlay {
+    display: none !important;
   }
 }
 

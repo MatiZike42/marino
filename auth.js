@@ -74,7 +74,7 @@ onAuthStateChanged(auth, (user) => {
         // Si estamos en la página de login y ya hay sesión → redirigir
         if (window.location.pathname.includes('login')) {
             const isMobile = window.location.pathname.includes('m_login');
-            window.location.href = isMobile ? 'm_index.html' : 'index.html';
+            window.location.href = isMobile ? 'm_index' : 'index';
         }
 
         // Disparar evento para que otros scripts (products.js, etc.) puedan reaccionar
@@ -84,7 +84,7 @@ onAuthStateChanged(auth, (user) => {
         // Sin sesión: resetear navbar al estado de login
         navLoginIcon.innerHTML = `<i class="fas fa-lock"></i>`;
         navLoginIcon.style.color = '';
-        navLoginIcon.href = window.location.pathname.includes('m_') ? 'm_login.html' : 'login.html';
+        navLoginIcon.href = window.location.pathname.includes('m_') ? 'm_login' : 'login';
         navLoginIcon.onclick = null;
 
         window.dispatchEvent(new CustomEvent('authReady', { detail: { user: null, isAdmin: false } }));

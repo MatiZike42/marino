@@ -515,26 +515,57 @@ footer {
 }
 
 /* Page Header (for pages other than index) */
-.page-header {
-  padding: 150px 5% 50px;
-  /* Offset for navbar */
+.page-header, .obras-header, .galeria-header, .rrhh-hero {
+  padding: 160px 5% 80px;
   text-align: center;
-  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(84, 84, 84, 1)), url('IMG_4423.jpg') center/cover no-repeat;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-color);
   border-bottom: 1px solid var(--glass-border);
+  z-index: 1;
 }
 
-.page-header h1 {
+.page-header::before, .obras-header::before, .galeria-header::before, .rrhh-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: blur(12px);
+  transform: scale(1.15); /* Al usar blur los bordes se aclaran, escalando lo corregimos */
+  opacity: 0.5;
+  z-index: -1;
+}
+
+/* Page specific background images for the blur effect */
+.page-header::before { background-image: url('IMG_4423.jpg'); }
+.obras-header::before { background-image: url('IMG_4420.jpg'); }
+.galeria-header::before { background-image: url('IMG_4561.jpg'); }
+.rrhh-hero::before { background-image: url('IMG_4561.jpg'); }
+
+.page-header h1, .page-header p,
+.obras-header h1, .obras-header p,
+.galeria-header h1, .galeria-header p,
+.rrhh-hero h1, .rrhh-hero p {
+  position: relative;
+  z-index: 2;
+}
+
+.page-header h1, .obras-header h1, .galeria-header h1, .rrhh-hero h1 {
   font-size: 3.5rem;
-  color: var(--text-primary);
+  color: var(--accent-color);
   margin-bottom: 1rem;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-.page-header p {
+.page-header p, .obras-header p, .galeria-header p, .rrhh-hero p {
   color: var(--text-secondary);
   font-size: 1.2rem;
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
 }
+
 
 /* Catalog Horizontal Filters */
 .horizontal-filters {

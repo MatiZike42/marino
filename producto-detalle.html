@@ -200,14 +200,14 @@
     <script>
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768) {
             var currentParams = window.location.hash + window.location.search;
-            window.location.href = "m_producto-detalle.html" + currentParams;
+            window.location.href = "m_producto-detalle" + currentParams;
         }
     </script>
 </head>
 
 <body>
     <nav class="navbar glass" id="navbar">
-        <a href="index.html" class="logo">
+        <a href="index" class="logo">
             <img src="mariño.png" alt="Mariño Logo" class="nav-logo">
             <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.1;">
                 <div>Mariño</div>
@@ -217,14 +217,14 @@
             </div>
         </a>
         <ul class="nav-links">
-            <li><a href="index.html#inicio">Inicio</a></li>
-            <li><a href="index.html#nosotros">Nosotros</a></li>
-            <li><a href="productos.html" style="color: var(--accent-color);">Catálogo</a></li>
-            <li><a href="obras.html">Obras</a></li>
-            <li><a href="rrhh.html">RRHH</a></li>
-            <li><a href="consultas.html">Consultas</a></li>
-            <li><a href="index.html#contacto">Contacto</a></li>
-            <li><a href="login.html" id="nav-login"><i class="fas fa-lock"></i></a></li>
+            <li><a href="index#inicio">Inicio</a></li>
+            <li><a href="index#nosotros">Nosotros</a></li>
+            <li><a href="productos" style="color: var(--accent-color);">Catálogo</a></li>
+            <li><a href="obras">Obras</a></li>
+            <li><a href="rrhh">RRHH</a></li>
+            <li><a href="consultas">Consultas</a></li>
+            <li><a href="index#contacto">Contacto</a></li>
+            <li><a href="login" id="nav-login"><i class="fas fa-lock"></i></a></li>
         </ul>
     </nav>
 
@@ -276,11 +276,11 @@
         function showError(msg) {
             const container = document.getElementById('detail-container');
             container.innerHTML = `
-                <a href="productos.html" class="back-link"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
+                <a href="productos" class="back-link"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
                 <div class="error-state glass" style="border-radius: 20px;">
                     <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 1rem; color: var(--danger-color);"></i>
                     <p style="color: var(--text-primary); margin-bottom: 2rem;">${msg}</p>
-                    <a href="productos.html" class="btn btn-primary">Ver Catálogo</a>
+                    <a href="productos" class="btn btn-primary">Ver Catálogo</a>
                 </div>
             `;
         }
@@ -310,7 +310,7 @@
             const firstImg = _getVI(p, defaultVariant) || p.img;
 
             container.innerHTML = `
-                <a href="productos.html" class="back-link reveal"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
+                <a href="productos" class="back-link reveal"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
                 <div class="product-detail-layout">
                     <div class="product-image-container reveal delay-1" style="position: relative;">
                         <img id="pd-main-img" src="${firstImg}" alt="${p.name}">

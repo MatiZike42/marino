@@ -17,26 +17,10 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="mariño.ico" type="image/x-icon">
     <style>
-        .obras-header {
-            padding: 150px 5% 50px;
-            text-align: center;
-            background: linear-gradient(rgba(75, 75, 75, 0.9), rgba(75, 75, 75, 1)), url('IMG_4420.jpg') center/cover no-repeat;
-            border-bottom: 1px solid var(--glass-border);
-        }
+        /* Los estilos de .obras-header ahora se manejan globalmente en styles.css para asegurar consistencia y efecto de desenfoque premium */
 
-        .obras-header h1 {
-            font-size: 3.5rem;
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
+        /* --- Stacked Cards Interaction (chetanverma16 inspired) --- */
 
-        .obras-header p {
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
 
         /* --- Stacked Cards Interaction (chetanverma16 inspired) --- */
         .stacked-cards-section {
@@ -529,15 +513,28 @@
             </div>
         </a>
         <ul class="nav-links">
-            <li><a href="index.html#inicio">Inicio</a></li>
-            <li><a href="index.html#nosotros">Nosotros</a></li>
-            <li><a href="productos.html">Catálogo</a></li>
-            <li><a href="obras.html">Obras</a></li>
-            <li><a href="galeria.html">Multimedia</a></li>
-            <li><a href="rrhh.html">RRHH</a></li>
-            <li><a href="consultas.html">Consultas</a></li>
-            <li><a href="index.html#contacto">Contacto</a></li>
-            <li><a href="login.html" id="nav-login"><i class="fas fa-lock"></i></a></li>
+            <li><a href="index">Inicio</a></li>
+            <li><a href="index#nosotros">Nosotros</a></li>
+            <li class="nav-item-dropdown">
+                <a href="productos">Catálogo <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i></a>
+                <div class="nav-dropdown">
+                    <a href="productos" class="dropdown-link">Todos los Productos</a>
+                    <a href="productos?provider=Durlock" class="dropdown-link">Durlock</a>
+                    <a href="productos?provider=Aisplac" class="dropdown-link">Aisplac</a>
+                    <a href="productos?provider=JMA" class="dropdown-link">JMA</a>
+                    <a href="productos?provider=Atenneas" class="dropdown-link">Atenneas</a>
+                    <a href="productos?provider=Maropor" class="dropdown-link">Maropor</a>
+                    <a href="productos?provider=ACON" class="dropdown-link">ACON</a>
+                    <a href="productos?provider=IPROA" class="dropdown-link">IPROA</a>
+                    <a href="productos?provider=TelPlast" class="dropdown-link">TelPlast</a>
+                </div>
+            </li>
+            <li><a href="obras" style="color: var(--accent-color);">Obras</a></li>
+            <li><a href="galeria">Multimedia</a></li>
+            <li><a href="rrhh">RRHH</a></li>
+            <li><a href="consultas">Consultas</a></li>
+            <li><a href="index#contacto">Contacto</a></li>
+            <li><a href="login" id="nav-login"><i class="fas fa-lock"></i></a></li>
         </ul>
     </nav>
 

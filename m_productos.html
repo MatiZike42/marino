@@ -150,6 +150,10 @@
             flex-direction: column;
         }
 
+        .product-hover-overlay {
+            display: none !important;
+        }
+
         .product-title {
             font-size: 1.25rem;
             margin-bottom: 0.5rem;
@@ -321,26 +325,15 @@
             <i class="fas fa-bars"></i>
         </div>
         <ul class="nav-links">
-            <li><a href="m_index.html#inicio">Inicio</a></li>
-            <li><a href="m_index.html#nosotros">Nosotros</a></li>
-            <li class="nav-item-dropdown">
-                <a href="m_productos.html" style="color: var(--accent-color);">Catálogo <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i></a>
-                <div class="nav-dropdown">
-                    <a href="m_productos.html" class="dropdown-link">Todos los Productos</a>
-                    <a href="m_productos.html?provider=Durlock" class="dropdown-link">Durlock</a>
-                    <a href="m_productos.html?provider=JMA" class="dropdown-link">JMA</a>
-                    <a href="m_productos.html?provider=Aisplac" class="dropdown-link">Aisplac</a>
-                    <a href="m_productos.html?provider=Atenneas" class="dropdown-link">Atenneas</a>
-                    <a href="m_productos.html)
-                    <a href="m_productos.html?provider=Maropor" class="dropdown-link">Maropor</a>
-                </div>
-            </li>
-            <li><a href="m_obras.html">Obras</a></li>
-            <li><a href="m_galeria.html">Multimedia</a></li>
-            <li><a href="m_rrhh.html">RRHH</a></li>
-            <li><a href="m_consultas.html">Consultas</a></li>
-            <li><a href="m_index.html#contacto">Contacto</a></li>
-            <li><a href="m_login.html" id="nav-login"><i class="fas fa-lock"></i></a></li>
+            <li><a href="m_index#inicio">Inicio</a></li>
+            <li><a href="m_index#nosotros">Nosotros</a></li>
+            <li><a href="m_productos" style="color: var(--accent-color);">Catálogo</a></li>
+            <li><a href="m_obras">Obras</a></li>
+            <li><a href="m_galeria">Multimedia</a></li>
+            <li><a href="m_rrhh">RRHH</a></li>
+            <li><a href="m_consultas">Consultas</a></li>
+            <li><a href="m_index#contacto">Contacto</a></li>
+            <li><a href="m_login" id="nav-login"><i class="fas fa-lock"></i></a></li>
         </ul>
     </nav>
 

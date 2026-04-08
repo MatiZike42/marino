@@ -10,18 +10,8 @@
     <link rel="stylesheet" href="m_styles.css">
     <link rel="icon" href="mariño.ico" type="image/x-icon">
     <style>
-        .m-galeria-header {
-            padding: 100px 5% 40px;
-            text-align: center;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('IMG_4561.jpg') center/cover;
-            border-bottom: 2px solid var(--accent-color);
-        }
+        /* Los estilos de .m-galeria-header ahora se manejan en m_styles.css */
 
-        .m-galeria-header h1 {
-            font-size: 2.2rem;
-            color: var(--accent-color);
-            margin-bottom: 0.5rem;
-        }
 
         .video-list-m {
             padding: 2rem 5%;
@@ -195,25 +185,15 @@
             <i class="fas fa-bars"></i>
         </div>
         <ul class="nav-links">
-            <li><a href="m_index.html#inicio">Inicio</a></li>
-            <li><a href="m_index.html#nosotros">Nosotros</a></li>
-            <li class="nav-item-dropdown">
-                <a href="m_productos.html">Catálogo <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i></a>
-                <div class="nav-dropdown">
-                    <a href="m_productos.html" class="dropdown-link">Todos los Productos</a>
-                    <a href="m_productos.html?provider=Durlock" class="dropdown-link">Durlock</a>
-                    <a href="m_productos.html?provider=JMA" class="dropdown-link">JMA</a>
-                    <a href="m_productos.html?provider=Aisplac" class="dropdown-link">Aisplac</a>
-                    <a href="m_productos.html?provider=Atenneas" class="dropdown-link">Atenneas</a>
-                    <a href="m_productos.html?provider=Maropor" class="dropdown-link">Maropor</a>
-                </div>
-            </li>
-            <li><a href="m_obras.html">Obras</a></li>
-            <li><a href="m_galeria.html" style="color: var(--accent-color);">Multimedia</a></li>
-            <li><a href="m_rrhh.html">RRHH</a></li>
-            <li><a href="m_consultas.html">Consultas</a></li>
-            <li><a href="m_index.html#contacto">Contacto</a></li>
-            <li><a href="m_login.html" id="nav-login"><i class="fas fa-lock"></i></a></li>
+            <li><a href="m_index#inicio">Inicio</a></li>
+            <li><a href="m_index#nosotros">Nosotros</a></li>
+            <li><a href="m_productos">Catálogo</a></li>
+            <li><a href="m_obras">Obras</a></li>
+            <li><a href="m_galeria" style="color: var(--accent-color);">Multimedia</a></li>
+            <li><a href="m_rrhh">RRHH</a></li>
+            <li><a href="m_consultas">Consultas</a></li>
+            <li><a href="m_index#contacto">Contacto</a></li>
+            <li><a href="m_login" id="nav-login"><i class="fas fa-lock"></i></a></li>
         </ul>
     </nav>
 
