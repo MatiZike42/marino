@@ -4,8 +4,7 @@
 // ═══════════════════════════════════════════════════════════════════
 import { auth, googleProvider } from './firebase-config.js';
 import {
-    signInWithRedirect,
-    getRedirectResult,
+    signInWithPopup,
     signOut,
     onAuthStateChanged,
     setPersistence,
@@ -35,7 +34,7 @@ window.loginWithGoogle = async function () {
     if (errEl) errEl.style.display = 'none';
 
     try {
-        await signInWithRedirect(auth, googleProvider);
+        await signInWithPopup(auth, googleProvider);
     } catch (err) {
         console.error('Login error:', err);
         if (errEl) {
@@ -99,23 +98,4 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// ─── Manejo de Resultado de Redirección (para capturar errores) ───
-if (window.location.pathname.includes('login')) {
-    console.log('[Auth Debug] Procesando resultado de redirección...');
-    getRedirectResult(auth)
-        .then((result) => {
-            if (result) {
-                console.log('[Auth Debug] Redirect exitoso. Usuario:', result.user.email);
-            } else {
-                console.log('[Auth Debug] No hay resultado de redirect pendiente.');
-            }
-        })
-        .catch((err) => {
-            console.error("[Auth Debug] Error en redirect:", err);
-            const errEl = document.getElementById('login-error');
-            if (errEl) {
-                errEl.textContent = `Error: ${err.code || 'Desconocido'}. Verificá los dominios autorizados en Firebase.`;
-                errEl.style.display = 'block';
-            }
-        });
-}
+
