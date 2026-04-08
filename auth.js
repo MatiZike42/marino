@@ -7,7 +7,9 @@ import {
     signInWithRedirect,
     getRedirectResult,
     signOut,
-    onAuthStateChanged
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 
 // ─── Correos autorizados como administradores ─────────────────────
@@ -50,8 +52,14 @@ window.logoutUser = async function () {
     window.location.reload();
 };
 
+// ─── Configurar Persistencia (Crucial para dominios personalizados) ─
+setPersistence(auth, browserLocalPersistence)
+    .then(() => console.log('[Auth Debug] Persistencia configurada: LocalStorage'))
+    .catch(err => console.error('[Auth Debug] Error en persistencia:', err));
+
 // ─── Observer: reacciona a cambios de sesión en tiempo real ───────
 onAuthStateChanged(auth, (user) => {
+    console.log('[Auth Debug] Estado de sesión cambiado:', user ? `Usuario: ${user.email}` : 'Sin sesión (null)');
     // Actualizar navbar
     const navLoginIcon = document.getElementById('nav-login');
     if (!navLoginIcon) return;
@@ -93,12 +101,21 @@ onAuthStateChanged(auth, (user) => {
 
 // ─── Manejo de Resultado de Redirección (para capturar errores) ───
 if (window.location.pathname.includes('login')) {
-    getRedirectResult(auth).catch((err) => {
-        console.error("Redirect login error:", err);
-        const errEl = document.getElementById('login-error');
-        if (errEl) {
-            errEl.textContent = 'Error al procesar el inicio de sesión. Verificá tu cuenta.';
-            errEl.style.display = 'block';
-        }
-    });
+    console.log('[Auth Debug] Procesando resultado de redirección...');
+    getRedirectResult(auth)
+        .then((result) => {
+            if (result) {
+                console.log('[Auth Debug] Redirect exitoso. Usuario:', result.user.email);
+            } else {
+                console.log('[Auth Debug] No hay resultado de redirect pendiente.');
+            }
+        })
+        .catch((err) => {
+            console.error("[Auth Debug] Error en redirect:", err);
+            const errEl = document.getElementById('login-error');
+            if (errEl) {
+                errEl.textContent = `Error: ${err.code || 'Desconocido'}. Verificá los dominios autorizados en Firebase.`;
+                errEl.style.display = 'block';
+            }
+        });
 }
