@@ -270,8 +270,18 @@
                 showError('Error al cargar el producto. Verifica tu conexión.');
             }
         }
-
         window._showDetailError = function(msg) { showError(msg); };
+
+        // Helper for attribute escaping
+        function hEsc(str) {
+            if (!str) return '';
+            return str.toString()
+                .replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
 
         function showError(msg) {
             const container = document.getElementById('detail-container');
@@ -342,7 +352,8 @@
                                 <div class="variant-chips" id="detail-variant-chips" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
                                     ${p.variants.map((v, idx) => `
                                         <button class="variant-chip" 
-                                                data-variant="${v.replace(/"/g, '&quot;')}"
+                                                data-variant="${hEsc(v)}"
+                                                onclick="selectDetailVariant('${v.replace(/'/g, "\\'")}', this)"
                                                 style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid ${idx === 0 ? 'var(--accent-color)' : 'var(--glass-border)'}; background: ${idx === 0 ? 'rgba(254, 222, 89, 0.1)' : 'rgba(255,255,255,0.05)'}; color: ${idx === 0 ? 'var(--accent-color)' : 'white'}; cursor: pointer; transition: all 0.3s;">
                                             ${v}
                                         </button>

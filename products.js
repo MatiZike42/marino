@@ -435,6 +435,17 @@ async function saveProduct(product) {
     }
 }
 
+// Helper for attribute escaping
+function hEsc(str) {
+    if (!str) return '';
+    return str.toString()
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
 // Function to render products
 function renderProducts() {
     clearAllSlideshows();
@@ -521,7 +532,7 @@ function renderProducts() {
                             <div class="variant-chips">
                                 ${p.variants.map((v, idx) => `
                                     <button class="variant-chip ${idx === 0 ? 'active' : ''}" 
-                                            onclick="selectVariant('${p.id}', '${v}', this)">
+                                            onclick="selectVariant('${p.id}', '${v.replace(/'/g, "\\'")}', this)">
                                         ${v}
                                     </button>
                                 `).join('')}
@@ -544,10 +555,10 @@ function renderProducts() {
                         <button class="btn btn-secondary catalog-add-btn" 
                                 id="add-btn-${p.id}"
                                 data-id="${p.id}" 
-                                data-name="${p.name.replace(/"/g, '&quot;')}" 
+                                data-name="${hEsc(p.name)}" 
                                 data-img="${p.img}" 
-                                data-cat="${p.category}"
-                                data-variant="${p.variants && p.variants.length > 0 ? p.variants[0] : ''}"
+                                data-cat="${hEsc(p.category)}"
+                                data-variant="${hEsc(p.variants && p.variants.length > 0 ? p.variants[0] : '')}"
                                 ${isOOS ? 'disabled' : ''}>
                             <i class="fas fa-cart-plus"></i> <span id="add-text-${p.id}">${isOOS ? 'Sin Stock' : 'Agregar'}</span>
                         </button>
@@ -622,7 +633,7 @@ function renderPagination(totalPages) {
 }
 
 // Admin Functions
-window.editProduct = window.editProduct || async function (id) {
+window.editProduct = async function (id) {
     const p = productsData.find(x => x.id === id);
     if (!p) return;
 
@@ -688,7 +699,7 @@ window.openStockManager = function(id) {
     document.getElementById('stockModal').style.display = 'flex';
 };
 
-window.deleteProduct = window.deleteProduct || async function (id) {
+window.deleteProduct = async function (id) {
     if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
         const p = productsData.find(x => x.id === id);
         if(p) {
@@ -1053,9 +1064,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         productsData[idx].variants = variants;
                         productsData[idx].desc = desc;
                         productsData[idx].img = img;
-                        if (Object.keys(variantImgs).length > 0) {
-                            productsData[idx].variantImgs = { ...(productsData[idx].variantImgs || {}), ...variantImgs };
-                        }
+                        productsData[idx].variantImgs = variantImgs;
                         await saveProduct(productsData[idx]);
                     }
                 } else {

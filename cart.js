@@ -87,18 +87,20 @@ function renderCartItems() {
     cart.forEach(item => {
         const div = document.createElement('div');
         div.className = 'cart-item';
+        // Build safe key for JS handlers
+        const safeKey = item.itemKey.replace(/'/g, "\\'");
         div.innerHTML = `
             <img src="${item.img}" alt="${item.name}">
             <div class="cart-item-info">
                 <h4>${item.name}</h4>
                 ${item.variant ? `<div class="cart-item-variant-label">Medida: ${item.variant}</div>` : ''}
                 <div class="cart-item-qty">
-                    <button onclick="updateQty('${item.itemKey}', -1)">-</button>
+                    <button onclick="updateQty('${safeKey}', -1)">-</button>
                     <span>${item.qty}</span>
-                    <button onclick="updateQty('${item.itemKey}', 1)">+</button>
+                    <button onclick="updateQty('${safeKey}', 1)">+</button>
                 </div>
             </div>
-            <button class="cart-item-remove" onclick="removeFromCart('${item.itemKey}')"><i class="fas fa-trash"></i></button>
+            <button class="cart-item-remove" onclick="removeFromCart('${safeKey}')"><i class="fas fa-trash"></i></button>
         `;
         container.appendChild(div);
     });

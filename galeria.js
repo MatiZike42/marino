@@ -92,7 +92,7 @@ function renderVideos() {
                 <div class="video-info">
                     <h3>${v.title}</h3>
                     <p>${(v.desc || '').replace(/\n/g, '<br>')}</p>
-                    ${isAdminUser ? `
+                    ${isAdminUser() ? `
                         <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
                             <button class="btn btn-secondary" style="flex:1; padding: 0.4rem;" onclick="editVideo('${v.id}')"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-danger" style="flex:1; padding: 0.4rem;" onclick="deleteVideo('${v.id}')"><i class="fas fa-trash"></i></button>
@@ -112,7 +112,7 @@ function renderVideos() {
                 <div class="video-info-m">
                     <h3>${v.title}</h3>
                     <p>${(v.desc || '').replace(/\n/g, '<br>')}</p>
-                    ${isAdminUser ? `
+                    ${isAdminUser() ? `
                         <div style="margin-top: 0.8rem; display: flex; gap: 0.5rem;">
                             <button class="btn btn-secondary" style="flex:1; font-size: 0.8rem;" onclick="editVideo('${v.id}')">Editar</button>
                             <button class="btn btn-danger" style="flex:1; font-size: 0.8rem;" onclick="deleteVideo('${v.id}')">Borrar</button>
