@@ -4,7 +4,8 @@
 // ═══════════════════════════════════════════════════════════════════
 import { auth, googleProvider } from './firebase-config.js';
 import {
-    signInWithPopup,
+    signInWithRedirect,
+    getRedirectResult,
     signOut,
     onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
@@ -32,8 +33,7 @@ window.loginWithGoogle = async function () {
     if (errEl) errEl.style.display = 'none';
 
     try {
-        await signInWithPopup(auth, googleProvider);
-        // onAuthStateChanged se encarga del resto — redirige automáticamente
+        await signInWithRedirect(auth, googleProvider);
     } catch (err) {
         console.error('Login error:', err);
         if (errEl) {
@@ -90,3 +90,15 @@ onAuthStateChanged(auth, (user) => {
         window.dispatchEvent(new CustomEvent('authReady', { detail: { user: null, isAdmin: false } }));
     }
 });
+
+// ─── Manejo de Resultado de Redirección (para capturar errores) ───
+if (window.location.pathname.includes('login')) {
+    getRedirectResult(auth).catch((err) => {
+        console.error("Redirect login error:", err);
+        const errEl = document.getElementById('login-error');
+        if (errEl) {
+            errEl.textContent = 'Error al procesar el inicio de sesión. Verificá tu cuenta.';
+            errEl.style.display = 'block';
+        }
+    });
+}
