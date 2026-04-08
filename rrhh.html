@@ -383,33 +383,48 @@
     <!-- Auth Guard: bloquea formularios de postulación para usuarios no logueados -->
     <script>
     (function() {
-        const isLoggedIn = !!localStorage.getItem('userEmail');
-        if (!isLoggedIn) {
-            document.addEventListener('DOMContentLoaded', function() {
-                // Solo bloquear formularios visibles (no el modal de admin que igual está oculto)
-                var formsToBlock = [
-                    document.getElementById('general-cv-form'),
-                    document.getElementById('apply-job-form')
-                ];
+        // Escuchar el evento de autenticación de Firebase (auth.js)
+        window.addEventListener('authReady', (e) => {
+            const { user } = e.detail;
+            
+            // Solo bloquear formularios visibles (no el modal de admin que igual está oculto)
+            const formsToBlock = [
+                document.getElementById('general-cv-form'),
+                document.getElementById('apply-job-form')
+            ];
+
+            if (!user) {
                 formsToBlock.forEach(function(form) {
-                    if (!form) return;
-                    form.querySelectorAll('input, textarea, select').forEach(function(el) {
+                    if (!form || form.querySelector('.auth-banner')) return;
+
+                    // Bloquear campos
+                    form.querySelectorAll('input, textarea, select, button[type="submit"]').forEach(function(el) {
                         el.disabled = true;
                         el.style.opacity = '0.4';
                         el.style.cursor = 'not-allowed';
                     });
-                    form.querySelectorAll('button[type="submit"]').forEach(function(btn) {
-                        btn.disabled = true;
-                        btn.style.opacity = '0.4';
-                        btn.style.cursor = 'not-allowed';
-                    });
+
+                    // Banner de aviso
                     var banner = document.createElement('div');
+                    banner.className = 'auth-banner';
                     banner.style.cssText = 'background:rgba(251,211,65,0.10);border:1px solid rgba(251,211,65,0.4);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:0.8rem;font-size:0.95rem;color:var(--text-secondary);';
                     banner.innerHTML = '<i class="fas fa-lock" style="color:var(--accent-color);font-size:1.2rem;"></i><span>Para postularte necesitás <a href="login.html" style="color:var(--accent-color);font-weight:600;text-decoration:none;">iniciar sesión &rarr;</a></span>';
                     form.prepend(banner);
                 });
-            });
-        }
+            } else {
+                // Si hay sesión, asegurar que todo esté habilitado
+                formsToBlock.forEach(function(form) {
+                    if (!form) return;
+                    form.querySelectorAll('input, textarea, select, button[type="submit"]').forEach(function(el) {
+                        el.disabled = false;
+                        el.style.opacity = '1';
+                        el.style.cursor = 'default';
+                    });
+                    const banner = form.querySelector('.auth-banner');
+                    if (banner) banner.remove();
+                });
+            }
+        });
     })();
     </script>
 </body>
