@@ -338,18 +338,8 @@
                         </div>
                         <p class="pd-desc">${p.desc}</p>
                         <div>
-                            <h3 style="margin-bottom: 1rem;">Especificaciones</h3>
-                            <table class="specs-table">
-                                <tbody>
-                                    <tr><th>Categoría</th><td>${p.category || 'General'}</td></tr>
-                                    <tr><th>Marca / Proveedor</th><td>${p.provider || 'N/A'}</td></tr>
-                                    <tr><th>Color / Tonalidad</th><td>${p.color || 'Vario'}</td></tr>
-                                    <tr><th>Medidas / Formato</th><td>${p.variants && p.variants.length > 0 ? p.variants.join(', ') : (p.size || 'Standard')}</td></tr>
-                                </tbody>
-                            </table>
-
                             ${p.variants && p.variants.length > 0 ? `
-                            <div class="variant-selector" style="margin-top: 2rem;">
+                            <div class="variant-selector" style="margin-top: 1rem;">
                                 <label style="display: block; margin-bottom: 0.8rem; font-weight: 600; color: var(--accent-color);">Elegir ${p.category.includes('PVC') || p.category.includes('Moldura') ? 'Medida/Color' : 'Medida'}:</label>
                                 <div class="variant-chips" id="detail-variant-chips" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
                                     ${p.variants.map((v, idx) => `
@@ -364,7 +354,7 @@
                             </div>
                             ` : ''}
 
-                            <div class="buy-action glass">
+                            <div class="buy-action glass" style="margin-top: 2rem;">
                                 <h4>¿Te interesa este producto?</h4>
                                 <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.95rem;">
                                     Elegí la cantidad y sumalo a tu presupuesto.
@@ -382,7 +372,20 @@
                                     <i class="fab fa-whatsapp" style="transform:translateY(1px);"></i> Consultar Directo
                                 </a>
                             </div>
+
+                            <div style="margin-top: 2.5rem;">
+                                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--text-secondary);">Especificaciones</h3>
+                                <table class="specs-table">
+                                    <tbody>
+                                        <tr><th>Categoría</th><td>${p.category || 'General'}</td></tr>
+                                        <tr><th>Marca / Proveedor</th><td>${p.provider || 'N/A'}</td></tr>
+                                        <tr><th>Color / Tonalidad</th><td>${p.color || 'Vario'}</td></tr>
+                                        <tr><th>Medidas / Formato</th><td>${p.variants && p.variants.length > 0 ? p.variants.join(', ') : (p.size || 'Standard')}</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             `;
