@@ -280,13 +280,15 @@
             container.innerHTML = `
                 <a href="m_productos" class="back-link reveal"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
                 <div class="product-detail-layout">
-                    <div class="product-image-container reveal delay-1" style="position: relative;">
-                        <img id="pd-main-img" src="${firstImg}" alt="${p.name}">
-                        <div class="out-of-stock-badge" id="pd-oos-badge" style="display: ${isOOS ? 'block' : 'none'};">SIN STOCK</div>
-                        <button id="pd-img-prev" class="pd-img-nav pd-img-prev" style="display:none;">&#8249;</button>
-                        <button id="pd-img-next" class="pd-img-nav pd-img-next" style="display:none;">&#8250;</button>
+                    <div class="reveal delay-1">
+                        <div class="product-image-container" style="position: relative;">
+                            <img id="pd-main-img" src="${firstImg}" alt="${p.name}">
+                            <div class="out-of-stock-badge" id="pd-oos-badge" style="display: ${isOOS ? 'block' : 'none'};">SIN STOCK</div>
+                            <button id="pd-img-prev" class="pd-img-nav pd-img-prev" style="display:none;">&#8249;</button>
+                            <button id="pd-img-next" class="pd-img-nav pd-img-next" style="display:none;">&#8250;</button>
+                        </div>
+                        <div id="pd-img-dots" class="pd-img-dots" style="display:none;"></div>
                     </div>
-                    <div id="pd-img-dots" class="pd-img-dots" style="display:none;"></div>
                     <div class="product-info-container reveal delay-2">
                         <div>
                             <div class="pd-brand">${p.provider || 'Distribuidor Local'}</div>
