@@ -1,6 +1,6 @@
 // Cart Logic
 const CART_KEY = 'marino_cart';
-const WA_NUMBER = '5493404505350'; // Reemplazar despues si es distinto
+const WA_NUMBER = '5493404491056'; // Reemplazar despues si es distinto
 const EMAIL = 'decoracionesmar.dm@gmail.com';
 let cart = [];
 
