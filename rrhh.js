@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // GAS Endpoint
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbzO6cIkWhCij1jRUVdoztY5hVdOLja-xXinqFmk9SQ4OkWwGCvwlnYmWKAZqZ3yIBFs/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycby0rw77aZIEEfnh5-LzIXTrq0GCu5SBpqQsSzxijYg3bO1tSoXQmIBwwuBuvfIxdolK/exec";
 
     // Form Submissions - General CV
     const generalForm = document.getElementById('general-cv-form');
