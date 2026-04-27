@@ -1,516 +1,1031 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
+
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Catálogo de Materiales | Mariño Construcción en Seco — Gálvez</title>
+
     <meta name="description" content="Catálogo completo de materiales para construcción en seco en Gálvez, Santa Fe. Placas Durlock, perfiles, PVC, molduras, pisos flotantes, revestimientos y más. Presupuesto rápido.">
+
     <meta name="robots" content="index, follow">
+
     <link rel="canonical" href="https://xn--marioenseco-4db.com/productos">
+
     <meta property="og:type" content="website">
+
     <meta property="og:url" content="https://xn--marioenseco-4db.com/productos">
+
     <meta property="og:title" content="Catálogo de Materiales | Mariño Construcción en Seco">
+
     <meta property="og:description" content="Exploré nuestro catálogo completo: Durlock, PVC, perfiles, molduras, pisos y más. Distribuidora en Gálvez, Santa Fe.">
+
     <meta property="og:image" content="https://xn--marioenseco-4db.com/MariñoFrente.jpg">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" sizes="192x192" href="mariñoiconcirc.png">
-    <link rel="shortcut icon" href="mariñoiconcirc.png" type="image/x-icon">
-    <link rel="apple-touch-icon" href="mariñoiconcirc.png">
+
+    <link rel="icon" sizes="192x192" href="mariñoiconcirc.png?v=2">
+
+    <link rel="shortcut icon" href="mariñoiconcirc.png?v=2" type="image/x-icon">
+
+    <link rel="apple-touch-icon" href="mariñoiconcirc.png?v=2">
+
     <meta name="apple-mobile-web-app-title" content="Mariño">
+
     <meta name="apple-mobile-web-app-capable" content="yes">
+
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
     <style>
+
         .catalog-container {
+
             padding: 4rem 5%;
+
             min-height: 80vh;
+
         }
+
+
 
         /* Catalog Layout */
+
         .catalog-container {
+
             padding: 4rem 5%;
+
             min-height: 80vh;
+
         }
+
+
 
         .catalog-layout {
+
             display: grid;
+
             grid-template-columns: 280px 1fr;
+
             gap: 2rem;
+
             align-items: start;
+
         }
+
+
 
         /* Sidebar Filters */
+
         .filters-sidebar {
+
             padding: 1.5rem;
+
             border-radius: 15px;
+
             position: sticky;
+
             top: 100px;
+
             max-height: calc(100vh - 120px);
+
             overflow-y: auto;
+
         }
+
+
 
         .filters-sidebar h3 {
+
             color: var(--accent-color);
+
             margin-bottom: 1.5rem;
+
             font-size: 1.2rem;
+
             display: flex;
+
             align-items: center;
+
             gap: 0.5rem;
+
         }
+
+
 
         .filter-group {
+
             margin-bottom: 1.5rem;
+
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
             padding-bottom: 1.5rem;
+
         }
+
+
 
         .filter-group:last-of-type {
+
             border-bottom: none;
+
             padding-bottom: 0;
+
             margin-bottom: 1rem;
+
         }
+
+
 
         .filter-group h4 {
+
             margin-bottom: 1rem;
+
             font-size: 1rem;
+
             color: var(--text-primary);
+
         }
+
+
 
         .filter-options {
+
             display: flex;
+
             flex-direction: column;
+
             gap: 0.1rem;
+
         }
+
+
 
         .filter-checkbox:hover {
+
             color: var(--accent-color);
+
         }
+
+
 
         /* Main Catalog */
+
         .catalog-controls {
+
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
+
             margin-bottom: 2rem;
+
             flex-wrap: wrap;
+
             gap: 1rem;
+
         }
+
+
 
         .search-box {
+
             flex: 1;
+
             position: relative;
+
         }
+
+
 
         .search-box input {
+
             width: 100%;
+
             padding: 1rem 1rem 1rem 3rem;
+
             border-radius: 50px;
+
             border: 1px solid var(--glass-border);
+
             background: var(--glass-bg);
+
             color: var(--text-primary);
+
             font-size: 1rem;
+
         }
+
+
 
         .search-box input:focus {
+
             outline: none;
+
             border-color: var(--accent-color);
+
         }
+
+
 
         .search-box i {
+
             position: absolute;
+
             left: 1rem;
+
             top: 50%;
+
             transform: translateY(-50%);
+
             color: var(--text-secondary);
+
         }
+
+
 
         /* Products Grid */
+
         .products-grid {
+
             display: grid;
+
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+
             gap: 2rem;
+
         }
+
+
 
         .product-card {
+
             border-radius: 15px;
+
             overflow: hidden;
+
             transition: var(--transition);
+
             position: relative;
+
             display: flex;
+
             flex-direction: column;
+
         }
+
+
 
         .product-card:hover {
+
             transform: translateY(-5px);
+
             border-color: var(--accent-color);
+
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+
         }
+
+
 
         .product-img {
+
             width: 100%;
+
             height: 200px;
+
             object-fit: cover;
+
             border-bottom: 1px solid var(--glass-border);
+
         }
+
+
 
         .product-info {
+
             padding: 1.5rem;
+
             flex: 1;
+
             display: flex;
+
             flex-direction: column;
+
         }
+
+
 
         .product-title {
+
             font-size: 1.25rem;
+
             margin-bottom: 0.5rem;
+
             color: var(--accent-color);
+
         }
+
+
 
         .product-desc {
+
             color: var(--text-secondary);
+
             font-size: 0.95rem;
+
             flex: 1;
+
         }
+
+
 
         .admin-controls {
+
             margin-top: 1rem;
+
             display: none;
+
             /* Hidden by default */
+
         }
+
+
 
         /* Pagination */
+
         .pagination {
+
             margin-top: 4rem;
+
             display: flex;
+
             justify-content: center;
+
             align-items: center;
+
             gap: 1rem;
+
         }
+
+
 
         .pagination button {
+
             background: var(--glass-bg);
+
             border: 1px solid var(--glass-border);
+
             color: var(--text-primary);
+
             width: 40px;
+
             height: 40px;
+
             border-radius: 50%;
+
             cursor: pointer;
+
             transition: var(--transition);
+
         }
+
+
 
         .pagination button:hover:not(:disabled) {
+
             background: var(--accent-color);
+
             color: #0f172a;
+
         }
+
+
 
         .pagination button:disabled {
+
             opacity: 0.5;
+
             cursor: not-allowed;
+
         }
+
+
 
         /* Modal for adding product */
+
         .modal {
+
             display: none;
+
             position: fixed;
+
             z-index: 2000;
+
             left: 0;
+
             top: 0;
+
             width: 100%;
+
             height: 100%;
+
             background-color: rgba(0, 0, 0, 0.8);
+
             justify-content: center;
+
             align-items: center;
+
         }
+
+
 
         .modal-content {
+
             background: var(--bg-color);
+
             padding: 2rem;
+
             border-radius: 20px;
+
             max-width: 500px;
+
             width: 90%;
+
             border: 1px solid var(--accent-color);
+
         }
+
+
 
         .modal-header {
+
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
+
             margin-bottom: 1.5rem;
+
         }
+
+
 
         .close-modal {
+
             color: var(--text-secondary);
+
             font-size: 1.5rem;
+
             cursor: pointer;
+
         }
+
+
 
         .form-group {
+
             margin-bottom: 1rem;
+
         }
+
+
 
         .form-group label {
+
             display: block;
+
             margin-bottom: 0.5rem;
+
             color: var(--text-secondary);
+
         }
+
+
 
         .form-group input,
+
         .form-group textarea {
+
             width: 100%;
+
             padding: 0.75rem;
+
             border-radius: 8px;
+
             border: 1px solid var(--glass-border);
+
             background: rgba(255, 255, 255, 0.05);
+
             color: white;
+
             font-family: inherit;
+
         }
+
+
 
         .stats-info {
+
             color: var(--text-secondary);
+
             font-size: 0.9rem;
+
             text-align: center;
+
             margin-top: 1rem;
+
         }
+
+
 
         /* Out of Stock Badge */
+
         .out-of-stock-badge {
+
             position: absolute;
+
             top: 50%;
+
             left: 50%;
+
             transform: translate(-50%, -50%);
+
             background: rgba(220, 53, 69, 0.95);
+
             color: white;
+
             padding: 0.5rem 1.5rem;
+
             font-weight: 800;
+
             font-size: 1.2rem;
+
             border-radius: 4px;
+
             z-index: 10;
+
             pointer-events: none;
+
             letter-spacing: 2px;
+
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+
         }
+
+
 
         /* Switch Toggle */
+
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+
         .switch input { opacity: 0; width: 0; height: 0; }
+
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #dc3545; transition: .4s; border-radius: 34px;}
+
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;}
+
         input:checked + .slider { background-color: #28a745; }
+
         input:checked + .slider:before { transform: translateX(24px); }
+
     </style>
 
+
+
     <script>
+
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768) {
+
             var currentParams = window.location.hash + window.location.search;
+
             window.location.href = "m_productos.html" + currentParams;
+
         }
+
     </script>
+
 </head>
+
+
 
 <body>
 
+
+
     <nav class="navbar glass" id="navbar">
+
         <a href="index.html" class="logo">
+
             <img src="mariño.png" alt="Mariño Logo" class="nav-logo">
+
             <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.1;">
+
                 <div>Mariño</div>
+
                 <div
+
                     style="font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); font-family: 'Inter', sans-serif; letter-spacing: 0;">
+
                     construcción en seco & decoraciones</div>
+
             </div>
+
         </a>
+
         <ul class="nav-links">
+
             <li><a href="index">Inicio</a></li>
+
             <li><a href="index#nosotros">Nosotros</a></li>
+
             <li><a href="productos.html" style="color: var(--accent-color);">Catálogo</a></li>
+
             <li><a href="obras">Obras</a></li>
+
             <li><a href="galeria">Multimedia</a></li>
+
             <li><a href="rrhh">RRHH</a></li>
+
             <li><a href="consultas">Consultas</a></li>
+
             <li><a href="index#contacto">Contacto</a></li>
+
             <li><a href="login" id="nav-login"><i class="fas fa-lock"></i></a></li>
+
         </ul>
+
     </nav>
 
+
+
     <div class="page-header reveal">
+
         <h1>Nuestro Catálogo</h1>
+
         <p>Explora nuestra amplia colección de placas, perfiles y revestimientos. Calidad y diseño para tus espacios.
+
         </p>
+
     </div>
+
+
 
     <div class="catalog-container">
+
         <div class="catalog-layout">
+
             <!-- Sidebar for Filters -->
+
             <aside class="filters-sidebar glass reveal delay-1">
+
                 <h3><i class="fas fa-filter"></i> Filtros</h3>
 
+
+
                 <div class="filter-group">
+
                     <h4>Categorías</h4>
+
                     <div id="filter-categories" class="filter-options">
+
                         <!-- Checkboxes injected via JS -->
+
                     </div>
+
                 </div>
 
+
+
                 <div class="filter-group">
+
                     <h4>Marcas / Proveedores</h4>
+
                     <div id="filter-providers" class="filter-options">
+
                         <!-- Checkboxes injected via JS -->
+
                     </div>
+
                 </div>
 
+
+
                 <div class="filter-group">
+
                     <h4>Color</h4>
+
                     <div id="filter-colors" class="filter-options">
+
                         <!-- Checkboxes injected via JS -->
+
                     </div>
+
                 </div>
+
+
 
                 <button id="btn-clear-filters" class="btn btn-secondary"
+
                     style="width: 100%; margin-top: 1rem; margin-left: 0; padding: 0.5rem;">Limpiar Filtros</button>
+
             </aside>
 
+
+
             <!-- Main Content Area -->
+
             <main class="catalog-main">
+
                 <!-- Horizontal Filters Toggle/Bar -->
+
                 <div class="horizontal-filters" id="horizontal-filters">
+
                     <div class="filter-dropdown">
+
                         <button class="filter-btn"><i class="fas fa-tags"></i> Todos los Productos</button>
+
                     </div>
+
                     <!-- Categories and Providers will be injected as dropdowns here or simple buttons -->
+
                     <div class="filter-dropdown">
+
                         <button class="filter-btn">Categorías <i class="fas fa-chevron-down"></i></button>
+
                         <div class="dropdown-content" id="h-filter-categories">
+
                             <!-- Injected via JS -->
+
                         </div>
+
                     </div>
+
                     <div class="filter-dropdown">
+
                         <button class="filter-btn">Marcas <i class="fas fa-chevron-down"></i></button>
+
                         <div class="dropdown-content" id="h-filter-providers">
+
                             <!-- Injected via JS -->
+
                         </div>
+
                     </div>
+
                 </div>
+
+
 
                 <div class="catalog-controls">
+
                     <div class="search-box">
+
                         <i class="fas fa-search"></i>
+
                         <input type="text" id="search-input"
+
                             placeholder="Buscar por nombre, categoría o descripción...">
+
                     </div>
+
                     <button id="btn-add-product" class="btn btn-primary" style="display: none;"><i
+
                             class="fas fa-plus"></i> Añadir Producto</button>
+
                 </div>
+
+
 
                 <div id="products-grid" class="products-grid">
+
                     <!-- Products will be injected here via JS -->
+
                 </div>
+
+
 
                 <div class="stats-info" id="stats-info">
+
                     <!-- Showing x of y -->
+
                 </div>
+
+
 
                 <div class="pagination" id="pagination-controls">
+
                     <!-- Pagination injected via JS -->
+
                 </div>
+
             </main>
+
         </div>
+
     </div>
+
+
 
     <!-- Add Product Modal -->
+
     <div id="addModal" class="modal">
+
         <div class="modal-content" style="max-width: 620px; max-height: 90vh; overflow-y: auto;">
+
             <div class="modal-header">
+
                 <h2 id="modal-product-title">Añadir Nuevo Producto</h2>
+
                 <span class="close-modal" id="close-modal">&times;</span>
+
             </div>
+
             <form id="add-product-form">
+
                 <input type="hidden" id="p-id" value="">
+
                 <div class="form-group">
+
                     <label>Nombre del Producto</label>
+
                     <input type="text" id="p-name" required>
+
                 </div>
+
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+
                     <div class="form-group" style="margin-bottom: 0;">
+
                         <label>Categoría</label>
+
                         <input type="text" id="p-category" required placeholder="Ej: Placa de Yeso">
+
                     </div>
+
                     <div class="form-group" style="margin-bottom: 0;">
+
                         <label>Marca / Proveedor</label>
+
                         <input type="text" id="p-provider" required placeholder="Ej: Durlock">
+
                     </div>
+
                 </div>
+
                 <div
+
                     style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; margin-bottom: 1rem;">
+
                     <div class="form-group" style="margin-bottom: 0;">
+
                         <label>Color / Tonalidad</label>
+
                         <input type="text" id="p-color" placeholder="Ej: Blanco">
+
                     </div>
+
                     <div class="form-group" style="margin-bottom: 0;">
+
                         <label>Medidas / Formato</label>
+
                         <input type="text" id="p-size" required placeholder="Ej: 1.20x2.40m">
+
                     </div>
+
                 </div>
+
                 <div class="form-group">
+
                     <label>Descripción</label>
+
                     <textarea id="p-desc" rows="3" required></textarea>
+
                 </div>
+
                 <div class="form-group">
+
                     <label>Imagen del Producto</label>
+
                     <input type="file" id="p-img-file" accept="image/*" style="margin-bottom: 0.5rem;">
+
                     <input type="text" id="p-img" placeholder="O pega una URL aquí (https://)">
+
                 </div>
+
+
 
                 <!-- Variant Images Section -->
+
                 <div class="form-group" id="variant-imgs-section" style="display:none;">
+
                     <label style="color: var(--accent-color); font-weight: 600;"
+
                            title="Asigná una imagen específica a cada variante/tipo del producto">
+
                         <i class="fas fa-images"></i> Imágenes por Variante
+
                         <span style="font-weight:400; font-size:0.82rem; color:var(--text-secondary); margin-left:0.4rem;">(opcional)</span>
+
                     </label>
+
                     <div id="variant-imgs-container" style="max-height:280px; overflow-y:auto; padding-right:0.25rem;"></div>
+
                 </div>
+
+
 
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Guardar
+
                     Producto</button>
+
             </form>
+
         </div>
+
     </div>
+
+
 
     <!-- Stock Modal -->
+
     <div id="stockModal" class="modal">
+
         <div class="modal-content" style="max-width: 400px;">
+
             <div class="modal-header">
+
                 <h2 id="stock-modal-title">Gestión de Stock</h2>
+
                 <span class="close-modal" id="close-stock-modal">&times;</span>
+
             </div>
+
             <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">
+
                 Activa el interruptor verde si hay stock. Desactívalo (rojo) si no hay stock.
+
             </p>
+
             <form id="stock-form">
+
                 <input type="hidden" id="stock-p-id" value="">
+
                 
+
                 <div id="stock-variants-container" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 300px; overflow-y: auto; margin-bottom: 1.5rem;">
+
                     <!-- Se inyecta con JS -->
+
                 </div>
 
+
+
                 <button type="submit" class="btn btn-warning" style="width: 100%;">Guardar Stock</button>
+
             </form>
+
         </div>
+
     </div>
 
+
+
     <footer>
+
         <p>&copy; 2026 Mariño Construcción en seco y decoraciones. Todos los derechos reservados.</p>
+
         <p style="margin-top: 5px; font-size: 0.85rem; color: var(--text-secondary);">
+
             Desarrollado por <a href="https://matiasschvabauer.github.io/portafolio/" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500;">Schvabauer Matias</a>
+
         </p>
+
     </footer>
 
+
+
     <script src="cart.js"></script>
+
     <script type="module" src="firebase-config.js"></script>
+
     <script type="module" src="auth.js"></script>
+
     <script type="module" src="products.js"></script>
+
     <script type="module" src="app.js"></script>
+
 </body>
+
+
 
 </html>

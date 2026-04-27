@@ -1,536 +1,1071 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
+
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Mariño | Detalle del Producto</title>
+
     <!-- Awesome Font Icons -->
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" sizes="192x192" href="mariñoiconcirc.png">
-    <link rel="shortcut icon" href="mariñoiconcirc.png" type="image/x-icon">
-    <link rel="apple-touch-icon" href="mariñoiconcirc.png">
+
+    <link rel="icon" sizes="192x192" href="mariñoiconcirc.png?v=2">
+
+    <link rel="shortcut icon" href="mariñoiconcirc.png?v=2" type="image/x-icon">
+
+    <link rel="apple-touch-icon" href="mariñoiconcirc.png?v=2">
+
     <meta name="apple-mobile-web-app-title" content="Mariño">
+
     <meta name="apple-mobile-web-app-capable" content="yes">
+
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
     <style>
+
         .detail-container {
+
             padding: 8rem 5% 4rem;
+
             /* Top padding to offset navbar */
+
             min-height: 80vh;
+
             max-width: 1200px;
+
             margin: 0 auto;
+
         }
+
+
 
         .back-link {
+
             display: inline-flex;
+
             align-items: center;
+
             gap: 0.5rem;
+
             color: var(--text-secondary);
+
             text-decoration: none;
+
             margin-bottom: 2rem;
+
             transition: var(--transition);
+
         }
+
+
 
         .back-link:hover {
+
             color: var(--accent-color);
+
         }
+
+
 
         .product-detail-layout {
+
             display: grid;
+
             grid-template-columns: 0.8fr 1.2fr;
+
             gap: 4rem;
+
             align-items: start;
+
         }
+
+
 
         .product-image-container {
+
             border-radius: 20px;
+
             overflow: hidden;
+
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+
             border: 1px solid var(--glass-border);
+
         }
+
+
 
         .product-image-container img {
+
             width: 100%;
+
             height: auto;
+
             display: block;
+
             object-fit: contain;
+
             background: #ffffff;
+
             aspect-ratio: 1/1;
+
         }
+
+
 
         .product-info-container {
+
             display: flex;
+
             flex-direction: column;
+
             gap: 1.5rem;
+
         }
+
+
 
         .pd-brand {
+
             color: var(--accent-color);
+
             font-weight: 600;
+
             text-transform: uppercase;
+
             letter-spacing: 1px;
+
             font-size: 0.9rem;
+
         }
+
+
 
         .pd-title {
+
             font-size: 2.5rem;
+
             line-height: 1.2;
+
             color: var(--text-primary);
+
         }
+
+
 
         .pd-desc {
+
             color: var(--text-secondary);
+
             font-size: 1.1rem;
+
             line-height: 1.8;
+
             padding-bottom: 1.5rem;
+
             border-bottom: 1px solid var(--glass-border);
+
         }
+
+
 
         .specs-table {
+
             width: 100%;
+
             border-collapse: collapse;
+
             margin-top: 1rem;
+
         }
+
+
 
         .specs-table tr {
+
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
         }
+
+
 
         .specs-table tr:last-child {
+
             border-bottom: none;
+
         }
+
+
 
         .specs-table th {
+
             text-align: left;
+
             padding: 1rem 0;
+
             color: var(--text-secondary);
+
             font-weight: 500;
+
             width: 40%;
+
         }
+
+
 
         .specs-table td {
+
             text-align: right;
+
             padding: 1rem 0;
+
             color: var(--text-primary);
+
             font-weight: 600;
+
         }
+
+
 
         .buy-action {
+
             margin-top: 2rem;
+
             padding: 2rem;
+
             border-radius: 15px;
+
             text-align: center;
+
         }
+
+
 
         .buy-action h4 {
+
             margin-bottom: 1rem;
+
             font-size: 1.2rem;
+
         }
+
+
 
         .loading-state,
+
         .error-state {
+
             text-align: center;
+
             padding: 4rem;
+
             font-size: 1.2rem;
+
             color: var(--text-secondary);
+
         }
+
+
 
         @media (max-width: 768px) {
+
             .product-detail-layout {
+
                 grid-template-columns: 1fr;
+
                 gap: 2rem;
+
             }
+
+
 
             .pd-title {
+
                 font-size: 2rem;
+
             }
+
         }
+
+
 
         /* Out of Stock Badge */
+
         .out-of-stock-badge {
+
             position: absolute;
+
             top: 50%;
+
             left: 50%;
+
             transform: translate(-50%, -50%);
+
             background: rgba(220, 53, 69, 0.95);
+
             color: white;
+
             padding: 0.5rem 1.5rem;
+
             font-weight: 800;
+
             font-size: 1.2rem;
+
             border-radius: 4px;
+
             z-index: 10;
+
             pointer-events: none;
+
             letter-spacing: 2px;
+
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+
         }
+
+
 
         /* Multi-image navigation arrows */
+
         .pd-img-nav {
+
             position: absolute;
+
             top: 50%;
+
             transform: translateY(-50%);
+
             background: rgba(0,0,0,0.55);
+
             border: none;
+
             color: white;
+
             font-size: 2rem;
+
             width: 42px;
+
             height: 42px;
+
             border-radius: 50%;
+
             cursor: pointer;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             z-index: 5;
+
             transition: background 0.2s;
+
         }
+
         .pd-img-nav:hover { background: rgba(0,0,0,0.8); }
+
         .pd-img-prev { left: 10px; }
+
         .pd-img-next { right: 10px; }
+
         .pd-img-dots {
+
             display: flex;
+
             justify-content: center;
+
             gap: 6px;
+
             margin-top: 0.8rem;
+
         }
+
         .pd-dot {
+
             width: 8px; height: 8px;
+
             border-radius: 50%;
+
             cursor: pointer;
+
             transition: background 0.3s;
+
         }
+
     </style>
 
+
+
     <script>
+
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768) {
+
             var currentParams = window.location.hash + window.location.search;
+
             window.location.href = "m_producto-detalle" + currentParams;
+
         }
+
     </script>
+
 </head>
 
+
+
 <body>
+
     <nav class="navbar glass" id="navbar">
+
         <a href="index" class="logo">
+
             <img src="mariño.png" alt="Mariño Logo" class="nav-logo">
+
             <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.1;">
+
                 <div>Mariño</div>
+
                 <div
+
                     style="font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); font-family: 'Inter', sans-serif; letter-spacing: 0;">
+
                     construcción en seco & decoraciones</div>
+
             </div>
+
         </a>
+
         <ul class="nav-links">
+
             <li><a href="index#inicio">Inicio</a></li>
+
             <li><a href="index#nosotros">Nosotros</a></li>
+
             <li><a href="productos" style="color: var(--accent-color);">Catálogo</a></li>
+
             <li><a href="obras">Obras</a></li>
+
             <li><a href="rrhh">RRHH</a></li>
+
             <li><a href="consultas">Consultas</a></li>
+
             <li><a href="index#contacto">Contacto</a></li>
+
             <li><a href="login" id="nav-login"><i class="fas fa-lock"></i></a></li>
+
         </ul>
+
     </nav>
 
+
+
     <div class="detail-container" id="detail-container">
+
         <div class="loading-state">
+
             <i class="fas fa-spinner fa-spin"
+
                 style="font-size: 2rem; margin-bottom: 1rem; color: var(--accent-color);"></i>
+
             <p>Cargando detalles del producto...</p>
+
         </div>
+
     </div>
 
+
+
     <footer>
+
         <p>&copy; 2026 Mariño Construcción en seco y decoraciones. Todos los derechos reservados.</p>
+
     </footer>
 
+
+
     <script src="cart.js"></script>
+
     <script type="module">
+
         import { db } from './firebase-config.js';
+
         import { doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
+
+
         const urlParams = new URLSearchParams(window.location.search);
+
         const productId = urlParams.get('id');
 
+
+
         if (!productId) {
+
             showError('Producto no especificado.');
+
         } else {
+
             loadProduct(productId);
+
         }
+
+
 
         async function loadProduct(id) {
+
             try {
+
                 // Try direct doc fetch first
+
                 const docRef = doc(db, "products", id);
+
                 const docSnap = await getDoc(docRef);
 
+
+
                 if (docSnap.exists()) {
+
                     renderProductDetails({ id: docSnap.id, ...docSnap.data() });
+
                 } else {
+
                     showError('El producto no existe o fue eliminado.');
+
                 }
+
             } catch (error) {
+
                 console.error("Error loading product:", error);
+
                 showError('Error al cargar el producto. Verifica tu conexión.');
+
             }
+
         }
+
         window._showDetailError = function(msg) { showError(msg); };
 
+
+
         // Helper for attribute escaping
+
         function hEsc(str) {
+
             if (!str) return '';
+
             return str.toString()
+
                 .replace(/&/g, '&amp;')
+
                 .replace(/"/g, '&quot;')
+
                 .replace(/'/g, '&#39;')
+
                 .replace(/</g, '&lt;')
+
                 .replace(/>/g, '&gt;');
+
         }
+
+
 
         function showError(msg) {
+
             const container = document.getElementById('detail-container');
+
             container.innerHTML = `
+
                 <a href="productos" class="back-link"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
+
                 <div class="error-state glass" style="border-radius: 20px;">
+
                     <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 1rem; color: var(--danger-color);"></i>
+
                     <p style="color: var(--text-primary); margin-bottom: 2rem;">${msg}</p>
+
                     <a href="productos" class="btn btn-primary">Ver Catálogo</a>
+
                 </div>
+
             `;
+
         }
+
+
 
         function renderProductDetails(p) {
+
             const container = document.getElementById('detail-container');
+
             document.title = `Mariño | ${p.name}`;
 
+
+
             const safeName = (p.name || '').replace(/'/g, "\\'");
+
             const safeImg  = (p.img  || '').replace(/'/g, "\\'");
+
             const safeCat  = (p.category || '').replace(/'/g, "\\'");
 
+
+
             let defaultVariant = p.variants && p.variants.length > 0 ? p.variants[0] : 'main';
+
             let isOOS = false;
+
             if (p.variants && p.variants.length > 0) {
+
                 isOOS = (p.outOfStock || []).includes(defaultVariant);
+
             } else {
+
                 isOOS = p.outOfStock === true || (Array.isArray(p.outOfStock) && p.outOfStock.includes('main'));
+
             }
+
             // Compute initial image (may be array for multi-image variants)
+
             function _getVI(prod, vn) {
+
                 if (!prod.variantImgs) return prod.img || '';
+
                 const r = prod.variantImgs[vn];
+
                 if (!r) return prod.img || '';
+
                 return Array.isArray(r) ? (r[0] || prod.img || '') : r;
+
             }
+
             const firstImg = _getVI(p, defaultVariant) || p.img;
 
+
+
             container.innerHTML = `
+
                 <a href="productos" class="back-link reveal"><i class="fas fa-arrow-left"></i> Volver al catálogo</a>
+
                 <div class="product-detail-layout">
+
                     <div class="reveal delay-1">
+
                         <div class="product-image-container" style="position: relative;">
+
                             <img id="pd-main-img" src="${firstImg}" alt="${p.name}">
+
                             <div class="out-of-stock-badge" id="pd-oos-badge" style="display: ${isOOS ? 'block' : 'none'};">SIN STOCK</div>
+
                             <button id="pd-img-prev" class="pd-img-nav pd-img-prev" style="display:none;">&#8249;</button>
+
                             <button id="pd-img-next" class="pd-img-nav pd-img-next" style="display:none;">&#8250;</button>
+
                         </div>
+
                         <div id="pd-img-dots" class="pd-img-dots" style="display:none;"></div>
+
                     </div>
+
                     <div class="product-info-container reveal delay-2">
+
                         <div>
+
                             <div class="pd-brand">${p.provider || 'Distribuidor Local'}</div>
+
                             <h1 class="pd-title">${p.name}</h1>
+
                         </div>
+
                         <p class="pd-desc">${p.desc}</p>
+
                         <div>
+
                             ${p.variants && p.variants.length > 0 ? `
+
                             <div class="variant-selector" style="margin-top: 1rem;">
+
                                 <label style="display: block; margin-bottom: 0.8rem; font-weight: 600; color: var(--accent-color);">Elegir ${p.category.includes('PVC') || p.category.includes('Moldura') ? 'Medida/Color' : 'Medida'}:</label>
+
                                 <div class="variant-chips" id="detail-variant-chips" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+
                                     ${p.variants.map((v, idx) => `
+
                                         <button class="variant-chip" 
+
                                                 data-variant="${hEsc(v)}"
+
                                                 onclick="selectDetailVariant('${v.replace(/'/g, "\\'")}', this)"
+
                                                 style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid ${idx === 0 ? 'var(--accent-color)' : 'var(--glass-border)'}; background: ${idx === 0 ? 'rgba(254, 222, 89, 0.1)' : 'rgba(255,255,255,0.05)'}; color: ${idx === 0 ? 'var(--accent-color)' : 'white'}; cursor: pointer; transition: all 0.3s;">
+
                                             ${v}
+
                                         </button>
+
                                     `).join('')}
+
                                 </div>
+
                             </div>
+
                             ` : ''}
 
+
+
                             <div class="buy-action glass" style="margin-top: 2rem;">
+
                                 <h4>¿Te interesa este producto?</h4>
+
                                 <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.95rem;">
+
                                     Elegí la cantidad y sumalo a tu presupuesto.
+
                                 </p>
+
                                 <!-- Quantity selector -->
+
                                 <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1.2rem;">
+
                                     <button id="detail-qty-minus" style="width:38px;height:38px;border-radius:50%;border:2px solid var(--accent-color);background:transparent;color:var(--accent-color);font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">−</button>
+
                                     <span id="detail-qty-display" style="font-size:1.5rem;font-weight:700;min-width:36px;text-align:center;">1</span>
+
                                     <button id="detail-qty-plus" style="width:38px;height:38px;border-radius:50%;border:2px solid var(--accent-color);background:transparent;color:var(--accent-color);font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
+
                                 </div>
+
                                 <button id="detail-add-btn" class="btn btn-primary" style="width:100%;margin:0 0 1rem 0;display:flex;align-items:center;justify-content:center;gap:0.5rem;" ${isOOS ? 'disabled' : ''}>
+
                                     <i class="fas fa-cart-plus" style="transform:translateY(1px);"></i> <span id="add-text-detail">${isOOS ? 'Sin Stock' : 'Sumar al Presupuesto'}</span>
+
                                 </button>
+
                                 <a href="https://wa.me/5493404491056?text=Hola,%20quisiera%20consultar%20por%20el%20producto:%20${encodeURIComponent(p.name)}" target="_blank" class="btn btn-secondary" style="width:100%;margin:0;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+
                                     <i class="fab fa-whatsapp" style="transform:translateY(1px);"></i> Consultar Directo
+
                                 </a>
+
                             </div>
+
+
 
                             <div style="margin-top: 2.5rem;">
+
                                 <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--text-secondary);">Especificaciones</h3>
+
                                 <table class="specs-table">
+
                                     <tbody>
+
                                         <tr><th>Categoría</th><td>${p.category || 'General'}</td></tr>
+
                                         <tr><th>Marca / Proveedor</th><td>${p.provider || 'N/A'}</td></tr>
+
                                         <tr><th>Color / Tonalidad</th><td>${p.color || 'Vario'}</td></tr>
+
                                         <tr><th>Medidas / Formato</th><td>${p.variants && p.variants.length > 0 ? p.variants.join(', ') : (p.size || 'Standard')}</td></tr>
+
                                     </tbody>
+
                                 </table>
+
                             </div>
+
                         </div>
 
+
+
                     </div>
+
                 </div>
+
             `;
 
+
+
             // Cloudinary optimizer (inline — mismo que products.js)
+
             function optimizeImg(url, width = 800) {
+
                 if (!url || !url.includes('res.cloudinary.com')) return url;
+
                 if (url.includes('/upload/w_')) return url;
+
                 return url.replace('/upload/', `/upload/w_${width},q_auto,f_auto/`);
+
             }
+
+
 
             // Multi-image helper (inline, same logic as products.js)
+
             function getVariantImages(prod, variantName) {
+
                 if (!prod.variantImgs) return prod.img ? [optimizeImg(prod.img)] : [];
+
                 const raw = prod.variantImgs[variantName];
+
                 if (!raw) return prod.img ? [optimizeImg(prod.img)] : [];
+
                 const arr = Array.isArray(raw) ? raw.filter(Boolean) : [raw];
+
                 return arr.map(u => optimizeImg(u));
+
             }
+
+
 
             // Quantity + variant state
+
             let qty = 1;
+
             let selectedVariant = p.variants && p.variants.length > 0 ? p.variants[0] : '';
+
             let currentImages = getVariantImages(p, selectedVariant);
+
             let currentImageIdx = 0;
+
             let currentImg = currentImages[0] || p.img;
 
+
+
             function updateMainImage() {
+
                 const imgEl = document.getElementById('pd-main-img');
+
                 if (imgEl) imgEl.src = currentImages[currentImageIdx];
+
                 currentImg = currentImages[currentImageIdx];
+
                 // Update dots
+
                 document.querySelectorAll('.pd-dot').forEach((d, i) => {
+
                     d.style.background = i === currentImageIdx ? 'var(--accent-color)' : 'rgba(255,255,255,0.35)';
+
                 });
+
             }
+
+
 
             function setupNavigation(images) {
+
                 const prevBtn = document.getElementById('pd-img-prev');
+
                 const nextBtn = document.getElementById('pd-img-next');
+
                 const dotsContainer = document.getElementById('pd-img-dots');
+
                 if (!prevBtn || !nextBtn || !dotsContainer) return;
+
                 if (images.length > 1) {
+
                     prevBtn.style.display = 'flex';
+
                     nextBtn.style.display = 'flex';
+
                     dotsContainer.style.display = 'flex';
+
                     dotsContainer.innerHTML = '';
+
                     images.forEach((_, i) => {
+
                         const dot = document.createElement('span');
+
                         dot.className = 'pd-dot';
+
                         dot.style.background = i === 0 ? 'var(--accent-color)' : 'rgba(255,255,255,0.35)';
+
                         dot.addEventListener('click', () => { currentImageIdx = i; updateMainImage(); });
+
                         dotsContainer.appendChild(dot);
+
                     });
+
                 } else {
+
                     prevBtn.style.display = 'none';
+
                     nextBtn.style.display = 'none';
+
                     dotsContainer.style.display = 'none';
+
                 }
+
             }
+
+
 
             // Init navigation for default variant
+
             setupNavigation(currentImages);
 
+
+
             // Load initial variant image
+
             if (selectedVariant && currentImages.length > 0) {
+
                 setTimeout(() => {
+
                     const imgEl = document.getElementById('pd-main-img');
+
                     if (imgEl) imgEl.src = currentImages[0];
+
                 }, 0);
+
             }
+
+
 
             window.selectDetailVariant = (v, el) => {
+
                 selectedVariant = v;
+
                 currentImages = getVariantImages(p, v);
+
                 currentImageIdx = 0;
+
                 updateMainImage();
+
                 setupNavigation(currentImages);
 
+
+
                 // Update out of stock UI
+
                 const isOutOfStock = (p.outOfStock || []).includes(v);
+
                 const badge = document.getElementById('pd-oos-badge');
+
                 if (badge) badge.style.display = isOutOfStock ? 'block' : 'none';
+
                 const addBtn = document.getElementById('detail-add-btn');
+
                 const addText = document.getElementById('add-text-detail');
+
                 if (addBtn && addText) {
+
                     addBtn.disabled = isOutOfStock;
+
                     addText.innerText = isOutOfStock ? 'Sin Stock' : 'Sumar al Presupuesto';
+
                 }
+
                 el.parentElement.querySelectorAll('.variant-chip').forEach(c => {
+
                     c.style.borderColor = 'var(--glass-border)';
+
                     c.style.background = 'rgba(255,255,255,0.05)';
+
                     c.style.color = 'white';
+
                 });
+
                 el.style.borderColor = 'var(--accent-color)';
+
                 el.style.background = 'rgba(254, 222, 89, 0.1)';
+
                 el.style.color = 'var(--accent-color)';
+
             };
 
+
+
             const qtyDisplay = document.getElementById('detail-qty-display');
+
             document.getElementById('detail-qty-minus').addEventListener('click', () => {
+
                 if (qty > 1) { qty--; qtyDisplay.textContent = qty; }
+
             });
+
             document.getElementById('detail-qty-plus').addEventListener('click', () => {
+
                 qty++;
+
                 qtyDisplay.textContent = qty;
+
             });
+
             document.getElementById('detail-add-btn').addEventListener('click', () => {
+
                 window.addToCart(p.id, p.name, currentImg, p.category, qty, selectedVariant);
+
             });
+
+
 
             // Arrow navigation
+
             const prevBtn = document.getElementById('pd-img-prev');
+
             const nextBtn = document.getElementById('pd-img-next');
+
             if (prevBtn) prevBtn.addEventListener('click', () => {
+
                 currentImageIdx = (currentImageIdx - 1 + currentImages.length) % currentImages.length;
+
                 updateMainImage();
+
             });
+
             if (nextBtn) nextBtn.addEventListener('click', () => {
+
                 currentImageIdx = (currentImageIdx + 1) % currentImages.length;
+
                 updateMainImage();
+
             });
+
+
 
             // Variant chip listeners via delegation
+
             const variantChipsContainer = document.getElementById('detail-variant-chips');
+
             if (variantChipsContainer) {
+
                 variantChipsContainer.addEventListener('click', function(e) {
+
                     const chip = e.target.closest('.variant-chip');
+
                     if (!chip) return;
+
                     const v = chip.dataset.variant;
+
                     window.selectDetailVariant(v, chip);
+
                 });
+
             }
 
+
+
             if (typeof window.initAnimations === 'function') {
+
                 setTimeout(window.initAnimations, 50);
+
             }
+
         }
+
     </script>
+
     <script src="app.js"></script>
+
 </body>
+
+
 
 </html>

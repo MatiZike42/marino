@@ -1,154 +1,308 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
+
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Consultas | Mariño</title>
+
     <!-- Awesome Font Icons -->
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" sizes="192x192" href="mariñoiconcirc.png">
-    <link rel="shortcut icon" href="mariñoiconcirc.png" type="image/x-icon">
-    <link rel="apple-touch-icon" href="mariñoiconcirc.png">
+
+    <link rel="icon" sizes="192x192" href="mariñoiconcirc.png?v=2">
+
+    <link rel="shortcut icon" href="mariñoiconcirc.png?v=2" type="image/x-icon">
+
+    <link rel="apple-touch-icon" href="mariñoiconcirc.png?v=2">
+
     <meta name="apple-mobile-web-app-title" content="Mariño">
+
     <meta name="apple-mobile-web-app-capable" content="yes">
+
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
+
+
     <script>
+
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768) {
+
             var currentParams = window.location.hash + window.location.search;
+
             window.location.href = "m_consultas.html" + currentParams;
+
         }
+
     </script>
+
 </head>
+
+
 
 <body>
 
+
+
     <nav class="navbar glass" id="navbar">
+
         <a href="index" class="logo">
+
             <img src="mariño.png" alt="Mariño Logo" class="nav-logo">
+
             <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.1;">
+
                 <div>Mariño</div>
+
                 <div
+
                     style="font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); font-family: 'Inter', sans-serif; letter-spacing: 0;">
+
                     construcción en seco & decoraciones</div>
+
             </div>
+
         </a>
+
         <ul class="nav-links">
+
             <li><a href="index">Inicio</a></li>
+
             <li><a href="index#nosotros">Nosotros</a></li>
+
             <li><a href="productos.html">Catálogo</a></li>
+
             <li><a href="obras">Obras</a></li>
+
             <li><a href="galeria">Multimedia</a></li>
+
             <li><a href="rrhh">RRHH</a></li>
+
             <li><a href="consultas" style="color: var(--accent-color);">Consultas</a></li>
+
             <li><a href="index#contacto">Contacto</a></li>
+
             <li><a href="login" id="nav-login"><i class="fas fa-lock"></i></a></li>
+
         </ul>
+
     </nav>
 
+
+
     <header class="page-header">
+
         <h1 class="reveal">Consultas Particulares</h1>
+
         <p class="reveal delay-1">Estamos acá para asesorarte en lo que necesites</p>
+
     </header>
 
+
+
     <section id="consultas-particulares" style="background-color: var(--bg-color); padding-top: 4rem;">
+
         <p class="reveal delay-1" style="text-align: center; max-width: 800px; margin: 0 auto 3rem auto; color: var(--text-secondary);">
+
             ¿Tenés alguna pregunta o inquietud? Dejanos tu consulta, y un asesor de Mariño se pondrá en contacto con vos en breve para brindarte la mejor asistencia personalizada.
+
         </p>
+
         <div class="contact-form-container glass reveal delay-2">
+
             <form id="consulta-form">
+
                 <div class="form-group">
+
                     <label for="nombre">Apellido y Nombre</label>
+
                     <input type="text" id="nombre" name="nombre" required placeholder="Tu nombre completo">
+
                 </div>
+
                 <div class="form-group">
+
                     <label for="telefono">Teléfono/Celular</label>
+
                     <input type="tel" id="telefono" name="telefono" required placeholder="Tu número de contacto">
+
                 </div>
+
                 <div class="form-group">
+
                     <label for="localidad">Localidad</label>
+
                     <input type="text" id="localidad" name="localidad" required placeholder="Tu ciudad">
+
                 </div>
+
                 <div class="form-group">
+
                     <label for="email">E-mail</label>
+
                     <input type="email" id="email" name="email" required placeholder="tuemail@ejemplo.com">
+
                 </div>
+
                 <div class="form-group">
+
                     <label for="mensaje">Mensaje</label>
+
                     <textarea id="mensaje" name="mensaje" rows="4" required placeholder="¿En qué te podemos ayudar?"></textarea>
+
                 </div>
+
                 <div class="form-group">
+
                     <label for="adjunto">Adjunto (opcional)</label>
+
                     <input type="file" id="adjunto" name="adjunto" class="file-input" accept="image/*,.pdf,.doc,.docx">
+
                     <small style="color: var(--accent-color); font-size: 0.8rem; display: block; margin-top: 5px;">
+
                         <i class="fas fa-info-circle"></i> Al ser redirigido a Gmail, deberás adjuntar tu archivo manualmente en el correo.
+
                     </small>
+
                 </div>
+
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;"><i class="fas fa-paper-plane" style="margin-right: 8px;"></i> ENVIAR</button>
+
             </form>
+
         </div>
+
     </section>
 
+
+
     <footer>
+
         <p>&copy; 2026 Mariño Construcción en seco y decoraciones. Todos los derechos reservados.</p>
+
         <p style="margin-top: 5px; font-size: 0.85rem; color: var(--text-secondary);">
+
             Desarrollado por <a href="https://matiasschvabauer.github.io/portafolio/" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500;">Schvabauer Matias</a>
+
         </p>
+
     </footer>
 
+
+
     <!-- Botón Whatsapp Flotante -->
+
     <a href="https://wa.me/3404491056?text=Hola!%20Me%20gustaría%20solicitar%20asesoramiento/presupuesto"
+
         target="_blank" class="whatsapp-float">
+
         <i class="fab fa-whatsapp"></i>
+
     </a>
 
+
+
     <script type="module" src="auth.js"></script>
+
     <script type="module" src="app.js"></script>
 
+
+
     <!-- Auth Guard: bloquea formularios para usuarios no logueados -->
+
     <script>
+
     (function() {
+
         // Escuchar el evento de autenticación de Firebase (auth.js)
+
         window.addEventListener('authReady', (e) => {
+
             const { user } = e.detail;
+
             const forms = document.querySelectorAll('#consulta-form'); // Específico para esta página
+
             
+
             if (!user) {
+
                 forms.forEach(function(form) {
+
                     // Evitar duplicados
+
                     if (form.querySelector('.auth-banner')) return;
 
+
+
                     // Bloquear campos
+
                     form.querySelectorAll('input, textarea, select, button[type="submit"]').forEach(function(el) {
+
                         el.disabled = true;
+
                         el.style.opacity = '0.4';
+
                         el.style.cursor = 'not-allowed';
+
                     });
+
+
 
                     // Banner de aviso
+
                     var banner = document.createElement('div');
+
                     banner.className = 'auth-banner';
+
                     banner.style.cssText = 'background:rgba(251,211,65,0.10);border:1px solid rgba(251,211,65,0.4);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:0.8rem;font-size:0.95rem;color:var(--text-secondary);';
+
                     banner.innerHTML = '<i class="fas fa-lock" style="color:var(--accent-color);font-size:1.2rem;"></i><span>Para enviar este formulario necesitás <a href="login.html" style="color:var(--accent-color);font-weight:600;text-decoration:none;">iniciar sesión &rarr;</a></span>';
+
                     form.prepend(banner);
+
                 });
+
             } else {
+
                 // Si hay sesión, asegurar que todo esté habilitado
+
                 forms.forEach(function(form) {
+
                     form.querySelectorAll('input, textarea, select, button[type="submit"]').forEach(function(el) {
+
                         el.disabled = false;
+
                         el.style.opacity = '1';
+
                         el.style.cursor = 'default';
+
                     });
+
                     const banner = form.querySelector('.auth-banner');
+
                     if (banner) banner.remove();
+
                 });
+
             }
+
         });
+
     })();
+
     </script>
+
 </body>
 
+
+
 </html>
+
