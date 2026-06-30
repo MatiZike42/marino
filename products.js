@@ -642,14 +642,27 @@ window.editProduct = async function (id) {
     document.getElementById('p-category').value = p.category || '';
     document.getElementById('p-provider').value = p.provider || '';
     document.getElementById('p-color').value = p.color || '';
-    document.getElementById('p-size').value = p.variants ? p.variants.join(', ') : (p.size || '');
     document.getElementById('p-desc').value = p.desc;
     document.getElementById('p-img').value = p.img || '';
 
     document.getElementById('modal-product-title').innerText = 'Editar Producto';
 
-    // Pre-fill variant image slots with existing variantImgs
-    renderVariantImageSlots(p.variants || [], p.variantImgs || {});
+    // Clear and populate variant rows
+    const container = document.getElementById('variants-list-container');
+    if (container) {
+        container.innerHTML = '';
+        if (p.variants && p.variants.length > 0) {
+            p.variants.forEach(v => {
+                const imgs = (p.variantImgs && p.variantImgs[v]) || [''];
+                addVariantRow(v, imgs);
+            });
+        } else {
+            // Backward compatibility fallback
+            const sizeValue = p.size || '';
+            const imgs = p.img ? [p.img] : [''];
+            addVariantRow(sizeValue, imgs);
+        }
+    }
 
     document.getElementById('addModal').style.display = 'flex';
 }
@@ -866,11 +879,12 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('p-id').value = '';
             document.getElementById('modal-product-title').innerText = 'Añadir Nuevo Producto';
             if (addForm) addForm.reset();
-            // Reset variant image section
-            const viSection = document.getElementById('variant-imgs-section');
-            const viContainer = document.getElementById('variant-imgs-container');
-            if (viSection) viSection.style.display = 'none';
-            if (viContainer) viContainer.innerHTML = '';
+            // Reset variants container
+            const container = document.getElementById('variants-list-container');
+            if (container) {
+                container.innerHTML = '';
+                addVariantRow('', ['']); // Start with one empty variant row
+            }
             modal.style.display = 'flex';
         });
         btnCloseModal.addEventListener('click', () => modal.style.display = 'none');
@@ -879,17 +893,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Listener p-size → regenerar slots de imagen de variante en tiempo real
-    const pSizeInput = document.getElementById('p-size');
-    if (pSizeInput) {
-        pSizeInput.addEventListener('input', function() {
-            const variants = splitVariants(this.value);
-            const existingImgs = {};
-            document.querySelectorAll('.variant-img-slot').forEach(slot => {
-                const url = slot.querySelector('.vi-url')?.value.trim();
-                if (url) existingImgs[slot.dataset.variant] = url;
-            });
-            renderVariantImageSlots(variants, existingImgs);
+    // Listener btn-add-variant -> agregar fila de variante vacía
+    const btnAddVariant = document.getElementById('btn-add-variant');
+    if (btnAddVariant) {
+        btnAddVariant.addEventListener('click', () => {
+            addVariantRow('', ['']);
         });
     }
 
@@ -1003,8 +1011,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const category = document.getElementById('p-category').value;
                 const provider = document.getElementById('p-provider').value;
                 const color = document.getElementById('p-color').value;
-                const size = document.getElementById('p-size').value;
-                const variants = splitVariants(size);
                 const desc = document.getElementById('p-desc').value;
                 
                 // Allow file upload or URL → both get uploaded to Cloudinary
@@ -1024,33 +1030,50 @@ document.addEventListener('DOMContentLoaded', () => {
                     img = '1.png';
                 }
 
-                // Collect variant images (supports multiple per variant)
-                btnSubmit.innerText = 'Guardando variantes...';
+                // Collect variant names and their images
+                const variants = [];
                 const variantImgs = {};
-                const slots = document.querySelectorAll('.variant-img-slot');
-                for (const slot of slots) {
-                    const varName = slot.dataset.variant;
-                    const subSlots = slot.querySelectorAll('.vi-sub-slot');
+                const variantRows = document.querySelectorAll('.variant-item-box');
+                
+                for (const row of variantRows) {
+                    const nameInput = row.querySelector('.var-name-input');
+                    const varName = nameInput ? nameInput.value.trim() : '';
+                    if (!varName) continue;
+                    
+                    variants.push(varName);
+                    
+                    const subSlots = row.querySelectorAll('.vi-sub-slot');
                     const imagesForVariant = [];
                     for (const subSlot of subSlots) {
                         const fileInput = subSlot.querySelector('.vi-file');
                         const urlInput = subSlot.querySelector('.vi-url');
                         let imgUrl = null;
+                        
                         if (fileInput && fileInput.files.length > 0) {
                             btnSubmit.innerText = `Subiendo imagen de "${varName}"...`;
                             const fd = new FormData();
                             fd.append('file', fileInput.files[0]);
                             fd.append('upload_preset', CLOUDINARY_PRESET);
                             const vRes = await fetch(CLOUDINARY_URL, { method: 'POST', body: fd });
-                            if (vRes.ok) { const vData = await vRes.json(); imgUrl = vData.secure_url; }
+                            if (vRes.ok) {
+                                const vData = await vRes.json();
+                                imgUrl = vData.secure_url;
+                            }
                         } else if (urlInput && urlInput.value.trim()) {
                             btnSubmit.innerText = `Alojando imagen de "${varName}"...`;
                             imgUrl = await uploadToCloudinary(urlInput.value.trim(), varName);
                         }
-                        if (imgUrl) imagesForVariant.push(imgUrl);
+                        
+                        if (imgUrl) {
+                            imagesForVariant.push(imgUrl);
+                        }
                     }
-                    if (imagesForVariant.length === 1) variantImgs[varName] = imagesForVariant[0];
-                    else if (imagesForVariant.length > 1) variantImgs[varName] = imagesForVariant;
+                    
+                    if (imagesForVariant.length === 1) {
+                        variantImgs[varName] = imagesForVariant[0];
+                    } else if (imagesForVariant.length > 1) {
+                        variantImgs[varName] = imagesForVariant;
+                    }
                 }
 
                 if (editId) {
@@ -1088,7 +1111,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 modal.style.display = 'none';
                 addForm.reset();
-                document.getElementById('variant-imgs-container').innerHTML = '';
+                const container = document.getElementById('variants-list-container');
+                if (container) container.innerHTML = '';
                 renderFilters();
                 renderProducts();
                 } catch(error) {
@@ -1153,49 +1177,71 @@ function addSubSlot(subContainer, existingUrl) {
     subContainer.appendChild(subSlot);
 }
 
-function renderVariantImageSlots(variantList, existingImgs) {
-    const container = document.getElementById('variant-imgs-container');
-    const section = document.getElementById('variant-imgs-section');
+function addVariantRow(variantName = '', imagesArray = ['']) {
+    const container = document.getElementById('variants-list-container');
     if (!container) return;
 
-    if (!variantList || variantList.length === 0) {
-        container.innerHTML = '';
-        if (section) section.style.display = 'none';
-        return;
-    }
-    if (section) section.style.display = 'block';
-    container.innerHTML = '';
+    const row = document.createElement('div');
+    row.className = 'variant-item-box';
+    row.style.cssText = 'background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);border-radius:8px;padding:0.8rem;position:relative;display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;';
 
-    variantList.forEach(v => {
-        const raw = (existingImgs && existingImgs[v]) || '';
-        const existingArray = raw ? (Array.isArray(raw) ? raw : [raw]) : [''];
+    // Header (name input + remove button)
+    const header = document.createElement('div');
+    header.style.cssText = 'display:flex;align-items:center;gap:0.5rem;';
 
-        const slot = document.createElement('div');
-        slot.className = 'variant-img-slot';
-        slot.dataset.variant = v;
-        slot.style.cssText = 'background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:8px;padding:0.75rem;margin-bottom:0.5rem;';
+    const nameInput = document.createElement('input');
+    nameInput.type = 'text';
+    nameInput.className = 'var-name-input';
+    nameInput.required = true;
+    nameInput.placeholder = 'Nombre de variante/medida (Ej: 12.5mm x 2.40m)';
+    nameInput.value = variantName;
+    nameInput.style.cssText = 'flex:1;padding:0.4rem 0.6rem;border-radius:6px;border:1px solid var(--glass-border);background:rgba(255,255,255,0.05);color:white;font-size:0.85rem;';
 
-        // Header with variant name + add button
-        const header = document.createElement('div');
-        header.style.cssText = 'display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;';
-        header.innerHTML = `<span style="font-size:0.9rem;font-weight:600;color:var(--accent-color);flex:1;">${v}</span>
-            <button type="button" class="vi-add-btn" style="font-size:0.73rem;padding:0.2rem 0.5rem;border-radius:4px;border:1px solid var(--accent-color);background:transparent;color:var(--accent-color);cursor:pointer;">+ Imagen</button>`;
-        slot.appendChild(header);
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'btn-remove-variant';
+    removeBtn.innerHTML = '✕';
+    removeBtn.title = 'Eliminar variante';
+    removeBtn.style.cssText = 'background:transparent;border:none;color:#ef4444;cursor:pointer;font-size:1.1rem;padding:0.3rem;display:flex;align-items:center;justify-content:center;';
 
-        const subContainer = document.createElement('div');
-        subContainer.className = 'vi-sub-slots-container';
-        slot.appendChild(subContainer);
-
-        existingArray.forEach(img => addSubSlot(subContainer, img));
-
-        header.querySelector('.vi-add-btn').addEventListener('click', () => {
-            if (subContainer.querySelectorAll('.vi-sub-slot').length >= 5) {
-                alert('Máximo 5 imágenes por variante.'); return;
-            }
-            addSubSlot(subContainer, '');
-        });
-
-        container.appendChild(slot);
+    removeBtn.addEventListener('click', () => {
+        row.remove();
+        // Always keep at least one variant row
+        if (container.querySelectorAll('.variant-item-box').length === 0) {
+            addVariantRow('', ['']);
+        }
     });
+
+    header.appendChild(nameInput);
+    header.appendChild(removeBtn);
+    row.appendChild(header);
+
+    // Images container
+    const imagesContainer = document.createElement('div');
+    imagesContainer.className = 'vi-sub-slots-container';
+    row.appendChild(imagesContainer);
+
+    // Add Image Button
+    const addImgBtn = document.createElement('button');
+    addImgBtn.type = 'button';
+    addImgBtn.className = 'btn-add-var-img';
+    addImgBtn.innerHTML = '+ Imagen';
+    addImgBtn.style.cssText = 'font-size:0.75rem;padding:0.25rem 0.5rem;border-radius:4px;border:1px solid var(--accent-color);background:transparent;color:var(--accent-color);cursor:pointer;align-self:flex-start;display:flex;align-items:center;gap:0.3rem;';
+
+    addImgBtn.addEventListener('click', () => {
+        if (imagesContainer.querySelectorAll('.vi-sub-slot').length >= 5) {
+            alert('Máximo 5 imágenes por variante.');
+            return;
+        }
+        addSubSlot(imagesContainer, '');
+    });
+
+    row.appendChild(addImgBtn);
+
+    // Populate existing images
+    const imgList = imagesArray && imagesArray.length > 0 ? (Array.isArray(imagesArray) ? imagesArray : [imagesArray]) : [''];
+    imgList.forEach(img => addSubSlot(imagesContainer, img));
+
+    container.appendChild(row);
 }
-window.renderVariantImageSlots = renderVariantImageSlots;
+window.addVariantRow = addVariantRow;
